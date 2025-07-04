@@ -1,5 +1,5 @@
-export default async function handler(req, res) {
-    // Разрешаем CORS для всех доменов
+export default function handler(req, res) {
+    // Разрешаем CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -14,17 +14,16 @@ export default async function handler(req, res) {
     
     try {
         const cardData = req.body;
+        console.log('📤 Получена карта:', cardData?.cardId);
         
-        // Пока возвращаем мок-данные
-        const mockPreviewUrl = `https://${req.headers.host}/previews/card_${cardData.cardId}_preview.jpg`;
-        const shareUrl = `https://cardgift.bnb/card-viewer.html?id=${cardData.cardId}`;
-        
-        console.log('📤 Получена карта:', cardData.cardId);
+        // Генерируем URL превью
+        const previewUrl = `https://gwturbina.github.io/cardgift-api/preview.html?id=${cardData.cardId}`;
+        const mockImageUrl = `https://via.placeholder.com/1200x630/667eea/ffffff?text=CardGift+Preview`;
         
         return res.status(200).json({
             success: true,
-            shareableUrl: shareUrl,
-            previewImageUrl: mockPreviewUrl,
+            shareableUrl: previewUrl,
+            previewImageUrl: mockImageUrl,
             cardId: cardData.cardId
         });
         
