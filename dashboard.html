@@ -1650,6 +1650,25 @@ function showInstallWalletPrompt() {
     console.log('Wallet not connected - showing prompt');
 }
 
+function updateUserInterface() {
+    const levelNames = {
+        0: 'NOT REGISTERED',
+        1: 'BASIC USER', 
+        2: 'MINI ADMIN',
+        3: 'CO-AUTHOR',
+        4: 'MASTER ADMIN'
+    };
+    
+    document.getElementById('userLevel').textContent = levelNames[currentUser.level] || 'UNKNOWN';
+    document.getElementById('currentUserId').textContent = currentUser.userId || 'Not Connected';
+    
+    // Показываем адрес кошелька если подключен
+    if (userWalletAddress) {
+        const shortAddress = `${userWalletAddress.substring(0, 6)}...${userWalletAddress.substring(userWalletAddress.length - 4)}`;
+        document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
+    }
+}
+
     window.onload = async function() {
     console.log('🚀 CardGift Web3 Dashboard initializing...');
     
