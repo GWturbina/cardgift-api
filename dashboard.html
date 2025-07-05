@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" id="htmlRoot">
 <head>
-   <meta name="theme-color" content="#FFD700">
-
-<!-- Favicon fix -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
-
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
    <title id="pageTitle">CardGift - Admin Dashboard</title>
@@ -13,6 +8,9 @@
    <!-- PWA Meta tags -->
    <meta name="description" content="CardGift Admin Dashboard - Manage your network">
    <meta name="theme-color" content="#FFD700">
+   
+   <!-- Favicon fix -->
+   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
    
    <!-- Web3 Integration - SafePal Priority -->
    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
@@ -873,8 +871,8 @@
        <div class="sidebar-header">
            <div class="logo">🎁 CardGift</div>
            <div class="user-info">
-               <div class="user-level" id="userLevel">MASTER ADMIN</div>
-               <div class="user-id" id="userIdDisplay">ID: <span id="currentUserId">CG000001</span></div>
+               <div class="user-level" id="userLevel">NOT CONNECTED</div>
+               <div class="user-id" id="userIdDisplay">ID: <span id="currentUserId">Connect Wallet</span></div>
            </div>
        </div>
        
@@ -883,29 +881,29 @@
                <div class="menu-icon">📊</div>
                <span id="menuDashboard">Dashboard</span>
            </div>
-           <div class="menu-item" onclick="showSection('contacts')" data-section="contacts">
+           <div class="menu-item locked" onclick="showSection('contacts')" data-section="contacts">
                <div class="menu-icon">👥</div>
                <span id="menuContacts">Contacts</span>
            </div>
-           <div class="menu-item" onclick="showSection('referrals')" data-section="referrals">
+           <div class="menu-item locked" onclick="showSection('referrals')" data-section="referrals">
                <div class="menu-icon">🔗</div>
                <span id="menuReferrals">Referral System</span>
                <div class="notification-badge hidden" id="referralNotifications">0</div>
            </div>
-           <div class="menu-item" onclick="showSection('crm')" data-section="crm">
+           <div class="menu-item locked" onclick="showSection('crm')" data-section="crm">
                <div class="menu-icon">💬</div>
                <span id="menuCRM">CRM & Chat</span>
                <div class="notification-badge hidden" id="crmNotifications">0</div>
            </div>
-           <div class="menu-item" onclick="showSection('coauthors')" data-section="coauthors" id="coauthorsMenuItem">
+           <div class="menu-item locked" onclick="showSection('coauthors')" data-section="coauthors" id="coauthorsMenuItem">
                <div class="menu-icon">👑</div>
                <span id="menuCoauthors">Co-Authors</span>
            </div>
-           <div class="menu-item" onclick="showSection('mailings')" data-section="mailings">
+           <div class="menu-item locked" onclick="showSection('mailings')" data-section="mailings">
                <div class="menu-icon">📢</div>
                <span id="menuMailings">Mass Mailings</span>
            </div>
-           <div class="menu-item" onclick="showSection('analytics')" data-section="analytics">
+           <div class="menu-item locked" onclick="showSection('analytics')" data-section="analytics">
                <div class="menu-icon">📈</div>
                <span id="menuAnalytics">Advanced Analytics</span>
            </div>
@@ -913,7 +911,7 @@
                <div class="menu-icon">💎</div>
                <span id="menuWallet">Web3 Wallet</span>
            </div>
-           <div class="menu-item" onclick="showSection('settings')" data-section="settings">
+           <div class="menu-item locked" onclick="showSection('settings')" data-section="settings">
                <div class="menu-icon">⚙️</div>
                <span id="menuSettings">Settings</span>
            </div>
@@ -973,1024 +971,695 @@
    <div class="main-content" id="mainContent">
        
        <!-- DASHBOARD SECTION -->
-     <div id="dashboard" class="content-section active">
-         <div class="section-header">
-             <h1 class="section-title" id="dashboardTitle">📊 Master Dashboard</h1>
-             <div style="color: #CCC; font-size: 14px;" id="lastUpdate">Last update: <span id="updateTime">--:--</span></div>
-         </div>
+      <div id="dashboard" class="content-section active">
+          <div class="section-header">
+              <h1 class="section-title" id="dashboardTitle">📊 Web3 Dashboard</h1>
+              <div style="color: #CCC; font-size: 14px;" id="lastUpdate">Last update: <span id="updateTime">--:--</span></div>
+          </div>
 
-         <!-- MAIN STATS -->
-         <div class="stats-grid">
-             <div class="stat-card">
-                 <div class="stat-icon">👥</div>
-                 <div class="stat-number" id="totalContacts">0</div>
-                 <div class="stat-label" id="totalContactsLabel">Total Contacts</div>
-             </div>
-             <div class="stat-card">
-                 <div class="stat-icon">🔗</div>
-                 <div class="stat-number" id="totalReferrals">9</div>
-                 <div class="stat-label" id="totalReferralsLabel">Active Referrals</div>
-             </div>
-             <div class="stat-card">
-                 <div class="stat-icon">💎</div>
-                 <div class="stat-number" id="totalEarnings">0.000</div>
-                 <div class="stat-label" id="totalEarningsLabel">Earnings (opBNB)</div>
-             </div>
-             <div class="stat-card">
-                 <div class="stat-icon">🎁</div>
-                 <div class="stat-number" id="totalCards">0</div>
-                 <div class="stat-label" id="totalCardsLabel">Cards Generated</div>
-             </div>
-         </div>
+          <!-- CONNECTION STATUS -->
+          <div class="referral-section" style="margin-bottom: 30px;">
+              <h3 style="color: #FFD700; margin-bottom: 15px;">🔐 Connection Status</h3>
+              <div id="connectionStatus" style="text-align: center; padding: 20px;">
+                  <div style="color: #FF4444; font-size: 18px; margin-bottom: 10px;">⚠️ Wallet Not Connected</div>
+                  <div style="color: #CCC;">Connect your SafePal wallet to access all features</div>
+                  <button style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 15px 30px; cursor: pointer; margin-top: 15px; font-weight: bold;" onclick="showSection('wallet')">
+                      🔐 Connect Wallet
+                  </button>
+              </div>
+          </div>
 
-         <!-- CONTACT CATEGORIES -->
-         <h3 style="color: #FFD700; margin-bottom: 20px;" id="contactCategoriesTitle">📱 Contact Categories</h3>
-         <div class="contact-categories">
-             <div class="category-card" onclick="filterContacts('telegram')">
-                 <div class="category-icon">📱</div>
-                 <div class="category-name">Telegram</div>
-                 <div class="category-count" id="telegramCount">0</div>
-             </div>
-             <div class="category-card" onclick="filterContacts('whatsapp')">
-                 <div class="category-icon">💬</div>
-                 <div class="category-name">WhatsApp</div>
-                 <div class="category-count" id="whatsappCount">0</div>
-             </div>
-             <div class="category-card" onclick="filterContacts('email')">
-                 <div class="category-icon">📧</div>
-                 <div class="category-name">Email</div>
-                 <div class="category-count" id="emailCount">0</div>
-             </div>
-             <div class="category-card" onclick="filterContacts('instagram')">
-                 <div class="category-icon">📷</div>
-                 <div class="category-name">Instagram</div>
-                 <div class="category-count" id="instagramCount">0</div>
-             </div>
-             <div class="category-card" onclick="filterContacts('viber')">
-                 <div class="category-icon">💜</div>
-                 <div class="category-name">Viber</div>
-                 <div class="category-count" id="viberCount">0</div>
-             </div>
-             <div class="category-card" onclick="filterContacts('facebook')">
-                 <div class="category-icon">👤</div>
-                 <div class="category-name">Facebook</div>
-                 <div class="category-count" id="facebookCount">0</div>
-             </div>
-             <div class="category-card" onclick="filterContacts('tiktok')">
-                 <div class="category-icon">🎵</div>
-                 <div class="category-name">TikTok</div>
-                 <div class="category-count" id="tiktokCount">0</div>
-             </div>
-             <div class="category-card" onclick="filterContacts('twitter')">
-                 <div class="category-icon">🐦</div>
-                 <div class="category-name">Twitter/X</div>
-                 <div class="category-count" id="twitterCount">0</div>
-             </div>
-         </div>
+          <!-- MAIN STATS -->
+          <div class="stats-grid">
+              <div class="stat-card">
+                  <div class="stat-icon">👥</div>
+                  <div class="stat-number" id="totalContacts">0</div>
+                  <div class="stat-label" id="totalContactsLabel">Total Contacts</div>
+              </div>
+              <div class="stat-card">
+                  <div class="stat-icon">🔗</div>
+                  <div class="stat-number" id="totalReferrals">0</div>
+                  <div class="stat-label" id="totalReferralsLabel">Active Referrals</div>
+              </div>
+              <div class="stat-card">
+                  <div class="stat-icon">💎</div>
+                  <div class="stat-number" id="totalEarnings">0.000</div>
+                  <div class="stat-label" id="totalEarningsLabel">Earnings (opBNB)</div>
+              </div>
+              <div class="stat-card">
+                  <div class="stat-icon">🎁</div>
+                  <div class="stat-number" id="totalCards">0</div>
+                  <div class="stat-label" id="totalCardsLabel">Cards Generated</div>
+              </div>
+          </div>
 
-         <!-- RECENT ACTIVITY -->
-         <div class="referral-section">
-             <h3 style="color: #FFD700; margin-bottom: 15px;" id="recentActivityTitle">📈 Recent Activity</h3>
-             <div id="recentActivityList">
-                 <div style="text-align: center; color: #CCC; padding: 20px;" id="noActivityText">
-                     No recent activity. Start collecting contacts!
-                 </div>
-             </div>
-         </div>
-     </div>
+          <!-- CONTACT CATEGORIES -->
+          <h3 style="color: #FFD700; margin-bottom: 20px;" id="contactCategoriesTitle">📱 Contact Categories</h3>
+          <div class="contact-categories">
+              <div class="category-card" onclick="filterContacts('telegram')">
+                  <div class="category-icon">📱</div>
+                  <div class="category-name">Telegram</div>
+                  <div class="category-count" id="telegramCount">0</div>
+              </div>
+              <div class="category-card" onclick="filterContacts('whatsapp')">
+                  <div class="category-icon">💬</div>
+                  <div class="category-name">WhatsApp</div>
+                  <div class="category-count" id="whatsappCount">0</div>
+              </div>
+              <div class="category-card" onclick="filterContacts('email')">
+                  <div class="category-icon">📧</div>
+                  <div class="category-name">Email</div>
+                  <div class="category-count" id="emailCount">0</div>
+              </div>
+              <div class="category-card" onclick="filterContacts('instagram')">
+                  <div class="category-icon">📷</div>
+                  <div class="category-name">Instagram</div>
+                  <div class="category-count" id="instagramCount">0</div>
+              </div>
+              <div class="category-card" onclick="filterContacts('viber')">
+                  <div class="category-icon">💜</div>
+                  <div class="category-name">Viber</div>
+                  <div class="category-count" id="viberCount">0</div>
+              </div>
+              <div class="category-card" onclick="filterContacts('facebook')">
+                  <div class="category-icon">👤</div>
+                  <div class="category-name">Facebook</div>
+                  <div class="category-count" id="facebookCount">0</div>
+              </div>
+              <div class="category-card" onclick="filterContacts('tiktok')">
+                  <div class="category-icon">🎵</div>
+                  <div class="category-name">TikTok</div>
+                  <div class="category-count" id="tiktokCount">0</div>
+              </div>
+              <div class="category-card" onclick="filterContacts('twitter')">
+                  <div class="category-icon">🐦</div>
+                  <div class="category-name">Twitter/X</div>
+                  <div class="category-count" id="twitterCount">0</div>
+              </div>
+          </div>
 
-     <!-- CONTACTS SECTION -->
-     <div id="contacts" class="content-section">
-         <div class="section-header">
-             <h1 class="section-title" id="contactsTitle">👥 Contact Management</h1>
-             <button style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 10px 20px; cursor: pointer;" onclick="exportContacts()">
-                 📥 <span id="exportBtn">Export All</span>
-             </button>
-         </div>
+          <!-- RECENT ACTIVITY -->
+          <div class="referral-section">
+              <h3 style="color: #FFD700; margin-bottom: 15px;" id="recentActivityTitle">📈 Recent Activity</h3>
+              <div id="recentActivityList">
+                  <div style="text-align: center; color: #CCC; padding: 20px;" id="noActivityText">
+                      Connect your wallet to see activity
+                  </div>
+              </div>
+          </div>
+      </div>
 
-         <!-- CONTACT FILTERS -->
-         <div style="margin-bottom: 20px;">
-             <select id="contactFilter" style="background: #333; color: #FFF; border: 1px solid #FFD700; border-radius: 8px; padding: 10px; margin-right: 15px;">
-                 <option value="all" id="filterAll">All Categories</option>
-                 <option value="telegram">📱 Telegram</option>
-                 <option value="whatsapp">💬 WhatsApp</option>
-                 <option value="email">📧 Email</option>
-                 <option value="instagram">📷 Instagram</option>
-                 <option value="viber">💜 Viber</option>
-                 <option value="facebook">👤 Facebook</option>
-                 <option value="tiktok">🎵 TikTok</option>
-                 <option value="twitter">🐦 Twitter/X</option>
-             </select>
-             <input type="text" id="contactSearch" placeholder="Search contacts..." style="background: #333; color: #FFF; border: 1px solid #FFD700; border-radius: 8px; padding: 10px; width: 250px;">
-         </div>
+      <!-- CONTACTS SECTION -->
+      <div id="contacts" class="content-section">
+          <div class="section-header">
+              <h1 class="section-title" id="contactsTitle">👥 Contact Management</h1>
+              <button style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 10px 20px; cursor: pointer;" onclick="exportContacts()">
+                  📥 <span id="exportBtn">Export All</span>
+              </button>
+          </div>
 
-         <!-- CONTACTS TABLE -->
-         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 20px;">
-             <div id="contactsTable">
-                 <div style="text-align: center; color: #CCC; padding: 40px;" id="noContactsText">
-                     No contacts found. Start collecting contacts through your generator!
-                 </div>
-             </div>
-         </div>
-     </div>
+          <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 20px;">
+              <div id="contactsTable">
+                  <div style="text-align: center; color: #CCC; padding: 40px;" id="noContactsText">
+                      Connect wallet to manage contacts
+                  </div>
+              </div>
+          </div>
+      </div>
 
-     <!-- REFERRALS SECTION -->
-     <div id="referrals" class="content-section">
-         <div class="section-header">
-             <h1 class="section-title" id="referralsTitle">🔗 Referral Network</h1>
-             <div style="color: #CCC;" id="networkStatus">Network Status: Active</div>
-         </div>
+      <!-- REFERRALS SECTION -->
+      <div id="referrals" class="content-section">
+          <div class="section-header">
+              <h1 class="section-title" id="referralsTitle">🔗 Referral Network</h1>
+              <div style="color: #CCC;" id="networkStatus">Network Status: Disconnected</div>
+          </div>
 
-         <!-- LEVEL BUTTONS -->
-         <div class="referral-section">
-             <h3 style="color: #FFD700; margin-bottom: 15px;" id="selectLevelTitle">Select Level to View</h3>
-             <div class="level-buttons" id="levelButtons">
-                 <button class="level-btn" onclick="showLevel(1)" data-level="1">1</button>
-                 <button class="level-btn" onclick="showLevel(2)" data-level="2">2</button>
-                 <button class="level-btn" onclick="showLevel(3)" data-level="3">3</button>
-                 <button class="level-btn" onclick="showLevel(4)" data-level="4">4</button>
-                 <button class="level-btn" onclick="showLevel(5)" data-level="5">5</button>
-                 <button class="level-btn" onclick="showLevel(6)" data-level="6">6</button>
-                 <button class="level-btn" onclick="showLevel(7)" data-level="7">7</button>
-                 <button class="level-btn" onclick="showLevel(8)" data-level="8">8</button>
-                 <button class="level-btn" onclick="showLevel(9)" data-level="9">9</button>
-             </div>
-             
-             <!-- LEVEL CONTENT -->
-             <div class="level-content" id="levelContent">
-                 <div class="level-header">
-                     <div class="level-title" id="currentLevelTitle">Select a level to view team members</div>
-                     <div class="level-count" id="currentLevelCount">0</div>
-                 </div>
-                 
-                 <div class="team-table" id="teamTable">
-                     <div style="text-align: center; color: #CCC; padding: 40px;">
-                         Click on a level button above to view team members
-                     </div>
-                 </div>
-             </div>
-         </div>
-     </div>
+          <div class="referral-section">
+              <div style="text-align: center; color: #CCC; padding: 40px;">
+                  Connect wallet to view referral network
+              </div>
+          </div>
+      </div>
 
-     <!-- CRM SECTION -->
-     <div id="crm" class="content-section">
-         <div class="section-header">
-             <h1 class="section-title" id="crmTitle">💬 CRM & Internal Chat</h1>
-             <button style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; padding: 10px 20px; cursor: pointer;" onclick="startNewChat()">
-                 ➕ <span id="newChatBtn">New Chat</span>
-             </button>
-         </div>
+      <!-- CRM SECTION -->
+      <div id="crm" class="content-section">
+          <div class="section-header">
+              <h1 class="section-title" id="crmTitle">💬 CRM & Internal Chat</h1>
+          </div>
 
-         <div class="referral-section">
-             <input type="text" style="width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid #FFD700; border-radius: 10px; padding: 12px; color: #FFF; margin-bottom: 20px;" id="userSearch" placeholder="Search user by ID or name...">
-             
-             <div id="userList">
-                 <div style="text-align: center; color: #CCC; padding: 30px;" id="noChatUsersText">
-                     No users available for chat. Users will appear here after registration.
-                 </div>
-             </div>
-         </div>
-     </div>
+          <div class="referral-section">
+              <div style="text-align: center; color: #CCC; padding: 40px;">
+                  Connect wallet to access CRM features
+              </div>
+          </div>
+      </div>
 
-     <!-- CO-AUTHORS SECTION -->
-     <div id="coauthors" class="content-section">
-         <div class="section-header">
-             <h1 class="section-title" id="coauthorsTitle">👑 Co-Authors Management</h1>
-             <button class="add-coauthor-btn" onclick="addCoauthor()">
-                 ➕ <span id="addCoauthorBtn">Add Co-Author</span>
-             </button>
-         </div>
+      <!-- CO-AUTHORS SECTION -->
+      <div id="coauthors" class="content-section">
+          <div class="section-header">
+              <h1 class="section-title" id="coauthorsTitle">👑 Co-Authors Management</h1>
+          </div>
 
-         <div class="coauthors-section">
-             <h3 style="color: #D2691E; margin-bottom: 15px;" id="coauthorsListTitle">Current Co-Authors</h3>
-             <div id="coauthorsList">
-                 <div style="text-align: center; color: #CCC; padding: 30px;" id="noCoauthorsText">
-                     No co-authors added yet. You can add up to 8+ co-authors.
-                 </div>
-             </div>
-         </div>
-     </div>
+          <div class="coauthors-section">
+              <div style="text-align: center; color: #CCC; padding: 40px;">
+                  Connect wallet to manage co-authors
+              </div>
+          </div>
+      </div>
 
-     <!-- MAILINGS SECTION -->
-     <div id="mailings" class="content-section">
-         <div class="development-placeholder">
-             <div class="development-icon">🚧</div>
-             <div class="development-title" id="mailingsDevTitle">Mass Mailings System</div>
-             <div class="development-text" id="mailingsDevText">
-                 Advanced mailing system is currently in development.<br>
-                 This section will include:<br><br>
-                 • Multi-platform messaging (Telegram, WhatsApp, Email)<br>
-                 • Template management<br>
-                 • Scheduling and automation<br>
-                 • Delivery analytics<br>
-                 • Anti-spam protection
-             </div>
-         </div>
-     </div>
+      <!-- MAILINGS SECTION -->
+      <div id="mailings" class="content-section">
+          <div class="development-placeholder">
+              <div class="development-icon">🚧</div>
+              <div class="development-title" id="mailingsDevTitle">Mass Mailings System</div>
+              <div class="development-text" id="mailingsDevText">
+                  Advanced mailing system is currently in development.<br>
+                  This section will include:<br><br>
+                  • Multi-platform messaging (Telegram, WhatsApp, Email)<br>
+                  • Template management<br>
+                  • Scheduling and automation<br>
+                  • Delivery analytics<br>
+                  • Anti-spam protection
+              </div>
+          </div>
+      </div>
 
-     <!-- ANALYTICS SECTION -->
-     <div id="analytics" class="content-section">
-         <div class="development-placeholder">
-             <div class="development-icon">📊</div>
-             <div class="development-title" id="analyticsDevTitle">Advanced Analytics</div>
-             <div class="development-text" id="analyticsDevText">
-                 Comprehensive analytics dashboard is in development.<br>
-                 Features coming soon:<br><br>
-                 • Real-time statistics<br>
-                 • Contact growth charts<br>
-                 • Conversion tracking<br>
-                 • Revenue analytics<br>
-                 • Performance reports
-             </div>
-         </div>
-     </div>
+      <!-- ANALYTICS SECTION -->
+      <div id="analytics" class="content-section">
+          <div class="development-placeholder">
+              <div class="development-icon">📊</div>
+              <div class="development-title" id="analyticsDevTitle">Advanced Analytics</div>
+              <div class="development-text" id="analyticsDevText">
+                  Comprehensive analytics dashboard is in development.<br>
+                  Features coming soon:<br><br>
+                  • Real-time statistics<br>
+                  • Contact growth charts<br>
+                  • Conversion tracking<br>
+                  • Revenue analytics<br>
+                  • Performance reports
+              </div>
+          </div>
+      </div>
 
-     <!-- WALLET SECTION -->
-     <div id="wallet" class="content-section">
-         <div class="section-header">
-             <h1 class="section-title" id="walletTitle">💎 Web3 Wallet</h1>
-             <div style="color: #CCC;" id="walletNetwork">Network: opBNB Mainnet</div>
-         </div>
+      <!-- WALLET SECTION -->
+      <div id="wallet" class="content-section">
+          <div class="section-header">
+              <h1 class="section-title" id="walletTitle">💎 Web3 Wallet</h1>
+              <div style="color: #CCC;" id="walletNetwork">Network: opBNB Mainnet</div>
+          </div>
 
-         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 30px;">
-             <h3 style="color: #FFD700; margin-bottom: 15px;" id="walletConnectionTitle">🔗 Blockchain Connection</h3>
-             
-             <button id="connectWalletBtn" style="background: linear-gradient(45deg, #1E88E5, #1565C0); color: white; border: none; border-radius: 12px; padding: 15px 30px; font-weight: bold; cursor: pointer; width: 100%; transition: all 0.3s ease; margin-bottom: 15px;" onclick="connectWallet()">
-                 <span id="connectWalletText">🔐 Connect SafePal Wallet</span>
-             </button>
-             
-             <div id="walletStatus" style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4CAF50; border-radius: 10px; padding: 15px; text-align: center; display: none;">
-                 <div style="font-weight: bold; margin-bottom: 10px;" id="walletConnectedText">✅ SafePal Connected</div>
-                 <div id="walletAddress" style="color: #4CAF50; margin-bottom: 5px;"></div>
-                 <div id="walletBalance" style="color: #CCC; font-size: 14px;"></div>
-             </div>
+          <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #FFD700; margin-bottom: 15px;" id="walletConnectionTitle">🔗 Blockchain Connection</h3>
+              
+              <button id="connectWalletBtn" style="background: linear-gradient(45deg, #1E88E5, #1565C0); color: white; border: none; border-radius: 12px; padding: 15px 30px; font-weight: bold; cursor: pointer; width: 100%; transition: all 0.3s ease; margin-bottom: 15px;" onclick="connectWallet()">
+                  <span id="connectWalletText">🔐 Connect SafePal Wallet</span>
+              </button>
+              
+              <div id="walletStatus" style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4CAF50; border-radius: 10px; padding: 15px; text-align: center; display: none;">
+                  <div style="font-weight: bold; margin-bottom: 10px;" id="walletConnectedText">✅ SafePal Connected</div>
+                  <div id="walletAddress" style="color: #4CAF50; margin-bottom: 5px;"></div>
+                  <div id="walletBalance" style="color: #CCC; font-size: 14px;"></div>
+              </div>
 
-             <!-- SMART CONTRACT INFO -->
-             <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 10px; padding: 20px; margin-top: 20px;">
-                 <h4 style="color: #FFD700; margin-bottom: 10px;" id="contractInfoTitle">📄 Smart Contract Info</h4>
-                 <div style="color: #CCC; font-size: 14px;">
-                     <div><strong id="contractStatusLabel">Status:</strong> <span style="color: #4CAF50;" id="contractStatus">Active</span></div>
-                     <div><strong id="contractNetworkLabel">Network:</strong> opBNB Mainnet</div>
-                     <div><strong id="contractAddressLabel">Address:</strong> <span style="word-break: break-all;" id="contractAddress">0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618</span></div>
-                 </div>
-             </div>
+              <!-- SMART CONTRACT INFO -->
+              <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 10px; padding: 20px; margin-top: 20px;">
+                  <h4 style="color: #FFD700; margin-bottom: 10px;" id="contractInfoTitle">📄 Smart Contract Info</h4>
+                  <div style="color: #CCC; font-size: 14px;">
+                      <div><strong id="contractStatusLabel">Status:</strong> <span style="color: #4CAF50;" id="contractStatus">Active</span></div>
+                      <div><strong id="contractNetworkLabel">Network:</strong> opBNB Mainnet</div>
+                      <div><strong id="contractAddressLabel">Address:</strong> <span style="word-break: break-all;" id="contractAddress">0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618</span></div>
+                  </div>
+              </div>
+          </div>
+      </div>
 
-             <!-- TRANSACTION HISTORY -->
-             <div style="margin-top: 30px;">
-                 <h3 style="color: #FFD700; margin-bottom: 15px;" id="transactionHistoryTitle">📋 Recent Transactions</h3>
-                 <div id="transactionList" style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 10px; padding: 20px;">
-                     <div style="text-align: center; color: #CCC; padding: 20px;" id="noTransactionsText">
-                         No transactions yet. Connect your wallet to see transaction history.
-                     </div>
-                 </div>
-             </div>
-         </div>
-     </div>
+      <!-- SETTINGS SECTION -->
+      <div id="settings" class="content-section">
+          <div class="section-header">
+              <h1 class="section-title" id="settingsTitle">⚙️ Settings</h1>
+          </div>
 
-     <!-- SETTINGS SECTION -->
-     <div id="settings" class="content-section">
-         <div class="section-header">
-             <h1 class="section-title" id="settingsTitle">⚙️ Settings</h1>
-         </div>
+          <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px;">
+              <h3 style="color: #FFD700; margin-bottom: 15px;" id="languageSettingsTitle">🌍 Language Settings</h3>
+              <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                  <button class="lang-btn active" onclick="switchLanguage('en')" style="padding: 10px 20px; border-radius: 8px;">
+                      🇺🇸 English
+                  </button>
+                  <button class="lang-btn" onclick="switchLanguage('ru')" style="padding: 10px 20px; border-radius: 8px;">
+                      🇷🇺 Русский
+                  </button>
+                  <button class="lang-btn" onclick="switchLanguage('ua')" style="padding: 10px 20px; border-radius: 8px;">
+                      🇺🇦 Українська
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
 
-         <!-- LANGUAGE SETTINGS -->
-         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 20px;">
-             <h3 style="color: #FFD700; margin-bottom: 15px;" id="languageSettingsTitle">🌍 Language Settings</h3>
-             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                 <button class="lang-btn active" onclick="switchLanguage('en')" style="padding: 10px 20px; border-radius: 8px;">
-                     🇺🇸 English
-                 </button>
-                 <button class="lang-btn" onclick="switchLanguage('ru')" style="padding: 10px 20px; border-radius: 8px;">
-                     🇷🇺 Русский
-                 </button>
-                 <button class="lang-btn" onclick="switchLanguage('ua')" style="padding: 10px 20px; border-radius: 8px;">
-                     🇺🇦 Українська
-                 </button>
-             </div>
-         </div>
+  <script>
+      // ==================== WEB3 CONFIGURATION ====================
+      const CONTRACT_CONFIG = {
+          address: '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618',
+          network: 'opBNB',
+          chainId: 204,
+          rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
+          abi: [
+              {
+                  "inputs": [{"name": "user", "type": "address"}],
+                  "name": "getUserLevel",
+                  "outputs": [{"name": "", "type": "uint256"}],
+                  "stateMutability": "view",
+                  "type": "function"
+              },
+              {
+                  "inputs": [{"name": "user", "type": "address"}],
+                  "name": "getUserReferrals", 
+                  "outputs": [{"name": "", "type": "address[]"}],
+                  "stateMutability": "view",
+                  "type": "function"
+              },
+              {
+                  "inputs": [{"name": "user", "type": "address"}],
+                  "name": "isUserActive",
+                  "outputs": [{"name": "", "type": "bool"}],
+                  "stateMutability": "view", 
+                  "type": "function"
+              },
+              {
+                  "inputs": [{"name": "user", "type": "address"}],
+                  "name": "getTotalEarnings",
+                  "outputs": [{"name": "", "type": "uint256"}],
+                  "stateMutability": "view",
+                  "type": "function"
+              },
+              {
+                  "inputs": [],
+                  "name": "register",
+                  "outputs": [],
+                  "stateMutability": "nonpayable",
+                  "type": "function"
+              }
+          ]
+      };
 
-         <!-- ADMIN SETTINGS -->
-         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 20px;">
-             <h3 style="color: #FFD700; margin-bottom: 15px;" id="adminSettingsTitle">👑 Master Admin Settings</h3>
-             
-             <div style="margin-bottom: 15px;">
-                 <label style="color: #CCC; margin-bottom: 5px; display: block;" id="autoBackupLabel">Auto Backup:</label>
-                 <input type="checkbox" id="autoBackup" checked style="margin-right: 10px;">
-                 <span style="color: #CCC;" id="autoBackupDesc">Automatically backup contact database</span>
-             </div>
-             
-             <div style="margin-bottom: 15px;">
-                 <label style="color: #CCC; margin-bottom: 5px; display: block;" id="notificationsLabel">System Notifications:</label>
-                 <input type="checkbox" id="systemNotifications" checked style="margin-right: 10px;">
-                 <span style="color: #CCC;" id="notificationsDesc">Receive notifications about new registrations</span>
-             </div>
-             
-             <div style="margin-bottom: 15px;">
-                 <label style="color: #CCC; margin-bottom: 5px; display: block;" id="darkModeLabel">Interface Mode:</label>
-                 <select style="background: #333; color: #FFF; border: 1px solid #FFD700; border-radius: 8px; padding: 8px;">
-                     <option value="dark" selected>🌙 Dark Mode</option>
-                     <option value="light">☀️ Light Mode</option>
-                 </select>
-             </div>
-         </div>
+      const SUPPORTED_WALLETS = {
+          safepal: {
+              name: 'SafePal',
+              icon: '🔐',
+              priority: 1,
+              detected: () => window.ethereum?.isSafePal || window.ethereum
+          },
+          metamask: {
+              name: 'MetaMask', 
+              icon: '🦊',
+              priority: 2,
+              detected: () => window.ethereum?.isMetaMask
+          },
+          trustwallet: {
+              name: 'Trust Wallet',
+              icon: '💙', 
+              priority: 3,
+              detected: () => window.ethereum?.isTrust
+          },
+          generic: {
+              name: 'Web3 Wallet',
+              icon: '💰',
+              priority: 4,
+              detected: () => window.ethereum
+          }
+      };
 
-         <!-- DATA MANAGEMENT -->
-         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 20px;">
-             <h3 style="color: #FFD700; margin-bottom: 15px;" id="dataManagementTitle">💾 Data Management</h3>
-             
-             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                 <button style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer;" onclick="exportAllData()">
-                     📥 <span id="exportAllBtn">Export All Data</span>
-                 </button>
-                 <button style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer;" onclick="importData()">
-                     📤 <span id="importDataBtn">Import Data</span>
-                 </button>
-                 <button style="background: linear-gradient(45deg, #FF9800, #F57C00); color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer;" onclick="clearCache()">
-                     🧹 <span id="clearCacheBtn">Clear Cache</span>
-                 </button>
-             </div>
-         </div>
+      // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+      let currentLanguage = 'en';
+      let currentSection = 'dashboard';
+      let web3;
+      let contract;
+      let userWalletAddress = null;
+      let isWeb3Connected = false;
+      let connectedWallet = null;
+      let currentUser = {
+          userId: 'NOT_CONNECTED',
+          level: 0,
+          isActive: false,
+          walletAddress: null
+      };
+      let walletConnected = false;
+      let contactsData = {};
+      let referralData = {};
+      let currentLevel = 0;
+      let currentCRMUser = null;
+      let notifications = {
+          referral: 0,
+          crm: 0
+      };
 
-         <!-- ABOUT SECTION -->
-         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px;">
-             <h3 style="color: #FFD700; margin-bottom: 15px;" id="aboutTitle">ℹ️ About CardGift</h3>
-             <div style="color: #CCC; line-height: 1.6;">
-                 <p style="margin-bottom: 10px;"><strong style="color: #FFD700;">Version:</strong> 1.0.0 Beta</p>
-                 <p style="margin-bottom: 10px;"><strong style="color: #FFD700;">Build:</strong> <span id="buildNumber">20241201</span></p>
-                 <p style="margin-bottom: 10px;"><strong style="color: #FFD700;">Network:</strong> opBNB Mainnet</p>
-                 <p style="margin-bottom: 15px;"><strong style="color: #FFD700;">License:</strong> Master Admin</p>
-                 <p id="aboutDescription">CardGift - Advanced Web3 contact collection and management system with referral network integration.</p>
-             </div>
-         </div>
-     </div>
- </div>
+      // ==================== WEB3 INTEGRATION ====================
+      async function initWeb3() {
+          const availableWallets = Object.entries(SUPPORTED_WALLETS)
+              .filter(([key, wallet]) => wallet.detected())
+              .sort((a, b) => a[1].priority - b[1].priority);
+          
+          if (availableWallets.length === 0) {
+              console.warn('No Web3 wallets detected');
+              showInstallWalletPrompt();
+              return;
+          }
+          
+          const [walletKey, walletInfo] = availableWallets[0];
+          connectedWallet = walletKey;
+          
+          try {
+              let provider = window.ethereum;
+              
+              web3 = new Web3(provider);
+              contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
+              
+              const savedAddress = localStorage.getItem('connectedWallet');
+              const savedWalletType = localStorage.getItem('connectedWalletType');
+              
+              if (savedAddress && savedWalletType === walletKey) {
+                  userWalletAddress = savedAddress;
+                  isWeb3Connected = true;
+                  await checkNetwork();
+                  await checkUserAccess();
+              }
+              
+              console.log(`🔐 Using ${walletInfo.name} provider`);
+              
+          } catch (error) {
+              console.error('Web3 initialization failed:', error);
+          }
+      }
 
- <script>
-     // ==================== WEB3 CONFIGURATION ====================
-     const CONTRACT_CONFIG = {
-         address: '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618',
-         network: 'opBNB',
-         chainId: 204, // opBNB Mainnet
-         rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
-         abi: [
-             {
-                 "inputs": [{"name": "user", "type": "address"}],
-                 "name": "getUserLevel",
-                 "outputs": [{"name": "", "type": "uint256"}],
-                 "stateMutability": "view",
-                 "type": "function"
-             },
-             {
-                 "inputs": [{"name": "user", "type": "address"}],
-                 "name": "getUserReferrals", 
-                 "outputs": [{"name": "", "type": "address[]"}],
-                 "stateMutability": "view",
-                 "type": "function"
-             },
-             {
-                 "inputs": [{"name": "user", "type": "address"}],
-                 "name": "isUserActive",
-                 "outputs": [{"name": "", "type": "bool"}],
-                 "stateMutability": "view", 
-                 "type": "function"
-             },
-             {
-                 "inputs": [{"name": "user", "type": "address"}],
-                 "name": "getTotalEarnings",
-                 "outputs": [{"name": "", "type": "uint256"}],
-                 "stateMutability": "view",
-                 "type": "function"
-             }
-         ]
-     };
+      async function checkNetwork() {
+          try {
+              const chainId = await web3.eth.getChainId();
+              if (Number(chainId) !== CONTRACT_CONFIG.chainId) {
+                  await switchToCorrectNetwork();
+              }
+          } catch (error) {
+              console.error('Network check failed:', error);
+          }
+      }
 
-     // Поддерживаемые кошельки (SafePal в приоритете)
-     const SUPPORTED_WALLETS = {
-         safepal: {
-             name: 'SafePal',
-             icon: '🔐',
-             priority: 1,
-             detected: () => window.ethereum?.isSafePal || window.ethereum
-         },
-         metamask: {
-             name: 'MetaMask', 
-             icon: '🦊',
-             priority: 2,
-             detected: () => window.ethereum?.isMetaMask
-         },
-         trustwallet: {
-             name: 'Trust Wallet',
-             icon: '💙', 
-             priority: 3,
-             detected: () => window.ethereum?.isTrust
-         },
-         generic: {
-             name: 'Web3 Wallet',
-             icon: '💰',
-             priority: 4,
-             detected: () => window.ethereum
-         }
-     };
+      async function switchToCorrectNetwork() {
+          try {
+              await window.ethereum.request({
+                  method: 'wallet_switchEthereumChain',
+                  params: [{ chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId) }]
+              });
+          } catch (error) {
+              if (error.code === 4902) {
+                  await addNetwork();
+              }
+          }
+      }
 
-     // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
-     let currentLanguage = 'en';
-     let currentSection = 'dashboard';
-     let web3;
-     let contract;
-     let userWalletAddress = null;
-     let isWeb3Connected = false;
-     let connectedWallet = null;
-     let currentUser = {
-         userId: 'NOT_CONNECTED',
-         level: 0,
-         isActive: false,
-         walletAddress: null
-     };
-     let walletConnected = false;
-     let contactsData = {};
-     let referralData = {};
-     let currentLevel = 0;
-     let currentCRMUser = null;
-     let notifications = {
-         referral: 0,
-         crm: 0
-     };
+      async function addNetwork() {
+          try {
+              await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{
+                      chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId),
+                      chainName: 'opBNB Mainnet',
+                      nativeCurrency: {
+                          name: 'BNB',
+                          symbol: 'BNB',
+                          decimals: 18
+                      },
+                      rpcUrls: [CONTRACT_CONFIG.rpcUrl],
+                      blockExplorerUrls: ['https://opbnbscan.com/']
+                  }]
+              });
+              
+              showNotification('opBNB network added successfully!', 'success');
+          } catch (error) {
+              console.error('Failed to add network:', error);
+              showNotification('Failed to add opBNB network', 'error');
+          }
+      }
 
-     // ==================== ПЕРЕВОДЫ ====================
-     const translations = {
-         en: {
-             pageTitle: "CardGift - Admin Dashboard",
-             dashboardTitle: "📊 Master Dashboard",
-             lastUpdate: "Last update:",
-             totalContactsLabel: "Total Contacts",
-             totalReferralsLabel: "Active Referrals", 
-             totalEarningsLabel: "Earnings (opBNB)",
-             totalCardsLabel: "Cards Generated",
-             contactCategoriesTitle: "📱 Contact Categories",
-             recentActivityTitle: "📈 Recent Activity",
-             noActivityText: "No recent activity. Start collecting contacts!",
-             contactsTitle: "👥 Contact Management",
-             exportBtn: "Export All",
-             filterAll: "All Categories",
-             noContactsText: "No contacts found. Start collecting contacts through your generator!",
-             referralsTitle: "🔗 Referral Network",
-             networkStatus: "Network Status: Active",
-             selectLevelTitle: "Select Level to View",
-             crmTitle: "💬 CRM & Internal Chat",
-             newChatBtn: "New Chat",
-             noChatUsersText: "No users available for chat. Users will appear here after registration.",
-             coauthorsTitle: "👑 Co-Authors Management",
-             addCoauthorBtn: "Add Co-Author",
-             coauthorsListTitle: "Current Co-Authors",
-             noCoauthorsText: "No co-authors added yet. You can add up to 8+ co-authors.",
-             mailingsDevTitle: "Mass Mailings System",
-             mailingsDevText: "Advanced mailing system is currently in development.<br>This section will include:<br><br>• Multi-platform messaging (Telegram, WhatsApp, Email)<br>• Template management<br>• Scheduling and automation<br>• Delivery analytics<br>• Anti-spam protection",
-             analyticsDevTitle: "Advanced Analytics",
-             analyticsDevText: "Comprehensive analytics dashboard is in development.<br>Features coming soon:<br><br>• Real-time statistics<br>• Contact growth charts<br>• Conversion tracking<br>• Revenue analytics<br>• Performance reports",
-             walletTitle: "💎 Web3 Wallet",
-             walletNetwork: "Network: opBNB Mainnet",
-             walletConnectionTitle: "🔗 Blockchain Connection",
-             connectWalletText: "🔐 Connect SafePal Wallet",
-             walletConnectedText: "✅ SafePal Connected",
-             contractInfoTitle: "📄 Smart Contract Info",
-             contractStatusLabel: "Status:",
-             contractStatus: "Active",
-             contractNetworkLabel: "Network:",
-             contractAddressLabel: "Address:",
-             transactionHistoryTitle: "📋 Recent Transactions",
-             noTransactionsText: "No transactions yet. Connect your wallet to see transaction history.",
-             settingsTitle: "⚙️ Settings",
-             languageSettingsTitle: "🌍 Language Settings",
-             adminSettingsTitle: "👑 Master Admin Settings",
-             autoBackupLabel: "Auto Backup:",
-             autoBackupDesc: "Automatically backup contact database",
-             notificationsLabel: "System Notifications:",
-             notificationsDesc: "Receive notifications about new registrations",
-             darkModeLabel: "Interface Mode:",
-             dataManagementTitle: "💾 Data Management",
-             exportAllBtn: "Export All Data",
-             importDataBtn: "Import Data",
-             clearCacheBtn: "Clear Cache",
-             aboutTitle: "ℹ️ About CardGift",
-             aboutDescription: "CardGift - Advanced Web3 contact collection and management system with referral network integration.",
-             menuDashboard: "Dashboard",
-             menuContacts: "Contacts",
-             menuReferrals: "Referral System",
-             menuCRM: "CRM & Chat",
-             menuCoauthors: "Co-Authors",
-             menuMailings: "Mass Mailings",
-             menuAnalytics: "Advanced Analytics",
-             menuWallet: "Web3 Wallet",
-             menuSettings: "Settings"
-         },
-         ru: {
-             pageTitle: "CardGift - Админ панель",
-             dashboardTitle: "📊 Главная панель",
-             lastUpdate: "Последнее обновление:",
-             totalContactsLabel: "Всего контактов",
-             totalReferralsLabel: "Активных рефералов",
-             totalEarningsLabel: "Доходы (opBNB)",
-             totalCardsLabel: "Создано открыток",
-             contactCategoriesTitle: "📱 Категории контактов",
-             recentActivityTitle: "📈 Последняя активность",
-             noActivityText: "Нет недавней активности. Начните собирать контакты!",
-             contactsTitle: "👥 Управление контактами",
-             exportBtn: "Экспорт всех",
-             filterAll: "Все категории",
-             noContactsText: "Контакты не найдены. Начните собирать контакты через ваш генератор!",
-             referralsTitle: "🔗 Реферальная сеть",
-             networkStatus: "Статус сети: Активна",
-             selectLevelTitle: "Выберите уровень для просмотра",
-             crmTitle: "💬 CRM и внутренний чат",
-             newChatBtn: "Новый чат",
-             noChatUsersText: "Нет пользователей для чата. Пользователи появятся здесь после регистрации.",
-             coauthorsTitle: "👑 Управление соавторами",
-             addCoauthorBtn: "Добавить соавтора",
-             coauthorsListTitle: "Текущие соавторы",
-             noCoauthorsText: "Соавторы еще не добавлены. Вы можете добавить до 8+ соавторов.",
-             mailingsDevTitle: "Система массовых рассылок",
-             mailingsDevText: "Расширенная система рассылок находится в разработке.<br>Этот раздел будет включать:<br><br>• Многоплатформенные сообщения (Telegram, WhatsApp, Email)<br>• Управление шаблонами<br>• Планирование и автоматизация<br>• Аналитика доставки<br>• Защита от спама",
-             analyticsDevTitle: "Расширенная аналитика",
-             analyticsDevText: "Комплексная панель аналитики находится в разработке.<br>Функции скоро:<br><br>• Статистика в реальном времени<br>• Графики роста контактов<br>• Отслеживание конверсий<br>• Аналитика доходов<br>• Отчеты о производительности",
-             walletTitle: "💎 Web3 кошелек",
-             walletNetwork: "Сеть: opBNB Mainnet",
-             walletConnectionTitle: "🔗 Подключение к блокчейну",
-             connectWalletText: "🔐 Подключить SafePal кошелек",
-             walletConnectedText: "✅ SafePal подключен",
-             contractInfoTitle: "📄 Информация о смарт-контракте",
-             contractStatusLabel: "Статус:",
-             contractStatus: "Активен",
-             contractNetworkLabel: "Сеть:",
-             contractAddressLabel: "Адрес:",
-             transactionHistoryTitle: "📋 Последние транзакции",
-             noTransactionsText: "Пока нет транзакций. Подключите кошелек для просмотра истории транзакций.",
-             settingsTitle: "⚙️ Настройки",
-             languageSettingsTitle: "🌍 Языковые настройки",
-             adminSettingsTitle: "👑 Настройки главного админа",
-             autoBackupLabel: "Автоматическое резервное копирование:",
-             autoBackupDesc: "Автоматически создавать резервные копии базы контактов",
-             notificationsLabel: "Системные уведомления:",
-             notificationsDesc: "Получать уведомления о новых регистрациях",
-             darkModeLabel: "Режим интерфейса:",
-             dataManagementTitle: "💾 Управление данными",
-             exportAllBtn: "Экспорт всех данных",
-             importDataBtn: "Импорт данных",
-             clearCacheBtn: "Очистить кэш",
-             aboutTitle: "ℹ️ О CardGift",
-             aboutDescription: "CardGift - Продвинутая Web3 система сбора и управления контактами с интеграцией реферальной сети.",
-             menuDashboard: "Дашборд",
-             menuContacts: "Контакты",
-             menuReferrals: "Реферальная система",
-             menuCRM: "CRM и чат",
-             menuCoauthors: "Соавторы",
-             menuMailings: "Массовые рассылки",
-             menuAnalytics: "Расширенная аналитика",
-             menuWallet: "Web3 кошелек",
-             menuSettings: "Настройки"
-         },
-         ua: {
-             pageTitle: "CardGift - Адмін панель",
-             dashboardTitle: "📊 Головна панель",
-             lastUpdate: "Останнє оновлення:",
-             totalContactsLabel: "Всього контактів",
-             totalReferralsLabel: "Активних рефералів",
-             totalEarningsLabel: "Доходи (opBNB)",
-             totalCardsLabel: "Створено листівок",
-             contactCategoriesTitle: "📱 Категорії контактів",
-             recentActivityTitle: "📈 Остання активність",
-             noActivityText: "Немає недавньої активності. Почніть збирати контакти!",
-             contactsTitle: "👥 Управління контактами",
-             exportBtn: "Експорт всіх",
-             filterAll: "Всі категорії",
-             noContactsText: "Контакти не знайдені. Почніть збирати контакти через ваш генератор!",
-             referralsTitle: "🔗 Реферальна мережа",
-             networkStatus: "Статус мережі: Активна",
-             selectLevelTitle: "Виберіть рівень для перегляду",
-             crmTitle: "💬 CRM та внутрішній чат",
-             newChatBtn: "Новий чат",
-             noChatUsersText: "Немає користувачів для чату. Користувачі з'являться тут після реєстрації.",
-             coauthorsTitle: "👑 Управління співавторами",
-             addCoauthorBtn: "Додати співавтора",
-             coauthorsListTitle: "Поточні співавтори",
-             noCoauthorsText: "Співавтори ще не додані. Ви можете додати до 8+ співавторів.",
-             mailingsDevTitle: "Система масових розсилок",
-             mailingsDevText: "Розширена система розсилок знаходиться в розробці.<br>Цей розділ включатиме:<br><br>• Багатоплатформені повідомлення (Telegram, WhatsApp, Email)<br>• Управління шаблонами<br>• Планування та автоматизація<br>• Аналітика доставки<br>• Захист від спаму",
-             analyticsDevTitle: "Розширена аналітика",
-             analyticsDevText: "Комплексна панель аналітики знаходиться в розробці.<br>Функції незабаром:<br><br>• Статистика в реальному часі<br>• Графіки зростання контактів<br>• Відстеження конверсій<br>• Аналітика доходів<br>• Звіти про продуктивність",
-             walletTitle: "💎 Web3 гаманець",
-             walletNetwork: "Мережа: opBNB Mainnet",
-             walletConnectionTitle: "🔗 Підключення до блокчейну",
-             connectWalletText: "🔐 Підключити SafePal гаманець",
-             walletConnectedText: "✅ SafePal підключено",
-             contractInfoTitle: "📄 Інформація про смарт-контракт",
-             contractStatusLabel: "Статус:",
-             contractStatus: "Активний",
-             contractNetworkLabel: "Мережа:",
-             contractAddressLabel: "Адреса:",
-             transactionHistoryTitle: "📋 Останні транзакції",
-             noTransactionsText: "Поки немає транзакцій. Підключіть гаманець для перегляду історії транзакцій.",
-             settingsTitle: "⚙️ Налаштування",
-             languageSettingsTitle: "🌍 Мовні налаштування",
-             adminSettingsTitle: "👑 Налаштування головного адміна",
-             autoBackupLabel: "Автоматичне резервне копіювання:",
-             autoBackupDesc: "Автоматично створювати резервні копії бази контактів",
-             notificationsLabel: "Системні сповіщення:",
-             notificationsDesc: "Отримувати сповіщення про нові реєстрації",
-             darkModeLabel: "Режим інтерфейсу:",
-             dataManagementTitle: "💾 Управління даними",
-             exportAllBtn: "Експорт всіх даних",
-             importDataBtn: "Імпорт даних",
-             clearCacheBtn: "Очистити кеш",
-             aboutTitle: "ℹ️ Про CardGift",
-             aboutDescription: "CardGift - Прогресивна Web3 система збору та управління контактами з інтеграцією реферальної мережі.",
-             menuDashboard: "Дашборд",
-             menuContacts: "Контакти",
-             menuReferrals: "Реферальна система",
-             menuCRM: "CRM та чат",
-             menuCoauthors: "Співавтори",
-             menuMailings: "Масові розсилки",
-             menuAnalytics: "Розширена аналітика",
-             menuWallet: "Web3 гаманець",
-             menuSettings: "Налаштування"
-         }
-     };
+      async function checkUserAccess() {
+          if (!contract || !userWalletAddress) return;
+          
+          try {
+              console.log('🔍 Checking user access for:', userWalletAddress);
+              
+              const userLevel = await contract.methods.getUserLevel(userWalletAddress).call();
+              const isActive = await contract.methods.isUserActive(userWalletAddress).call();
+              
+              currentUser = {
+                  userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+                  level: parseInt(userLevel),
+                  isActive: isActive,
+                  walletAddress: userWalletAddress
+              };
+              
+              if (parseInt(userLevel) === 0) {
+                  showRegistrationPrompt();
+              }
+              
+              updateUserInterface();
+              
+          } catch (error) {
+              console.error('Access check failed:', error);
+              currentUser = {
+                  userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+                  level: 1,
+                  isActive: true,
+                  walletAddress: userWalletAddress
+              };
+              updateUserInterface();
+          }
+      }
 
-     // ==================== WEB3 INTEGRATION ====================
-     async function initWeb3() {
-         const availableWallets = Object.entries(SUPPORTED_WALLETS)
-             .filter(([key, wallet]) => wallet.detected())
-             .sort((a, b) => a[1].priority - b[1].priority);
-         
-         if (availableWallets.length === 0) {
-             console.warn('No Web3 wallets detected');
-             showInstallWalletPrompt();
-             return;
-         }
-         
-         const [walletKey, walletInfo] = availableWallets[0];
-         connectedWallet = walletKey;
-         
-         try {
-             let provider = window.ethereum;
-             
-             web3 = new Web3(provider);
-             contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
-             
-             // Проверяем сохраненное подключение
-             const savedAddress = localStorage.getItem('connectedWallet');
-             const savedWalletType = localStorage.getItem('connectedWalletType');
-             
-             if (savedAddress && savedWalletType === walletKey) {
-                 userWalletAddress = savedAddress;
-                 isWeb3Connected = true;
-                 await checkNetwork();
-                 await checkUserAccess();
-             }
-             
-             console.log(`🔐 Using ${walletInfo.name} provider`);
-             
-         } catch (error) {
-             console.error('Web3 initialization failed:', error);
-         }
-     }
+      function showRegistrationPrompt() {
+          if (confirm('Вы не зарегистрированы в системе. Хотите зарегистрироваться?')) {
+              registerUser();
+          }
+      }
 
-     async function checkNetwork() {
-         try {
-             const chainId = await web3.eth.getChainId();
-             if (Number(chainId) !== CONTRACT_CONFIG.chainId) {
-                 await switchToCorrectNetwork();
-             }
-         } catch (error) {
-             console.error('Network check failed:', error);
-         }
-     }
+      async function registerUser() {
+          try {
+              await contract.methods.register().send({ from: userWalletAddress });
+              showNotification('Registration successful!', 'success');
+              await checkUserAccess();
+          } catch (error) {
+              showNotification('Registration failed', 'error');
+          }
+      }
 
-     async function switchToCorrectNetwork() {
-         try {
-             await window.ethereum.request({
-                 method: 'wallet_switchEthereumChain',
-                 params: [{ chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId) }]
-             });
-         } catch (error) {
-             if (error.code === 4902) {
-                 await addNetwork();
-             }
-         }
-     }
+      function updateUserInterface() {
+          const levelNames = {
+              0: 'NOT REGISTERED',
+              1: 'BASIC USER', 
+              2: 'MINI ADMIN',
+              3: 'CO-AUTHOR',
+              4: 'MASTER ADMIN'
+          };
+          
+          document.getElementById('userLevel').textContent = levelNames[currentUser.level] || 'UNKNOWN';
+          document.getElementById('currentUserId').textContent = currentUser.userId || 'Not Connected';
+          
+          if (userWalletAddress) {
+              const shortAddress = `${userWalletAddress.substring(0, 6)}...${userWalletAddress.substring(userWalletAddress.length - 4)}`;
+              document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
+              
+              // Скрываем статус подключения
+              const connectionStatus = document.getElementById('connectionStatus');
+              if (connectionStatus) {
+                  connectionStatus.style.display = 'none';
+              }
+              
+              // Обновляем статус сети
+              document.getElementById('networkStatus').textContent = 'Network Status: Connected';
+          }
+          
+          updateMenuAccess();
+      }
 
-     async function addNetwork() {
-         try {
-             const provider = window.ethereum;
-             
-             await provider.request({
-                 method: 'wallet_addEthereumChain',
-                 params: [{
-                     chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId),
-                     chainName: 'opBNB Mainnet',
-                     nativeCurrency: {
-                         name: 'BNB',
-                         symbol: 'BNB',
-                         decimals: 18
-                     },
-                     rpcUrls: [CONTRACT_CONFIG.rpcUrl],
-                     blockExplorerUrls: ['https://opbnbscan.com/']
-                 }]
-             });
-             
-             showNotification('opBNB network added successfully!', 'success');
-         } catch (error) {
-             console.error('Failed to add network:', error);
-             showNotification('Failed to add opBNB network', 'error');
-         }
-     }
+      function updateMenuAccess() {
+          const menuItems = document.querySelectorAll('.menu-item');
+          
+          menuItems.forEach(item => {
+              const section = item.getAttribute('data-section');
+              
+              if (currentUser.level === 0) {
+                  if (section !== 'wallet' && section !== 'dashboard') {
+                      item.classList.add('locked');
+                  }
+              } else if (currentUser.level >= 1) {
+                  if (['dashboard', 'contacts', 'wallet'].includes(section)) {
+                      item.classList.remove('locked');
+                  }
+              }
+              
+              if (currentUser.level >= 2) {
+                  if (['referrals', 'crm'].includes(section)) {
+                      item.classList.remove('locked');
+                  }
+              }
+              
+              if (currentUser.level >= 3) {
+                  if (['mailings', 'analytics'].includes(section)) {
+                      item.classList.remove('locked');
+                  }
+              }
+              
+              if (currentUser.level >= 4) {
+                  item.classList.remove('locked');
+              }
+          });
+      }
 
-     async function checkUserAccess() {
-    if (!contract || !userWalletAddress) return;
-    
-    try {
-        console.log('🔍 Checking user access for:', userWalletAddress);
-        
-        // РЕАЛЬНАЯ ПРОВЕРКА ЧЕРЕЗ КОНТРАКТ
-        const userLevel = await contract.methods.getUserLevel(userWalletAddress).call();
-        const isActive = await contract.methods.isUserActive(userWalletAddress).call();
-        
-        currentUser = {
-            userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
-            level: parseInt(userLevel),
-            isActive: isActive,
-            walletAddress: userWalletAddress
-        };
-        
-        // Если пользователь не зарегистрирован в контракте
-        if (parseInt(userLevel) === 0) {
-            showRegistrationPrompt();
-        }
-        
-        updateUserInterface();
-        
-    } catch (error) {
-        console.error('Access check failed:', error);
-        // При ошибке даем базовый доступ
-        currentUser = {
-            userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
-            level: 1, // Базовый пользователь
-            isActive: true,
-            walletAddress: userWalletAddress
-        };
-        updateUserInterface();
-    }
-}
+      function showInstallWalletPrompt() {
+          const connectBtn = document.getElementById('connectWalletBtn');
+          if (connectBtn) {
+              connectBtn.innerHTML = '📱 Install SafePal or Compatible Wallet';
+              connectBtn.onclick = () => {
+                  if (confirm('Install SafePal for best opBNB experience?\n\nClick OK for SafePal or Cancel for other wallets.')) {
+                      window.open('https://safepal.io/download', '_blank');
+                  } else {
+                      window.open('https://metamask.io/download/', '_blank');
+                  }
+              };
+          }
+      }
 
-function showRegistrationPrompt() {
-    if (confirm('Вы не зарегистрированы в системе. Хотите зарегистрироваться?')) {
-        registerUser();
-    }
-}
+      async function connectWallet() {
+          if (!web3) {
+              await initWeb3();
+          }
+          
+          try {
+              const connectBtn = document.getElementById('connectWalletBtn');
+              const walletInfo = SUPPORTED_WALLETS[connectedWallet];
+              
+              connectBtn.textContent = `🔄 Connecting to ${walletInfo.name}...`;
+              connectBtn.disabled = true;
+              
+              const accounts = await window.ethereum.request({
+                  method: 'eth_requestAccounts'
+              });
+              
+              if (accounts && accounts.length > 0) {
+                  userWalletAddress = accounts[0];
+                  localStorage.setItem('connectedWallet', userWalletAddress);
+                  localStorage.setItem('connectedWalletType', connectedWallet);
+                  isWeb3Connected = true;
+                  
+                  await checkNetwork();
+                  await checkUserAccess();
+                  
+                  showWalletConnected(userWalletAddress);
+                  showNotification(`${walletInfo.icon} ${walletInfo.name} connected successfully!`, 'success');
+              }
+          } catch (error) {
+              console.error('Wallet connection failed:', error);
+              showNotification('Wallet connection failed', 'error');
+              
+              const connectBtn = document.getElementById('connectWalletBtn');
+              connectBtn.textContent = `🔐 Connect ${SUPPORTED_WALLETS[connectedWallet].name}`;
+              connectBtn.disabled = false;
+          }
+      }
 
-async function registerUser() {
-    try {
-        // TODO: Вызов функции register() в смарт-контракте
-        await contract.methods.register().send({ from: userWalletAddress });
-        showNotification('Registration successful!', 'success');
-        await checkUserAccess();
-    } catch (error) {
-        showNotification('Registration failed', 'error');
-    }
-}
+      function showWalletConnected(address) {
+          const connectBtn = document.getElementById('connectWalletBtn');
+          const walletStatus = document.getElementById('walletStatus');
+          const walletInfo = SUPPORTED_WALLETS[connectedWallet];
+          
+          if (connectBtn) connectBtn.style.display = 'none';
+          if (walletStatus) walletStatus.style.display = 'block';
+          
+          document.getElementById('walletAddress').textContent = 
+              `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+          
+          const walletConnectedText = document.getElementById('walletConnectedText');
+          if (walletConnectedText) {
+              walletConnectedText.textContent = `✅ ${walletInfo.icon} ${walletInfo.name} Connected`;
+          }
+          
+          walletConnected = true;
+      }
 
-     async function loadWeb3Data() {
-         if (!contract || !userWalletAddress) return;
-         
-         try {
-             console.log('📊 Loading Web3 data for:', userWalletAddress);
-             
-             // TODO: Раскомментировать когда контракт будет готов
-             // const referrals = await contract.methods.getUserReferrals(userWalletAddress).call();
-             // const earnings = await contract.methods.getTotalEarnings(userWalletAddress).call();
-             
-             // updateDashboardWithWeb3Data(referrals, [], earnings);
-             
-         } catch (error) {
-             console.error('Failed to load Web3 data:', error);
-             showNotification('Failed to load blockchain data', 'error');
-         }
-     }
+      // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+      window.onload = async function() {
+          console.log('🚀 CardGift Web3 Dashboard initializing...');
+          
+          await initWeb3();
+          
+          if (!referralData || !referralData.levels) {
+              referralData = {
+                  levels: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
+              };
+          }
+          
+          if (isWeb3Connected && userWalletAddress) {
+              await checkUserAccess();
+          } else {
+              currentUser = {
+                  userId: 'NOT_CONNECTED',
+                  level: 0,
+                  isActive: false,
+                  walletAddress: null
+              };
+          }
 
-     function updateUserInterface() {
-         const levelNames = {
-             0: 'NOT REGISTERED',
-             1: 'BASIC USER', 
-             2: 'MINI ADMIN',
-             3: 'CO-AUTHOR',
-             4: 'MASTER ADMIN'
-         };
-         
-         document.getElementById('userLevel').textContent = levelNames[currentUser.level] || 'UNKNOWN';
-         document.getElementById('currentUserId').textContent = currentUser.userId || 'Not Connected';
-         
-         if (userWalletAddress) {
-             const shortAddress = `${userWalletAddress.substring(0, 6)}...${userWalletAddress.substring(userWalletAddress.length - 4)}`;
-             document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
-         }
-         
-         updateMenuAccess();
-         updateLevelAccess();
-     }
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          
+          updateUserInterface();
+          loadDashboardData();
+          updateTime();
+          
+          console.log('✅ Web3 Dashboard initialized');
+      };
 
-     function updateMenuAccess() {
-         const menuItems = document.querySelectorAll('.menu-item');
-         
-         menuItems.forEach(item => {
-             const section = item.getAttribute('data-section');
-             
-             if (currentUser.level === 0) {
-                 // Не зарегистрирован - все заблокировано кроме кошелька
-                 if (section !== 'wallet') {
-                     item.classList.add('locked');
-                 }
-             } else if (currentUser.level >= 1) {
-                 // Базовый доступ
-                 if (['dashboard', 'contacts', 'wallet'].includes(section)) {
-                     item.classList.remove('locked');
-                 }
-             }
-             
-             if (currentUser.level >= 2) {
-                 // Мини админ
-                 if (['referrals', 'crm'].includes(section)) {
-                     item.classList.remove('locked');
-                 }
-             }
-             
-             if (currentUser.level >= 3) {
-                 // Соавтор
-                 if (['mailings', 'analytics'].includes(section)) {
-                     item.classList.remove('locked');
-                 }
-             }
-             
-             if (currentUser.level >= 4) {
-                 // Мастер админ - все разблокировано
-                 item.classList.remove('locked');
-             }
-         });
-     }
+      // ==================== НАВИГАЦИЯ ====================
+      function showSection(sectionId) {
+          document.querySelectorAll('.content-section').forEach(section => {
+              section.classList.remove('active');
+          });
+          
+          document.getElementById(sectionId).classList.add('active');
+          
+          document.querySelectorAll('.menu-item').forEach(item => {
+              item.classList.remove('active');
+          });
+          
+          document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+          
+          currentSection = sectionId;
+          
+          if (window.innerWidth <= 768) {
+              toggleSidebar();
+          }
+      }
 
-     function updateLevelAccess() {
-         document.querySelectorAll('.level-btn').forEach(btn => {
-             const level = parseInt(btn.getAttribute('data-level'));
-             if (currentUser.level >= 2 || level <= currentUser.level) {
-                 btn.classList.remove('locked');
-             } else {
-                 btn.classList.add('locked');
-             }
-         });
-     }
+      function toggleSidebar() {
+          const sidebar = document.getElementById('sidebar');
+          const mainContent = document.getElementById('mainContent');
+          
+          sidebar.classList.toggle('mobile-visible');
+          sidebar.classList.toggle('mobile-hidden');
+          
+          if (sidebar.classList.contains('mobile-visible')) {
+              mainContent.classList.add('full-width');
+          } else {
+              mainContent.classList.remove('full-width');
+          }
+      }
 
-     function showInstallWalletPrompt() {
-         const connectBtn = document.getElementById('connectWalletBtn');
-         if (connectBtn) {
-             connectBtn.innerHTML = '📱 Install SafePal or Compatible Wallet';
-             connectBtn.onclick = () => {
-                 if (confirm('Install SafePal for best opBNB experience?\n\nClick OK for SafePal or Cancel for other wallets.')) {
-                     window.open('https://safepal.io/download', '_blank');
-                 } else {
-                     window.open('https://metamask.io/download/', '_blank');
-                 }
-             };
-         }
-     }
+      // ==================== ЯЗЫКОВЫЕ ФУНКЦИИ ====================
+      function switchLanguage(lang) {
+          currentLanguage = lang;
+          localStorage.setItem('adminLanguage', lang);
+          
+          document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+          document.getElementById(`lang${lang.charAt(0).toUpperCase() + lang.slice(1)}`).classList.add('active');
+      }
 
-     function showConnectWalletPrompt() {
-         const connectBtn = document.getElementById('connectWalletBtn');
-         const walletStatus = document.getElementById('walletStatus');
-         
-         if (connectBtn) {
-             connectBtn.style.display = 'block';
-             connectBtn.textContent = '🔐 Connect Wallet to Access Dashboard';
-             connectBtn.onclick = connectWallet;
-         }
-         if (walletStatus) {
-             walletStatus.style.display = 'none';
-         }
-     }
-
-     // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-     window.onload = async function() {
-         console.log('🚀 CardGift Web3 Dashboard initializing...');
-         
-         // Инициализация Web3
-         await initWeb3();
-         
-         // ИСПРАВЛЕНИЕ - инициализируем данные
-         if (!referralData || !referralData.levels) {
-             referralData = {
-                 levels: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
-             };
-         }
-         
-         // Проверяем подключение кошелька
-         if (isWeb3Connected && userWalletAddress) {
-             await checkUserAccess();
-             await loadWeb3Data();
-         } else {
-             // Если кошелек не подключен - показываем заблокированный режим
-             currentUser = {
-                 userId: 'NOT_CONNECTED',
-                 level: 0,
-                 isActive: false,
-                 walletAddress: null
-             };
-             showConnectWalletPrompt();
-         }
-
-         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-         
-         updateUserInterface();
-         loadDashboardData();
-         loadReferralData();
-         updateTime();
-         updateNotifications();
-         
-         console.log('✅ Web3 Dashboard initialized');
-     };
-
-     // ==================== НАВИГАЦИЯ ====================
-     function showSection(sectionId) {
-         document.querySelectorAll('.content-section').forEach(section => {
-             section.classList.remove('active');
-         });
-         
-         document.getElementById(sectionId).classList.add('active');
-         
-         document.querySelectorAll('.menu-item').forEach(item => {
-             item.classList.remove('active');
-         });
-         
-         document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-         
-         currentSection = sectionId;
-         loadSectionData(sectionId);
-         
-         if (window.innerWidth <= 768) {
-             toggleSidebar();
-         }
-     }
-
-     function toggleSidebar() {
-         const sidebar = document.getElementById('sidebar');
-         const mainContent = document.getElementById('mainContent');
-         
-         sidebar.classList.toggle('mobile-visible');
-         sidebar.classList.toggle('mobile-hidden');
-         
-         if (sidebar.classList.contains('mobile-visible')) {
-             mainContent.classList.add('full-width');
-         } else {
-             mainContent.classList.remove('full-width');
-         }
-     }
-
-     // ==================== ЯЗЫКОВЫЕ ФУНКЦИИ ====================
-     function switchLanguage(lang) {
-         currentLanguage = lang;
-         localStorage.setItem('adminLanguage', lang);
-         
-         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-         document.getElementById(`lang${lang.charAt(0).toUpperCase() + lang.slice(1)}`).classList.add('active');
-         
-         updateAllTexts();
-     }
-
-     function updateAllTexts() {
-         const t = translations[currentLanguage] || translations.en;
-         
-         document.getElementById('pageTitle').textContent = t.pageTitle;
-         document.title = t.pageTitle;
-         
-         Object.keys(t).forEach(key => {
-             const element = document.getElementById(key);
-             if (element) {
-                 if (element.tagName === 'INPUT') {
-                     element.placeholder = t[key];
-                 } else {
-                     element.textContent = t[key];
-                 }
-             }
-         });
-         
-         const mailingsDevText = document.getElementById('mailingsDevText');
-         const analyticsDevText = document.getElementById('analyticsDevText');
-         
-         if (mailingsDevText) {
-             mailingsDevText.innerHTML = t.mailingsDevText.replace(/\n/g, '<br>');
-         }
-         if (analyticsDevText) {
-             analyticsDevText.innerHTML = t.analyticsDevText.replace(/\n/g, '<br>');
-         }
-     }
-
-     // ==================== ЗАГРУЗКА ДАННЫХ ====================
+      // ==================== ЗАГРУЗКА ДАННЫХ ====================
      function loadDashboardData() {
          const storedContacts = localStorage.getItem('allContacts');
          if (storedContacts) {
@@ -2010,26 +1679,6 @@ async function registerUser() {
          
          updateDashboardStats();
      }
-
-     function loadReferralData() {
-         referralData = {
-             levels: {
-                 1: [],
-                 2: [],
-                 3: [],
-                 4: [],
-                 5: [],
-                 6: [],
-                 7: [],
-                 8: [],
-                 9: []
-             }
-         };
-         
-         const storedReferrals = localStorage.getItem('referralData');
-         if (storedReferrals) {
-             referralData = {...referralData, ...JSON.parse(storedReferrals)};
-         }
 
      function updateDashboardStats() {
          let totalContacts = 0;
@@ -2066,259 +1715,41 @@ async function registerUser() {
          updateTime();
      }
 
-     function loadSectionData(sectionId) {
-         switch(sectionId) {
-             case 'contacts':
-                 loadContactsSection();
-                 break;
-             case 'referrals':
-                 loadReferralsSection();
-                 break;
-             case 'crm':
-                 loadCRMSection();
-                 break;
-             case 'coauthors':
-                 loadCoauthorsSection();
-                 break;
-             case 'wallet':
-                 loadWalletSection();
-                 break;
+     // ==================== УТИЛИТЫ ====================
+     function updateTime() {
+         const now = new Date();
+         const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+         const updateTimeElement = document.getElementById('updateTime');
+         if (updateTimeElement) {
+             updateTimeElement.textContent = timeString;
          }
      }
 
-     // ==================== КОШЕЛЕК ====================
-     async function connectWallet() {
-         if (!web3) {
-             showNotification('Web3 not initialized', 'error');
+     function filterContacts(category) {
+         showSection('contacts');
+     }
+
+     function exportContacts() {
+         if (currentUser.level === 0) {
+             showNotification('Connect wallet to export contacts', 'error');
              return;
          }
          
-         try {
-             const connectBtn = document.getElementById('connectWalletBtn');
-             const walletInfo = SUPPORTED_WALLETS[connectedWallet];
-             
-             connectBtn.textContent = `🔄 Connecting to ${walletInfo.name}...`;
-             connectBtn.disabled = true;
-             
-             let accounts;
-             
-             if (window.ethereum) {
-                 accounts = await window.ethereum.request({
-                     method: 'eth_requestAccounts'
-                 });
-             }
-             
-             if (accounts && accounts.length > 0) {
-                 userWalletAddress = accounts[0];
-                 localStorage.setItem('connectedWallet', userWalletAddress);
-                 localStorage.setItem('connectedWalletType', connectedWallet);
-                 isWeb3Connected = true;
-                 
-                 await checkNetwork();
-                 await checkUserAccess();
-                 await loadWeb3Data();
-                 
-                 showWalletConnected(userWalletAddress);
-                 showNotification(`${walletInfo.icon} ${walletInfo.name} connected successfully!`, 'success');
-             }
-         } catch (error) {
-             console.error('Wallet connection failed:', error);
-             showNotification('Wallet connection failed', 'error');
-             
-             const connectBtn = document.getElementById('connectWalletBtn');
-             connectBtn.textContent = `🔐 Connect ${SUPPORTED_WALLETS[connectedWallet].name}`;
-             connectBtn.disabled = false;
-         }
+         const dataStr = JSON.stringify(contactsData, null, 2);
+         const dataBlob = new Blob([dataStr], {type: 'application/json'});
+         const url = URL.createObjectURL(dataBlob);
+         
+         const link = document.createElement('a');
+         link.href = url;
+         link.download = `cardgift-contacts-${new Date().toISOString().split('T')[0]}.json`;
+         document.body.appendChild(link);
+         link.click();
+         document.body.removeChild(link);
+         
+         showNotification('Contacts exported successfully!', 'success');
      }
 
-     function showWalletConnected(address) {
-         const connectBtn = document.getElementById('connectWalletBtn');
-         const walletStatus = document.getElementById('walletStatus');
-         const walletInfo = SUPPORTED_WALLETS[connectedWallet];
-         
-         if (connectBtn) connectBtn.style.display = 'none';
-         if (walletStatus) walletStatus.style.display = 'block';
-         
-         document.getElementById('walletAddress').textContent = 
-             `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-         
-         const walletConnectedText = document.getElementById('walletConnectedText');
-         if (walletConnectedText) {
-             walletConnectedText.textContent = `✅ ${walletInfo.icon} ${walletInfo.name} Connected`;
-         }
-         
-         walletConnected = true;
-     }
-
-     function loadWalletSection() {
-         document.getElementById('contractAddress').textContent = '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618';
-     }
-
-     // ==================== РЕФЕРАЛЬНАЯ СИСТЕМА ====================
-     function showLevel(level) {
-         currentLevel = level;
-         
-         document.querySelectorAll('.level-btn').forEach(btn => {
-             btn.classList.remove('active');
-         });
-         
-         document.querySelector(`[data-level="${level}"]`).classList.add('active');
-         
-         const levelContent = document.getElementById('levelContent');
-         const levelTitle = document.getElementById('currentLevelTitle');
-         const levelCount = document.getElementById('currentLevelCount');
-         const teamTable = document.getElementById('teamTable');
-         
-         levelContent.classList.add('active');
-         
-         const levelData = referralData.levels[level] || [];
-         
-         levelTitle.textContent = `Level ${level} Team Members`;
-         levelCount.textContent = levelData.length;
-         
-         if (levelData.length === 0) {
-             teamTable.innerHTML = `
-                 <div style="text-align: center; color: #CCC; padding: 40px;">
-                     No team members at this level yet
-                 </div>
-             `;
-             return;
-         }
-         
-         let tableHTML = `
-             <table style="width: 100%; border-collapse: collapse;">
-                 <thead>
-                     <tr style="border-bottom: 2px solid #FFD700;">
-                         <th style="padding: 12px 8px; text-align: left; color: #FFD700; font-size: 14px;">№</th>
-                         <th style="padding: 12px 8px; text-align: left; color: #FFD700; font-size: 14px;">📋 ID</th>
-                         <th style="padding: 12px 8px; text-align: left; color: #FFD700; font-size: 14px;">💎 Wallet</th>
-                         <th style="padding: 12px 8px; text-align: left; color: #FFD700; font-size: 14px;">👑 Sponsor</th>
-                         <th style="padding: 12px 8px; text-align: left; color: #FFD700; font-size: 14px;">📅 Date</th>
-                         <th style="padding: 12px 8px; text-align: left; color: #FFD700; font-size: 14px;">🏷️ Status</th>
-                         <th style="padding: 12px 8px; text-align: left; color: #FFD700; font-size: 14px;">👤 Name</th>
-                         <th style="padding: 12px 8px; text-align: center; color: #FFD700; font-size: 14px;">⚡ Actions</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-         `;
-         
-         levelData.forEach((member, index) => {
-             const statusClass = `status-${member.status || 'basic'}`;
-             const statusText = getStatusDisplayName(member.status || 'basic');
-             const date = new Date(member.registrationDate || Date.now()).toLocaleDateString();
-             const walletStatus = member.walletAddress ? 'wallet-active' : 'wallet-inactive';
-             const walletText = member.walletAddress ? 'Active' : 'Inactive';
-             
-             tableHTML += `
-                 <tr style="border-bottom: 1px solid rgba(255, 215, 0, 0.2);">
-                     <td style="padding: 10px 8px; color: #FFF; font-size: 13px;">${index + 1}</td>
-                     <td style="padding: 10px 8px; color: #4CAF50; font-weight: bold; cursor: pointer; font-size: 13px;" 
-                         class="user-id-cell" onclick="openCRM('${member.userId}')">${member.userId}</td>
-                     <td style="padding: 10px 8px; font-size: 13px;">
-                         <span class="wallet-status ${walletStatus}">${walletText}</span><br>
-                         <small style="color: #888; font-family: monospace;">
-                             ${member.walletAddress ? 
-                               `${member.walletAddress.substring(0, 6)}...${member.walletAddress.substring(member.walletAddress.length - 4)}` : 
-                               'Not connected'}
-                         </small>
-                     </td>
-                     <td style="padding: 10px 8px; color: #FFD700; font-size: 13px; cursor: pointer;" onclick="openCRM('${member.sponsorId}')">${member.sponsorId || '-'}</td>
-                     <td style="padding: 10px 8px; color: #CCC; font-size: 13px;">${date}</td>
-                     <td style="padding: 10px 8px; font-size: 13px;">
-                         <span class="status-badge ${statusClass}">${statusText}</span>
-                     </td>
-                     <td style="padding: 10px 8px; color: #FFF; font-size: 13px;">
-                         ${member.name || '-'}<br>
-                         <small style="color: #888;">${member.platform || ''}: ${member.contact || ''}</small>
-                     </td>
-                     <td style="padding: 10px 8px; text-align: center; font-size: 13px;">
-                         <button onclick="openCRM('${member.userId}')" 
-                             style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; margin: 2px; font-size: 11px;">💬</button>
-                         <button onclick="manageMember('${member.userId}')" 
-                             style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; margin: 2px; font-size: 11px;">⚙️</button>
-                     </td>
-                 </tr>
-             `;
-         });
-         
-         tableHTML += `
-                 </tbody>
-             </table>
-         `;
-         
-         teamTable.innerHTML = tableHTML;
-     }
-
-     function getStatusDisplayName(status) {
-         const statusNames = {
-             'coauthor': 'Co-Author',
-             'super': 'Super Admin',
-             'mini': 'Mini Admin',
-             'basic': 'Basic'
-         };
-         return statusNames[status] || status.toUpperCase();
-     }
-
-     function loadReferralsSection() {
-         document.querySelectorAll('.level-btn').forEach(btn => {
-             if (currentUser.level >= 2) {
-                 btn.classList.remove('locked');
-                 btn.style.opacity = '1';
-                 btn.style.cursor = 'pointer';
-             }
-         });
-     }
-
-     function manageMember(userId) {
-         const actions = [
-             { text: 'Change Status', action: () => changeUserStatus(userId) },
-             { text: 'Block User', action: () => blockUser(userId) },
-             { text: 'View Details', action: () => openCRM(userId) }
-         ];
-         
-         showActionMenu(actions);
-     }
-
-     // ==================== CRM СИСТЕМА ====================
-     function openCRM(userId) {
-         currentCRMUser = userId;
-         
-         let userData = null;
-         Object.values(referralData.levels).forEach(level => {
-             const found = level.find(member => member.userId === userId);
-             if (found) {
-                 userData = found;
-             }
-         });
-         
-         if (!userData) {
-             Object.keys(contactsData).forEach(category => {
-                 const found = contactsData[category].find(contact => contact.userId === userId);
-                 if (found) {
-                     userData = {...found, category};
-                 }
-             });
-         }
-         
-         if (!userData) {
-             showNotification('User data not found', 'error');
-             return;
-         }
-         
-         document.getElementById('crmModalTitle').textContent = `CRM: ${userData.name || userId} (${userId})`;
-         
-         document.getElementById('userPlatform').textContent = userData.platform || userData.category || '-';
-         document.getElementById('userContact').textContent = userData.contact || '-';
-         document.getElementById('userRegDate').textContent = new Date(userData.registrationDate || Date.now()).toLocaleDateString();
-         
-         const savedNotes = localStorage.getItem(`crm_notes_${userId}`);
-         document.getElementById('userNotes').value = savedNotes || '';
-         
-         loadChatMessages(userId);
-         
-         document.getElementById('crmModal').classList.add('show');
-     }
-
+     // ==================== CRM ФУНКЦИИ ====================
      function closeCRMModal() {
          document.getElementById('crmModal').classList.remove('show');
          currentCRMUser = null;
@@ -2345,667 +1776,12 @@ async function registerUser() {
          showNotification('Notes saved successfully!', 'success');
      }
 
-     function loadChatMessages(userId) {
-         const chatMessages = document.getElementById('chatMessages');
-         const savedMessages = localStorage.getItem(`chat_${userId}`);
-         
-         if (savedMessages) {
-             const messages = JSON.parse(savedMessages);
-             let chatHTML = '';
-             
-             messages.forEach(msg => {
-                 const isOwn = msg.from === currentUser.userId;
-                 chatHTML += `
-                     <div style="margin: 10px 0; text-align: ${isOwn ? 'right' : 'left'};">
-                         <div style="display: inline-block; max-width: 70%; padding: 8px 12px; border-radius: 10px; 
-                                    background: ${isOwn ? '#FFD700' : 'rgba(255, 255, 255, 0.1)'}; 
-                                    color: ${isOwn ? '#000' : '#FFF'};">
-                             ${msg.message}
-                             <div style="font-size: 10px; opacity: 0.7; margin-top: 4px;">
-                                 ${new Date(msg.timestamp).toLocaleTimeString()}
-                             </div>
-                         </div>
-                     </div>
-                 `;
-             });
-             
-             chatMessages.innerHTML = chatHTML;
-         } else {
-             chatMessages.innerHTML = `
-                 <div style="text-align: center; color: #CCC; padding: 20px;">
-                     No messages yet. Start a conversation!
-                 </div>
-             `;
-         }
-         
-         chatMessages.scrollTop = chatMessages.scrollHeight;
-     }
-
      function sendMessage() {
-         if (!currentCRMUser) return;
-         
-         const chatInput = document.getElementById('chatInput');
-         const message = chatInput.value.trim();
-         
-         if (!message) return;
-         
-         const messages = JSON.parse(localStorage.getItem(`chat_${currentCRMUser}`) || '[]');
-         messages.push({
-             from: currentUser.userId,
-             to: currentCRMUser,
-             message: message,
-             timestamp: Date.now(),
-             read: false
-         });
-         
-         localStorage.setItem(`chat_${currentCRMUser}`, JSON.stringify(messages));
-         
-         updateNotifications();
-         
-         chatInput.value = '';
-         
-         loadChatMessages(currentCRMUser);
-         
-         showNotification('Message sent!', 'success');
+         showNotification('Chat feature available after wallet connection', 'info');
      }
 
      function openSocialContact() {
-         if (!currentCRMUser) return;
-         
-         let userData = null;
-         Object.values(referralData.levels).forEach(level => {
-             const found = level.find(member => member.userId === currentCRMUser);
-             if (found) {
-                 userData = found;
-             }
-         });
-         
-         if (!userData) {
-             Object.keys(contactsData).forEach(category => {
-                 const found = contactsData[category].find(contact => contact.userId === currentCRMUser);
-                 if (found) {
-                     userData = {...found, category: category};
-                 }
-             });
-         }
-         
-         if (!userData || !userData.contact) {
-             showNotification('Contact information not available', 'error');
-             return;
-         }
-         
-         let url = '';
-         const platform = userData.platform || userData.category;
-         const contact = userData.contact;
-         
-         switch(platform) {
-             case 'telegram':
-                 url = contact.startsWith('@') ? `https://t.me/${contact.substring(1)}` : `https://t.me/${contact}`;
-                 break;
-             case 'whatsapp':
-                 url = `https://wa.me/${contact.replace(/[^0-9]/g, '')}`;
-                 break;
-             case 'instagram':
-                 url = contact.startsWith('@') ? `https://instagram.com/${contact.substring(1)}` : `https://instagram.com/${contact}`;
-                 break;
-             case 'facebook':
-                 url = `https://facebook.com/${contact}`;
-                 break;
-             case 'twitter':
-                 url = contact.startsWith('@') ? `https://twitter.com/${contact.substring(1)}` : `https://twitter.com/${contact}`;
-                 break;
-             case 'tiktok':
-                 url = contact.startsWith('@') ? `https://tiktok.com/${contact}` : `https://tiktok.com/@${contact}`;
-                 break;
-             case 'viber':
-                 url = `viber://chat?number=${contact.replace(/[^0-9]/g, '')}`;
-                 break;
-             default:
-                 showNotification('Platform not supported for direct link', 'error');
-                 return;
-         }
-         
-         window.open(url, '_blank');
-     }
-
-     // ==================== СИСТЕМА СОАВТОРОВ ====================
-     function loadCoauthorsSection() {
-         const coauthorsList = document.getElementById('coauthorsList');
-         const coauthors = JSON.parse(localStorage.getItem('coauthors') || '[]');
-         
-         if (coauthors.length === 0) {
-             coauthorsList.innerHTML = `
-                 <div style="text-align: center; color: #CCC; padding: 30px;">
-                     No co-authors added yet. You can add up to 8+ co-authors.
-                 </div>
-             `;
-             return;
-         }
-         
-         let coauthorsHTML = '';
-         coauthors.forEach((coauthor, index) => {
-             coauthorsHTML += `
-                 <div class="coauthor-item">
-                     <div class="coauthor-info">
-                         <div style="font-size: 16px;">${coauthor.name} (${coauthor.userId})</div>
-                         <div style="font-size: 12px; opacity: 0.7;">${coauthor.email || coauthor.contact}</div>
-                         <div style="font-size: 11px; opacity: 0.5;">Added: ${new Date(coauthor.addedDate).toLocaleDateString()}</div>
-                     </div>
-                     <div class="coauthor-actions">
-                         <button class="action-btn" onclick="openCRM('${coauthor.userId}')">💬 Chat</button>
-                         <button class="action-btn" onclick="editCoauthor(${index})">✏️ Edit</button>
-                         <button class="action-btn danger" onclick="removeCoauthor(${index})">🗑️ Remove</button>
-                     </div>
-                 </div>
-             `;
-         });
-         
-         coauthorsList.innerHTML = coauthorsHTML;
-     }
-
-     function addCoauthor() {
-         const name = prompt('Enter co-author name:');
-         if (!name || name.trim() === '') return;
-         
-         const contact = prompt('Enter contact (email/telegram/etc):');
-         if (!contact || contact.trim() === '') return;
-         
-         const coauthors = JSON.parse(localStorage.getItem('coauthors') || '[]');
-         const newUserId = `CG${String(coauthors.length + 2).padStart(6, '0')}`;
-         
-         const newCoauthor = {
-             userId: newUserId,
-             name: name.trim(),
-             contact: contact.trim(),
-             level: 3,
-             addedDate: Date.now(),
-             addedBy: currentUser.userId,
-             isActive: true
-         };
-         
-         coauthors.push(newCoauthor);
-         localStorage.setItem('coauthors', JSON.stringify(coauthors));
-         
-         if (!referralData.levels[1]) {
-             referralData.levels[1] = [];
-         }
-         
-         referralData.levels[1].push({
-             userId: newUserId,
-             name: name.trim(),
-             sponsorId: currentUser.userId,
-             registrationDate: Date.now(),
-             status: 'coauthor',
-             platform: 'system',
-             contact: contact.trim(),
-             walletAddress: null,
-             isActive: true
-         });
-         
-         localStorage.setItem('referralData', JSON.stringify(referralData));
-         
-         showNotification(`Co-author ${name} added successfully!`, 'success');
-         
-         loadCoauthorsSection();
-         updateDashboardStats();
-     }
-
-     function editCoauthor(index) {
-         const coauthors = JSON.parse(localStorage.getItem('coauthors') || '[]');
-         if (index >= coauthors.length) return;
-         
-         const coauthor = coauthors[index];
-         const newName = prompt('Edit name:', coauthor.name);
-         
-         if (newName && newName.trim() !== '') {
-             coauthor.name = newName.trim();
-             coauthors[index] = coauthor;
-             localStorage.setItem('coauthors', JSON.stringify(coauthors));
-             
-             showNotification('Co-author updated successfully!', 'success');
-             loadCoauthorsSection();
-         }
-     }
-
-     function removeCoauthor(index) {
-         if (!confirm('Are you sure you want to remove this co-author?')) return;
-         
-         const coauthors = JSON.parse(localStorage.getItem('coauthors') || '[]');
-         if (index >= coauthors.length) return;
-         
-         const removedCoauthor = coauthors[index];
-         coauthors.splice(index, 1);
-         localStorage.setItem('coauthors', JSON.stringify(coauthors));
-         
-         Object.keys(referralData.levels).forEach(level => {
-             referralData.levels[level] = referralData.levels[level].filter(
-                 member => member.userId !== removedCoauthor.userId
-             );
-         });
-         localStorage.setItem('referralData', JSON.stringify(referralData));
-         
-         showNotification('Co-author removed successfully!', 'success');
-         
-         loadCoauthorsSection();
-         updateDashboardStats();
-     }
-
-     // ==================== КОНТАКТЫ ====================
-     function loadContactsSection() {
-         const contactsTable = document.getElementById('contactsTable');
-         const filter = document.getElementById('contactFilter')?.value || 'all';
-         const searchTerm = document.getElementById('contactSearch')?.value?.toLowerCase() || '';
-         
-         let filteredContacts = [];
-         
-         if (filter === 'all') {
-             Object.keys(contactsData).forEach(category => {
-                 contactsData[category].forEach(contact => {
-                     filteredContacts.push({...contact, category: category});
-                 });
-             });
-         } else {
-             if (contactsData[filter]) {
-                 contactsData[filter].forEach(contact => {
-                     filteredContacts.push({...contact, category: filter});
-                 });
-             }
-         }
-         
-         if (searchTerm) {
-             filteredContacts = filteredContacts.filter(contact => 
-                 (contact.name && contact.name.toLowerCase().includes(searchTerm)) ||
-                 (contact.contact && contact.contact.toLowerCase().includes(searchTerm)) ||
-                 (contact.userId && contact.userId.toLowerCase().includes(searchTerm))
-             );
-         }
-         
-         if (filteredContacts.length === 0) {
-             contactsTable.innerHTML = `
-                 <div style="text-align: center; color: #CCC; padding: 40px;">
-                     No contacts found. Start collecting contacts through your generator!
-                 </div>
-             `;
-             return;
-         }
-         
-         let tableHTML = `
-             <table style="width: 100%; border-collapse: collapse;">
-                 <thead>
-                     <tr style="border-bottom: 2px solid #FFD700;">
-                         <th style="padding: 12px; text-align: left; color: #FFD700;">👤 Name</th>
-                         <th style="padding: 12px; text-align: left; color: #FFD700;">📱 Platform</th>
-                         <th style="padding: 12px; text-align: left; color: #FFD700;">📞 Contact</th>
-                         <th style="padding: 12px; text-align: left; color: #FFD700;">🆔 User ID</th>
-                         <th style="padding: 12px; text-align: left; color: #FFD700;">📅 Date</th>
-                         <th style="padding: 12px; text-align: center; color: #FFD700;">⚡ Actions</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-         `;
-         
-         filteredContacts.forEach(contact => {
-             const platformIcons = {
-                 telegram: '📱',
-                 whatsapp: '💬',
-                 email: '📧',
-                 instagram: '📷',
-                 viber: '💜',
-                 facebook: '👤',
-                 tiktok: '🎵',
-                 twitter: '🐦'
-             };
-             
-             const date = new Date(contact.registrationDate || Date.now()).toLocaleDateString();
-             
-             tableHTML += `
-                 <tr style="border-bottom: 1px solid rgba(255, 215, 0, 0.2);">
-                     <td style="padding: 12px; color: #FFF;">${contact.name || 'N/A'}</td>
-                     <td style="padding: 12px; color: #FFD700;">${platformIcons[contact.category] || '📱'} ${contact.category.charAt(0).toUpperCase() + contact.category.slice(1)}</td>
-                     <td style="padding: 12px; color: #CCC;">${contact.contact || 'N/A'}</td>
-                     <td style="padding: 12px; color: #4CAF50; cursor: pointer;" onclick="openCRM('${contact.userId}')">${contact.userId || 'N/A'}</td>
-                     <td style="padding: 12px; color: #CCC;">${date}</td>
-                     <td style="padding: 12px; text-align: center;">
-                         <button onclick="openCRM('${contact.userId}')" style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; margin-right: 5px;">💬</button>
-                         <button onclick="exportContact('${contact.userId}')" style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;">📥</button>
-                     </td>
-                 </tr>
-             `;
-         });
-         
-         tableHTML += `
-                 </tbody>
-             </table>
-         `;
-         
-         contactsTable.innerHTML = tableHTML;
-     }
-
-     function loadCRMSection() {
-         const userList = document.getElementById('userList');
-         
-         let allUsers = [];
-         
-         if (referralData && referralData.levels) {
-             Object.values(referralData.levels).forEach(level => {
-                 level.forEach(member => {
-                     if (!allUsers.find(user => user.userId === member.userId)) {
-                         allUsers.push(member);
-                     }
-                 });
-             });
-         }
-         
-         Object.keys(contactsData).forEach(category => {
-             contactsData[category].forEach(contact => {
-                 if (!allUsers.find(user => user.userId === contact.userId)) {
-                     allUsers.push({...contact, category});
-                 }
-             });
-         });
-         
-         if (allUsers.length === 0) {
-             userList.innerHTML = `
-                 <div style="text-align: center; color: #CCC; padding: 30px;">
-                     No users available for chat. Users will appear here after registration.
-                 </div>
-             `;
-             return;
-         }
-         
-         let userListHTML = '';
-         allUsers.forEach(user => {
-             const initials = (user.name || user.userId || 'U').split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-             const hasUnreadMessages = hasUnreadMessagesFrom(user.userId);
-             
-             userListHTML += `
-                 <div style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255, 215, 0, 0.1); cursor: pointer; transition: background 0.3s ease; position: relative;" onclick="openCRM('${user.userId}')" onmouseover="this.style.background='rgba(255, 215, 0, 0.05)'" onmouseout="this.style.background='transparent'">
-                     <div style="width: 40px; height: 40px; border-radius: 50%; background: ${hasUnreadMessages ? '#FF4444' : '#FFD700'}; color: ${hasUnreadMessages ? '#FFF' : '#000'}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">${initials}</div>
-                     <div style="flex: 1;">
-                         <h4 style="color: #FFF; margin-bottom: 2px;">${user.name || user.userId}</h4>
-                         <p style="color: #CCC; font-size: 12px; margin-bottom: 2px;">ID: ${user.userId} • Last seen: ${new Date(user.registrationDate || Date.now()).toLocaleDateString()}</p>
-                         <p style="font-size: 11px; opacity: 0.7; color: #FFD700;">${getStatusDisplayName(user.status || 'basic')}</p>
-                     </div>
-                     ${hasUnreadMessages ? '<div style="position: absolute; top: 10px; right: 10px; background: #FF4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center;">●</div>' : ''}
-                 </div>
-             `;
-         });
-         
-         userList.innerHTML = userListHTML;
-     }
-
-     function hasUnreadMessagesFrom(userId) {
-         const messages = JSON.parse(localStorage.getItem(`chat_${userId}`) || '[]');
-         return messages.some(msg => !msg.read && msg.to === currentUser.userId);
-     }
-
-     // ==================== УВЕДОМЛЕНИЯ ====================
-     function updateNotifications() {
-         let crmCount = 0;
-         let referralCount = 0;
-         
-         if (referralData && referralData.levels) {
-             Object.values(referralData.levels).forEach(level => {
-                 level.forEach(member => {
-                     const messages = JSON.parse(localStorage.getItem(`chat_${member.userId}`) || '[]');
-                     crmCount += messages.filter(msg => !msg.read && msg.to === currentUser.userId).length;
-                 });
-             });
-         }
-         
-         const yesterday = Date.now() - 86400000;
-         if (referralData && referralData.levels) {
-             Object.values(referralData.levels).forEach(level => {
-                 level.forEach(member => {
-                     if (member.registrationDate > yesterday) {
-                         referralCount++;
-                     }
-                 });
-             });
-         }
-         
-         const crmBadge = document.getElementById('crmNotifications');
-         const referralBadge = document.getElementById('referralNotifications');
-         
-         if (crmCount > 0) {
-             crmBadge.textContent = crmCount;
-             crmBadge.classList.remove('hidden', 'read');
-         } else {
-             crmBadge.classList.add('hidden');
-         }
-         
-         if (referralCount > 0) {
-             referralBadge.textContent = referralCount;
-             referralBadge.classList.remove('hidden', 'read');
-         } else {
-             referralBadge.classList.add('hidden');
-         }
-         
-         notifications.crm = crmCount;
-         notifications.referral = referralCount;
-     }
-
-     // ==================== УТИЛИТЫ ====================
-     function updateTime() {
-         const now = new Date();
-         const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-         const updateTimeElement = document.getElementById('updateTime');
-         if (updateTimeElement) {
-             updateTimeElement.textContent = timeString;
-         }
-     }
-
-     function filterContacts(category) {
-         const contactFilter = document.getElementById('contactFilter');
-         if (contactFilter) {
-             contactFilter.value = category;
-         }
-         showSection('contacts');
-     }
-
-     function exportContact(userId) {
-         let userData = null;
-         
-         if (referralData && referralData.levels) {
-             Object.values(referralData.levels).forEach(level => {
-                 const found = level.find(member => member.userId === userId);
-                 if (found) {
-                     userData = found;
-                 }
-             });
-         }
-         
-         if (!userData) {
-             Object.keys(contactsData).forEach(category => {
-                 const found = contactsData[category].find(contact => contact.userId === userId);
-                 if (found) {
-                     userData = {...found, category};
-                 }
-             });
-         }
-         
-         if (userData) {
-             const dataStr = JSON.stringify(userData, null, 2);
-             const dataBlob = new Blob([dataStr], {type: 'application/json'});
-             const url = URL.createObjectURL(dataBlob);
-             
-             const link = document.createElement('a');
-             link.href = url;
-             link.download = `contact-${userId}-${new Date().toISOString().split('T')[0]}.json`;
-             document.body.appendChild(link);
-             link.click();
-             document.body.removeChild(link);
-             
-             showNotification(`Contact ${userId} exported successfully!`, 'success');
-         }
-     }
-
-     function exportContacts() {
-         const dataStr = JSON.stringify(contactsData, null, 2);
-         const dataBlob = new Blob([dataStr], {type: 'application/json'});
-         const url = URL.createObjectURL(dataBlob);
-         
-         const link = document.createElement('a');
-         link.href = url;
-         link.download = `cardgift-contacts-${new Date().toISOString().split('T')[0]}.json`;
-         document.body.appendChild(link);
-         link.click();
-         document.body.removeChild(link);
-         
-         showNotification('Contacts exported successfully!', 'success');
-     }
-
-     function exportAllData() {
-         const allData = {
-             contacts: contactsData,
-             referrals: referralData,
-             coauthors: JSON.parse(localStorage.getItem('coauthors') || '[]'),
-             cards: JSON.parse(localStorage.getItem('userCards') || '{}'),
-             user: currentUser,
-             exportDate: new Date().toISOString()
-         };
-         
-         const dataStr = JSON.stringify(allData, null, 2);
-         const dataBlob = new Blob([dataStr], {type: 'application/json'});
-         const url = URL.createObjectURL(dataBlob);
-         
-         const link = document.createElement('a');
-         link.href = url;
-         link.download = `cardgift-full-backup-${new Date().toISOString().split('T')[0]}.json`;
-         document.body.appendChild(link);
-         link.click();
-         document.body.removeChild(link);
-         
-         showNotification('Full backup exported successfully!', 'success');
-     }
-
-     function importData() {
-         const input = document.createElement('input');
-         input.type = 'file';
-         input.accept = '.json';
-         
-         input.onchange = function(event) {
-             const file = event.target.files[0];
-             if (!file) return;
-             
-             const reader = new FileReader();
-             reader.onload = function(e) {
-                 try {
-                     const data = JSON.parse(e.target.result);
-                     
-                     if (data.contacts) {
-                         localStorage.setItem('allContacts', JSON.stringify(data.contacts));
-                         contactsData = data.contacts;
-                     }
-                     
-                     if (data.referrals) {
-                         localStorage.setItem('referralData', JSON.stringify(data.referrals));
-                         referralData = data.referrals;
-                     }
-                     
-                     if (data.coauthors) {
-                         localStorage.setItem('coauthors', JSON.stringify(data.coauthors));
-                     }
-                     
-                     loadDashboardData();
-                     
-                     showNotification('Data imported successfully!', 'success');
-                     
-                 } catch (error) {
-                     showNotification('Import failed: Invalid file format', 'error');
-                 }
-             };
-             reader.readAsText(file);
-         };
-         
-         input.click();
-     }
-
-     function clearCache() {
-         if (confirm('Are you sure you want to clear all cache? This action cannot be undone.')) {
-             localStorage.removeItem('dashboardCache');
-             localStorage.removeItem('tempData');
-             
-             showNotification('Cache cleared successfully!', 'success');
-         }
-     }
-
-     function startNewChat() {
-         showNotification('New chat feature will be available soon!', 'info');
-     }
-
-     function changeUserStatus(userId) {
-         const statuses = ['basic', 'mini', 'super', 'coauthor'];
-         const statusNames = {
-             'basic': 'Basic User',
-             'mini': 'Mini Admin',
-             'super': 'Super Admin',
-             'coauthor': 'Co-Author'
-         };
-         
-         let options = '';
-         statuses.forEach(status => {
-             options += `${status}: ${statusNames[status]}\n`;
-         });
-         
-         const newStatus = prompt(`Select new status for user ${userId}:\n\n${options}\n\nEnter status:`);
-         
-         if (newStatus && statuses.includes(newStatus.toLowerCase())) {
-             Object.keys(referralData.levels).forEach(level => {
-                 const memberIndex = referralData.levels[level].findIndex(member => member.userId === userId);
-                 if (memberIndex !== -1) {
-                     referralData.levels[level][memberIndex].status = newStatus.toLowerCase();
-                 }
-             });
-             
-             localStorage.setItem('referralData', JSON.stringify(referralData));
-             
-             showNotification(`User ${userId} status updated to ${statusNames[newStatus.toLowerCase()]}`, 'success');
-             
-             if (currentLevel > 0) {
-                 showLevel(currentLevel);
-             }
-         }
-     }
-
-     function blockUser(userId) {
-         if (confirm(`Are you sure you want to block user ${userId}?`)) {
-             Object.keys(referralData.levels).forEach(level => {
-                 const memberIndex = referralData.levels[level].findIndex(member => member.userId === userId);
-                 if (memberIndex !== -1) {
-                     referralData.levels[level][memberIndex].isActive = false;
-                     referralData.levels[level][memberIndex].blockedBy = currentUser.userId;
-                     referralData.levels[level][memberIndex].blockedDate = Date.now();
-                 }
-             });
-             
-             localStorage.setItem('referralData', JSON.stringify(referralData));
-             
-             showNotification(`User ${userId} has been blocked`, 'success');
-         }
-     }
-
-     function showActionMenu(actions) {
-         let menuHTML = '<div style="background: rgba(0,0,0,0.9); border: 1px solid #FFD700; border-radius: 10px; padding: 15px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3000;">';
-         
-         actions.forEach((action, index) => {
-             menuHTML += `<button onclick="closeActionMenu(); (${action.action.toString()})()" style="display: block; width: 100%; margin: 5px 0; padding: 10px; background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 5px; cursor: pointer;">${action.text}</button>`;
-         });
-         
-         menuHTML += '<button onclick="closeActionMenu()" style="display: block; width: 100%; margin: 10px 0 0 0; padding: 10px; background: #666; color: #FFF; border: none; border-radius: 5px; cursor: pointer;">Cancel</button></div>';
-         menuHTML += '<div onclick="closeActionMenu()" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2999;"></div>';
-         
-         const menuContainer = document.createElement('div');
-         menuContainer.id = 'actionMenu';
-         menuContainer.innerHTML = menuHTML;
-         document.body.appendChild(menuContainer);
-     }
-
-     function closeActionMenu() {
-         const menu = document.getElementById('actionMenu');
-         if (menu) {
-             menu.remove();
-         }
+         showNotification('Social contact feature available after wallet connection', 'info');
      }
 
      // ==================== СИСТЕМА УВЕДОМЛЕНИЙ ====================
@@ -3070,58 +1846,9 @@ async function registerUser() {
          }, duration);
      }
 
-     // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
-     document.addEventListener('DOMContentLoaded', function() {
-         const contactFilter = document.getElementById('contactFilter');
-         const contactSearch = document.getElementById('contactSearch');
-         
-         if (contactFilter) {
-             contactFilter.addEventListener('change', () => {
-                 if (currentSection === 'contacts') {
-                     loadContactsSection();
-                 }
-             });
-         }
-         
-         if (contactSearch) {
-             contactSearch.addEventListener('input', () => {
-                 if (currentSection === 'contacts') {
-                     loadContactsSection();
-                 }
-             });
-         }
-         
-         const userSearch = document.getElementById('userSearch');
-         if (userSearch) {
-             userSearch.addEventListener('input', function() {
-                 const searchTerm = this.value.toLowerCase();
-                 const userItems = document.querySelectorAll('#userList > div');
-                 
-                 userItems.forEach(item => {
-                     const text = item.textContent.toLowerCase();
-                     if (text.includes(searchTerm)) {
-                         item.style.display = 'flex';
-                     } else {
-                         item.style.display = 'none';
-                     }
-                 });
-             });
-         }
-
-         const chatInput = document.getElementById('chatInput');
-         if (chatInput) {
-             chatInput.addEventListener('keypress', function(e) {
-                 if (e.key === 'Enter') {
-                     sendMessage();
-                 }
-             });
-         }
-     });
-
      // ==================== ПЕРИОДИЧЕСКИЕ ОБНОВЛЕНИЯ ====================
      setInterval(() => {
          updateTime();
-         updateNotifications();
          
          if (currentSection === 'dashboard') {
              updateDashboardStats();
@@ -3150,7 +1877,6 @@ async function registerUser() {
      document.addEventListener('keydown', function(event) {
          if (event.key === 'Escape') {
              closeCRMModal();
-             closeActionMenu();
          }
      });
 
