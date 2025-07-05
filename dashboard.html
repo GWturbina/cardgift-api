@@ -9,6 +9,11 @@
    <meta name="description" content="CardGift Admin Dashboard - Manage your network">
    <meta name="theme-color" content="#FFD700">
    
+   <!-- Web3 Integration - SafePal Priority -->
+<script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+<script src="https://unpkg.com/@binance-chain/bsc-connector@1.0.0/dist/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+   
    <style>
        * {
            margin: 0;
@@ -1316,9 +1321,58 @@
   </div>
 
   <script>
+  
+  // ==================== WEB3 CONFIGURATION ====================
+const CONTRACT_CONFIG = {
+    address: '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618',
+    network: 'opBNB',
+    chainId: 204, // opBNB Mainnet
+    rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
+    abi: [
+        // Минимальный ABI для начала
+        "function getUserLevel(address user) view returns (uint256)",
+        "function getUserReferrals(address user) view returns (address[])", 
+        "function getUserContacts(address user) view returns (string[])",
+        "function getTotalEarnings(address user) view returns (uint256)",
+        "function isUserActive(address user) view returns (bool)"
+    ]
+};
+
+// Поддерживаемые кошельки (SafePal в приоритете)
+const SUPPORTED_WALLETS = {
+    safepal: {
+        name: 'SafePal',
+        icon: '🔐',
+        priority: 1,
+        detected: () => window.safepal || window.ethereum?.isSafePal
+    },
+    metamask: {
+        name: 'MetaMask', 
+        icon: '🦊',
+        priority: 2,
+        detected: () => window.ethereum?.isMetaMask
+    },
+    trustwallet: {
+        name: 'Trust Wallet',
+        icon: '💙', 
+        priority: 3,
+        detected: () => window.ethereum?.isTrust
+    },
+    generic: {
+        name: 'Web3 Wallet',
+        icon: '💰',
+        priority: 4,
+        detected: () => window.ethereum
+    }
+};
       // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
       let currentLanguage = 'en';
       let currentSection = 'dashboard';
+	  let web3;
+      let contract;
+      let userWalletAddress = null;
+      let isWeb3Connected = false;
+      let connectedWallet = null;
       let currentUser = {
           userId: 'CG000001',
           level: 4, // MASTER ADMIN - ВСЕ ФУНКЦИИ АКТИВНЫ
@@ -1534,8 +1588,54 @@ const translations = {
 };
 
       // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-      window.onload = function() {
-    console.log('🚀 CardGift Admin Dashboard initializing...');
+	  // ==================== WEB3 INTEGRATION ====================
+async function initWeb3() {
+    // Определяем доступные кошельки
+    const availableWallets = Object.entries(SUPPORTED_WALLETS)
+        .filter(([key, wallet]) => wallet.detected())
+        .sort((a, b) => a[1].priority - b[1].priority);
+    
+    if (availableWallets.length === 0) {
+        console.warn('No Web3 wallets detected');
+        showInstallWalletPrompt();
+        return;
+    }
+    
+    // Приоритет SafePal
+    const [walletKey, walletInfo] = availableWallets[0];
+    connectedWallet = walletKey;
+    
+    try {
+        let provider = walletKey === 'safepal' && window.safepal ? window.safepal : window.ethereum;
+        
+        web3 = new Web3(provider);
+        contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
+        
+        console.log(`🔐 Using ${walletInfo.name} provider`);
+        
+    } catch (error) {
+        console.error('Web3 initialization failed:', error);
+    }
+}
+
+function showInstallWalletPrompt() {
+    const connectBtn = document.getElementById('connectWalletBtn');
+    if (connectBtn) {
+        connectBtn.innerHTML = '📱 Install SafePal or Compatible Wallet';
+        connectBtn.onclick = () => {
+            if (confirm('Install SafePal for best opBNB experience?\n\nClick OK for SafePal or Cancel for other wallets.')) {
+                window.open('https://safepal.io/download', '_blank');
+            } else {
+                window.open('https://metamask.io/download/', '_blank');
+            }
+        };
+    }
+}
+    window.onload = async function() {
+    console.log('🚀 CardGift Web3 Dashboard initializing...');
+    
+    // Инициализация Web3
+    await initWeb3();
     
     // ИСПРАВЛЕНИЕ - инициализируем данные
     if (!referralData || !referralData.levels) {
@@ -2432,34 +2532,50 @@ const translations = {
       document.getElementById('contractAddress').textContent = '0x742d35Cc6635C0532925a3b8D5C0532925a3b8D5C05329';
   }
 
-  function connectWallet() {
-      const connectBtn = document.getElementById('connectWalletBtn');
-      const walletStatus = document.getElementById('walletStatus');
-      
-      try {
-          connectBtn.textContent = '🔄 Connecting...';
-          connectBtn.disabled = true;
-          
-          // Симуляция подключения кошелька
-          setTimeout(() => {
-              const mockAddress = '0x742d35Cc6635C0532925a3b8D5C05329';
-              showWalletConnected(mockAddress);
-              walletConnected = true;
-              
-              // Устанавливаем баланс
-              document.getElementById('walletBalance').textContent = 'Balance: 0.0234 opBNB';
-              
-              showNotification('Wallet connected successfully!', 'success');
-          }, 2000);
-          
-      } catch (error) {
-          console.error('Wallet connection error:', error);
-          showNotification('Wallet connection failed', 'error');
-          
-          connectBtn.textContent = '🔗 Connect SafePal Wallet';
-          connectBtn.disabled = false;
-      }
-  }
+  async function connectWallet() {
+    if (!web3) {
+        showNotification('Web3 not initialized', 'error');
+        return;
+    }
+    
+    try {
+        const connectBtn = document.getElementById('connectWalletBtn');
+        const walletInfo = SUPPORTED_WALLETS[connectedWallet];
+        
+        connectBtn.textContent = `🔄 Connecting to ${walletInfo.name}...`;
+        connectBtn.disabled = true;
+        
+        let accounts;
+        
+        // Специфичная логика для SafePal
+        if (connectedWallet === 'safepal' && window.safepal) {
+            accounts = await window.safepal.request({
+                method: 'eth_requestAccounts'
+            });
+        } else if (window.ethereum) {
+            accounts = await window.ethereum.request({
+                method: 'eth_requestAccounts'
+            });
+        }
+        
+        if (accounts && accounts.length > 0) {
+            userWalletAddress = accounts[0];
+            localStorage.setItem('connectedWallet', userWalletAddress);
+            localStorage.setItem('connectedWalletType', connectedWallet);
+            isWeb3Connected = true;
+            
+            showWalletConnected(userWalletAddress);
+            showNotification(`${walletInfo.icon} ${walletInfo.name} connected successfully!`, 'success');
+        }
+    } catch (error) {
+        console.error('Wallet connection failed:', error);
+        showNotification('Wallet connection failed', 'error');
+        
+        const connectBtn = document.getElementById('connectWalletBtn');
+        connectBtn.textContent = `🔗 Connect ${SUPPORTED_WALLETS[connectedWallet].name}`;
+        connectBtn.disabled = false;
+    }
+}
 
   function showWalletConnected(address) {
       const connectBtn = document.getElementById('connectWalletBtn');
