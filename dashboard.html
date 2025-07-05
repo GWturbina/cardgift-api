@@ -1659,7 +1659,7 @@ function showInstallWalletPrompt() {
         };
     }
           
-          // Проверяем подключение кошелька
+// Проверяем подключение кошелька
 if (isWeb3Connected && userWalletAddress) {
     await checkUserAccess();
     await loadWeb3Data();
@@ -1670,9 +1670,9 @@ if (isWeb3Connected && userWalletAddress) {
         level: 0, // Нет доступа
         isActive: false,
         walletAddress: null
-        };
-        showConnectWalletPrompt();
- }
+    };
+    // showConnectWalletPrompt(); // ВРЕМЕННО ОТКЛЮЧЕНО
+}
 
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
