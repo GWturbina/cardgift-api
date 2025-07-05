@@ -1359,7 +1359,7 @@ const SUPPORTED_WALLETS = {
         name: 'SafePal',
         icon: '🔐',
         priority: 1,
-        detected: () => window.safepal || window.ethereum?.isSafePal
+        detected: () => window.ethereum?.isSafePal || window.ethereum
     },
     metamask: {
         name: 'MetaMask', 
@@ -1621,7 +1621,7 @@ async function initWeb3() {
     connectedWallet = walletKey;
     
     try {
-        let provider = walletKey === 'safepal' && window.safepal ? window.safepal : window.ethereum;
+        let provider = window.ethereum;
         
         web3 = new Web3(provider);
         contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
