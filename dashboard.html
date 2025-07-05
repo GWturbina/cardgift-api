@@ -1329,14 +1329,28 @@ const CONTRACT_CONFIG = {
     chainId: 204, // opBNB Mainnet
     rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
     abi: [
-        // Минимальный ABI для начала
-        "function getUserLevel(address user) view returns (uint256)",
-        "function getUserReferrals(address user) view returns (address[])", 
-        "function getUserContacts(address user) view returns (string[])",
-        "function getTotalEarnings(address user) view returns (uint256)",
-        "function isUserActive(address user) view returns (bool)"
-    ]
-};
+    {
+        "inputs": [{"name": "user", "type": "address"}],
+        "name": "getUserLevel",
+        "outputs": [{"name": "", "type": "uint256"}],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{"name": "user", "type": "address"}],
+        "name": "getUserReferrals", 
+        "outputs": [{"name": "", "type": "address[]"}],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{"name": "user", "type": "address"}],
+        "name": "isUserActive",
+        "outputs": [{"name": "", "type": "bool"}],
+        "stateMutability": "view", 
+        "type": "function"
+    }
+]
 
 // Поддерживаемые кошельки (SafePal в приоритете)
 const SUPPORTED_WALLETS = {
@@ -2529,7 +2543,7 @@ function showInstallWalletPrompt() {
   // ==================== КОШЕЛЕК ====================
   function loadWalletSection() {
       // Обновляем адрес контракта
-      document.getElementById('contractAddress').textContent = '0x742d35Cc6635C0532925a3b8D5C0532925a3b8D5C05329';
+      document.getElementById('contractAddress').textContent = '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618';
   }
 
   async function connectWallet() {
