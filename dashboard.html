@@ -1329,28 +1329,27 @@ const CONTRACT_CONFIG = {
     chainId: 204, // opBNB Mainnet
     rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
     abi: [
-    {
-        "inputs": [{"name": "user", "type": "address"}],
-        "name": "getUserLevel",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [{"name": "user", "type": "address"}],
-        "name": "getUserReferrals", 
-        "outputs": [{"name": "", "type": "address[]"}],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [{"name": "user", "type": "address"}],
-        "name": "isUserActive",
-        "outputs": [{"name": "", "type": "bool"}],
-        "stateMutability": "view", 
-        "type": "function"
-    }
-]
+        {
+            "inputs": [{"name": "user", "type": "address"}],
+            "name": "getUserLevel",
+            "outputs": [{"name": "", "type": "uint256"}],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [{"name": "user", "type": "address"}],
+            "name": "getUserReferrals", 
+            "outputs": [{"name": "", "type": "address[]"}],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [{"name": "user", "type": "address"}],
+            "name": "isUserActive",
+            "outputs": [{"name": "", "type": "bool"}],
+            "stateMutability": "view", 
+            "type": "function"
+        }
     ]
 };
 
