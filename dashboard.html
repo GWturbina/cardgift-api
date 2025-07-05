@@ -1659,39 +1659,32 @@ function showInstallWalletPrompt() {
         };
     }
           
-          // ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ МАСТЕР АДМИНА
-          currentUser = {
-              userId: 'CG000001',
-              level: 4, // MASTER ADMIN
-              isActive: true
-          };
-          localStorage.setItem('currentUser', JSON.stringify(currentUser));
-          
-          // Обновляем интерфейс
-          document.getElementById('userLevel').textContent = 'MASTER ADMIN';
-          document.getElementById('currentUserId').textContent = 'CG000001';
-          
-          loadDashboardData();
-          loadReferralData();
-          updateTime();
-          updateNotifications();
-          
-          // РАЗБЛОКИРУЕМ ВСЕ КНОПКИ УРОВНЕЙ
-          document.querySelectorAll('.level-btn').forEach(btn => {
-              btn.classList.remove('locked');
-              btn.style.opacity = '1';
-              btn.style.cursor = 'pointer';
-          });
-          
-          // РАЗБЛОКИРУЕМ ВСЕ ПУНКТЫ МЕНЮ
-          document.querySelectorAll('.menu-item').forEach(item => {
-              item.classList.remove('locked');
-              item.style.opacity = '1';
-              item.style.cursor = 'pointer';
-          });
-          
-          console.log('✅ Admin Dashboard initialized as MASTER ADMIN');
-          console.log('🔓 ALL FUNCTIONS UNLOCKED');
+          // Проверяем подключение кошелька
+if (isWeb3Connected && userWalletAddress) {
+    await checkUserAccess();
+    await loadWeb3Data();
+} else {
+    // Если кошелек не подключен - показываем заблокированный режим
+    currentUser = {
+        userId: 'NOT_CONNECTED',
+        level: 0, // Нет доступа
+        isActive: false,
+        walletAddress: null
+        };
+        showConnectWalletPrompt();
+ }
+
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+    // Обновляем интерфейс через функцию
+          updateUserInterface();
+
+    loadDashboardData();
+    loadReferralData();
+    updateTime();
+    updateNotifications();
+
+    console.log('✅ Web3 Dashboard initialized');
       };
 
       // ==================== НАВИГАЦИЯ ====================
