@@ -1705,30 +1705,58 @@
      }
 
      async function checkUserAccess() {
-         if (!contract || !userWalletAddress) return;
-         
-         try {
-             console.log('🔍 Checking user access for:', userWalletAddress);
-             
-             // TODO: Раскомментировать когда контракт будет готов
-             // const userLevel = await contract.methods.getUserLevel(userWalletAddress).call();
-             // const isActive = await contract.methods.isUserActive(userWalletAddress).call();
-             
-             // Временно устанавливаем мастер админа для подключенного кошелька
-             currentUser = {
-                 userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
-                 level: 4, // Мастер админ
-                 isActive: true,
-                 walletAddress: userWalletAddress
-             };
-             
-             updateUserInterface();
-             
-         } catch (error) {
-             console.error('Access check failed:', error);
-             showNotification('Failed to verify user access', 'error');
-         }
-     }
+    if (!contract || !userWalletAddress) return;
+    
+    try {
+        console.log('🔍 Checking user access for:', userWalletAddress);
+        
+        // РЕАЛЬНАЯ ПРОВЕРКА ЧЕРЕЗ КОНТРАКТ
+        const userLevel = await contract.methods.getUserLevel(userWalletAddress).call();
+        const isActive = await contract.methods.isUserActive(userWalletAddress).call();
+        
+        currentUser = {
+            userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+            level: parseInt(userLevel),
+            isActive: isActive,
+            walletAddress: userWalletAddress
+        };
+        
+        // Если пользователь не зарегистрирован в контракте
+        if (parseInt(userLevel) === 0) {
+            showRegistrationPrompt();
+        }
+        
+        updateUserInterface();
+        
+    } catch (error) {
+        console.error('Access check failed:', error);
+        // При ошибке даем базовый доступ
+        currentUser = {
+            userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+            level: 1, // Базовый пользователь
+            isActive: true,
+            walletAddress: userWalletAddress
+        };
+        updateUserInterface();
+    }
+}
+
+function showRegistrationPrompt() {
+    if (confirm('Вы не зарегистрированы в системе. Хотите зарегистрироваться?')) {
+        registerUser();
+    }
+}
+
+async function registerUser() {
+    try {
+        // TODO: Вызов функции register() в смарт-контракте
+        await contract.methods.register().send({ from: userWalletAddress });
+        showNotification('Registration successful!', 'success');
+        await checkUserAccess();
+    } catch (error) {
+        showNotification('Registration failed', 'error');
+    }
+}
 
      async function loadWeb3Data() {
          if (!contract || !userWalletAddress) return;
@@ -2002,49 +2030,6 @@
          if (storedReferrals) {
              referralData = {...referralData, ...JSON.parse(storedReferrals)};
          }
-         
-         if (!storedReferrals) {
-             const testMembers = [
-                 {
-                     userId: 'CG000002',
-                     walletAddress: '0x1234567890abcdef1234567890abcdef12345678',
-                     sponsorId: 'CG000001',
-                     registrationDate: Date.now() - 86400000,
-                     status: 'coauthor',
-                     name: 'John Smith',
-                     platform: 'telegram',
-                     contact: '@johnsmith',
-                     isActive: true
-                 },
-                 {
-                     userId: 'CG000003',
-                     walletAddress: null,
-                     sponsorId: 'CG000001',
-                     registrationDate: Date.now() - 172800000,
-                     status: 'super',
-                     name: 'Maria Garcia',
-                     platform: 'whatsapp',
-                     contact: '+1234567890',
-                     isActive: false
-                 },
-                 {
-                     userId: 'CG000004',
-                     walletAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
-                     sponsorId: 'CG000002',
-                     registrationDate: Date.now() - 259200000,
-                     status: 'mini',
-                     name: 'Alex Johnson',
-                     platform: 'telegram',
-                     contact: '@alexj',
-                     isActive: true
-                 }
-             ];
-             
-             referralData.levels[1] = [testMembers[0], testMembers[1]];
-             referralData.levels[2] = [testMembers[2]];
-             localStorage.setItem('referralData', JSON.stringify(referralData));
-         }
-     }
 
      function updateDashboardStats() {
          let totalContacts = 0;
