@@ -2562,12 +2562,8 @@ function showInstallWalletPrompt() {
         
         let accounts;
         
-        // Специфичная логика для SafePal
-        if (connectedWallet === 'safepal' && window.safepal) {
-            accounts = await window.safepal.request({
-                method: 'eth_requestAccounts'
-            });
-        } else if (window.ethereum) {
+        // SafePal использует стандартный ethereum API
+        if (window.ethereum) {
             accounts = await window.ethereum.request({
                 method: 'eth_requestAccounts'
             });
