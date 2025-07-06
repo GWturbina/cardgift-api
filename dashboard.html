@@ -312,6 +312,36 @@
            gap: 15px;
            margin-bottom: 30px;
        }
+	   
+	   /* ✅ ИСПРАВЛЕНИЕ: Стили для выпадающего меню */
+       select {
+           background: rgba(255, 255, 255, 0.1) !important;
+           border: 1px solid #FFD700 !important;
+           border-radius: 8px !important;
+           padding: 8px 12px !important;
+           color: #FFF !important;
+           font-family: 'Arial', sans-serif !important;
+       }
+       
+       select option {
+           background: rgba(0, 0, 0, 0.95) !important;
+           color: #FFF !important;
+           padding: 8px !important;
+           border: none !important;
+       }
+       
+       select:focus {
+           outline: none !important;
+           border-color: #FFA500 !important;
+           box-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+       }
+       
+       #categoryFilter {
+           background: rgba(0, 0, 0, 0.9) !important;
+           border: 1px solid #FFD700 !important;
+           color: #FFD700 !important;
+           min-width: 150px !important;
+       }
 
        .category-card {
            background: rgba(0, 0, 0, 0.9);
@@ -1369,7 +1399,7 @@
          <div class="referral-section">
              <h3 style="color: #FFD700; margin-bottom: 15px;">🔗 Your Referral Link</h3>
              <div style="display: flex; gap: 10px; align-items: center;">
-                 <input type="text" id="referralLink" value="https://cardgift.bnb/register?ref=YOUR_ID" readonly style="background: rgba(255, 255, 255, 0.1); border: 1px solid #FFD700; border-radius: 8px; padding: 10px; color: #FFF; flex: 1;">
+                 <input type="text" id="referralLink" value="registration.html?ref=YOUR_ID" readonly style="background: rgba(255, 255, 255, 0.1); border: 1px solid #FFD700; border-radius: 8px; padding: 10px; color: #FFF; flex: 1;">
                  <button onclick="copyReferralLink()" style="background: #FFD700; color: #000; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; font-weight: bold;">📋 Copy</button>
                  <button onclick="shareReferralLink()" style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; font-weight: bold;">📤 Share</button>
              </div>
@@ -1955,6 +1985,63 @@ async function registerNewUser(referrerId = '') {
     }
 }
 
+// ✅ НОВАЯ: Функция для обработки данных из registration.html
+function processRegistrationData(userData) {
+    try {
+        // Генерируем 7-значный ID
+        const newUserId = generateUserId();
+        
+        // Структура пользователя для партнерки
+        const userObject = {
+            userId: newUserId,
+            name: userData.name,
+            messenger: userData.messenger,
+            contact: userData.contact,
+            referralId: userData.referralId || '', // Кто привел
+            walletAddress: userData.walletAddress || '',
+            registrationDate: new Date().toISOString(),
+            level: 0,
+            isActive: false,
+            status: 'registered'
+        };
+        
+        // Сохраняем в соцсети по категориям
+        if (!contactsData[userData.messenger]) {
+            contactsData[userData.messenger] = [];
+        }
+        contactsData[userData.messenger].push(userObject);
+        localStorage.setItem('allContacts', JSON.stringify(contactsData));
+        
+        // Сохраняем в партнерку
+        if (userData.referralId) {
+            if (!referralData.levels[1]) referralData.levels[1] = [];
+            referralData.levels[1].push(userObject);
+            referralData.users[newUserId] = userObject;
+            localStorage.setItem('referralDatabase', JSON.stringify(referralData));
+        }
+        
+        // Сохраняем связь ID - кошелек
+        if (userData.walletAddress) {
+            window.walletDatabase[newUserId] = userData.walletAddress;
+            localStorage.setItem('walletDatabase', JSON.stringify(window.walletDatabase));
+        }
+        
+        console.log('✅ Пользователь добавлен в базы:', newUserId);
+        updateDashboardStats();
+        
+        return newUserId;
+        
+    } catch (error) {
+        console.error('❌ Ошибка обработки регистрации:', error);
+        return null;
+    }
+}
+
+// ✅ НОВАЯ: Глобальная функция для registration.html
+window.addUserToDatabase = processRegistrationData;
+
+function updateUserInterface() {
+
       function updateUserInterface() {
           const levelNames = {
               0: 'NOT REGISTERED',
@@ -1981,6 +2068,13 @@ async function registerNewUser(referrerId = '') {
               document.getElementById('networkStatus').textContent = 'Network Status: Connected';
           }
           
+		  // ✅ ИСПРАВЛЕНО: Обновляем реферальную ссылку
+if (userWalletAddress && currentUser.userId !== 'NOT_CONNECTED') {
+    const referralLinkInput = document.getElementById('referralLink');
+    if (referralLinkInput) {
+        referralLinkInput.value = `${window.location.origin}/registration.html?ref=${currentUser.userId}`;
+    }
+}
           updateMenuAccess();
       }
 
@@ -2717,11 +2811,12 @@ async function registerNewUser(referrerId = '') {
 
      // ==================== РЕФЕРАЛЬНЫЕ ФУНКЦИИ ====================
      function copyReferralLink() {
-         const referralLink = document.getElementById('referralLink');
-         
-         if (currentUser.userId !== 'NOT_CONNECTED') {
-             referralLink.value = `https://cardgift.bnb/register?ref=${currentUser.userId}`;
-         }
+    const referralLink = document.getElementById('referralLink');
+    
+    if (currentUser.userId !== 'NOT_CONNECTED') {
+        // ✅ ИСПРАВЛЕНО: Правильная ссылка на registration.html
+        referralLink.value = `${window.location.origin}/registration.html?ref=${currentUser.userId}`;
+    }
          
          navigator.clipboard.writeText(referralLink.value).then(() => {
              showNotification('Referral link copied to clipboard!', 'success');
@@ -2969,24 +3064,44 @@ async function registerNewUser(referrerId = '') {
 
      // ==================== ЗАГРУЗКА ДАННЫХ ====================
     function loadDashboardData() {
-        const storedContacts = localStorage.getItem('allContacts');
-        if (storedContacts) {
-            contactsData = JSON.parse(storedContacts);
-        } else {
-            contactsData = {
-                telegram: [],
-                whatsapp: [],
-                email: [],
-                instagram: [],
-                viber: [],
-                facebook: [],
-                tiktok: [],
-                twitter: []
-            };
-        }
-        
-        updateDashboardStats();
+    // ✅ ИСПРАВЛЕНО: Правильная структура БД
+    const storedContacts = localStorage.getItem('allContacts');
+    if (storedContacts) {
+        contactsData = JSON.parse(storedContacts);
+    } else {
+        contactsData = {
+            telegram: [],
+            whatsapp: [],
+            email: [],
+            instagram: [],
+            viber: [],
+            facebook: [],
+            tiktok: [],
+            twitter: []
+        };
     }
+    
+    // Загружаем партнерскую БД
+    const storedReferrals = localStorage.getItem('referralDatabase');
+    if (storedReferrals) {
+        referralData = JSON.parse(storedReferrals);
+    } else {
+        referralData = {
+            levels: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] },
+            users: {} // ID: данные пользователя
+        };
+    }
+    
+    // Загружаем кошельки
+    const storedWallets = localStorage.getItem('walletDatabase');
+    if (storedWallets) {
+        window.walletDatabase = JSON.parse(storedWallets);
+    } else {
+        window.walletDatabase = {}; // userID: walletAddress
+    }
+    
+    updateDashboardStats();
+}
 
     function updateDashboardStats() {
         let totalContacts = 0;
