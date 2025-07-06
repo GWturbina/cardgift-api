@@ -2059,24 +2059,25 @@ function updateUserInterface() {
               document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
               
               // Скрываем статус подключения
-              const connectionStatus = document.getElementById('connectionStatus');
-              if (connectionStatus && currentUser.level > 0) {
-                  connectionStatus.style.display = 'none';
-              }
-              
-              // Обновляем статус сети
-              document.getElementById('networkStatus').textContent = 'Network Status: Connected';
-          }
-          
-		  // ✅ ИСПРАВЛЕНО: Обновляем реферальную ссылку
-if (userWalletAddress && currentUser.userId !== 'NOT_CONNECTED') {
-    const referralLinkInput = document.getElementById('referralLink');
-    if (referralLinkInput) {
-        referralLinkInput.value = `${window.location.origin}/registration.html?ref=${currentUser.userId}`;
+        const connectionStatus = document.getElementById('connectionStatus');
+        if (connectionStatus && currentUser.level > 0) {
+            connectionStatus.style.display = 'none';
+        }
+        
+        // Обновляем статус сети
+        document.getElementById('networkStatus').textContent = 'Network Status: Connected';
+        
+        // ✅ ИСПРАВЛЕНО: Обновляем реферальную ссылку
+        if (userWalletAddress && currentUser.userId !== 'NOT_CONNECTED') {
+            const referralLinkInput = document.getElementById('referralLink');
+            if (referralLinkInput) {
+                referralLinkInput.value = `${window.location.origin}/registration.html?ref=${currentUser.userId}`;
+            }
+        }
     }
+    
+    updateMenuAccess();
 }
-          updateMenuAccess();
-      }
 
       function updateMenuAccess() {
           const menuItems = document.querySelectorAll('.menu-item');
