@@ -1282,828 +1282,1064 @@
  </div>
 
  <script>
-     // ==================== WEB3 CONFIGURATION ====================
-     const CONTRACT_CONFIG = {
-         address: '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618',
-         network: 'opBNB',
-         chainId: 204,
-         rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
-         abi: [
-   {
-       "inputs": [{"name": "user", "type": "address"}],
-       "name": "getUserLevel",
-       "outputs": [{"name": "", "type": "uint256"}],
-       "stateMutability": "view",
-       "type": "function"
-   },
-   {
-       "inputs": [{"name": "user", "type": "address"}],
-       "name": "getUserReferrals", 
-       "outputs": [{"name": "", "type": "address[]"}],
-       "stateMutability": "view",
-       "type": "function"
-   },
-   {
-       "inputs": [{"name": "user", "type": "address"}],
-       "name": "isUserActive",
-       "outputs": [{"name": "", "type": "bool"}],
-       "stateMutability": "view", 
-       "type": "function"
-   },
-   {
-       "inputs": [{"name": "user", "type": "address"}],
-       "name": "getTotalEarnings",
-       "outputs": [{"name": "", "type": "uint256"}],
-       "stateMutability": "view",
-       "type": "function"
-   },
-   {
-       "inputs": [],
-       "name": "activateUser",
-       "outputs": [],
-       "stateMutability": "payable",
-       "type": "function"
-   },
-   {
-       "inputs": [],
-       "name": "activateMiniAdmin",
-       "outputs": [],
-       "stateMutability": "payable",
-       "type": "function"
-   },
-   {
-       "inputs": [],
-       "name": "activateSuperAdmin",
-       "outputs": [],
-       "stateMutability": "payable",
-       "type": "function"
-   },
-   {
-       "inputs": [{"name": "referrerId", "type": "string"}],
-       "name": "registerUser",
-       "outputs": [{"name": "", "type": "string"}],
-       "stateMutability": "nonpayable",
-       "type": "function"
-   }
-]
-     };
+      // ==================== ИСПРАВЛЕННАЯ WEB3 КОНФИГУРАЦИЯ ====================
+      const CONTRACT_CONFIG = {
+          address: '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618',
+          network: 'opBNB',
+          chainId: 204,
+          rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
+          // Упрощенный ABI для базовых функций
+          abi: [
+              {
+                  "inputs": [{"name": "user", "type": "address"}],
+                  "name": "getUserLevel",
+                  "outputs": [{"name": "", "type": "uint256"}],
+                  "stateMutability": "view",
+                  "type": "function"
+              },
+              {
+                  "inputs": [],
+                  "name": "activateUser",
+                  "outputs": [],
+                  "stateMutability": "payable",
+                  "type": "function"
+              },
+              {
+                  "inputs": [],
+                  "name": "activateMiniAdmin",
+                  "outputs": [],
+                  "stateMutability": "payable",
+                  "type": "function"
+              },
+              {
+                  "inputs": [],
+                  "name": "activateSuperAdmin",
+                  "outputs": [],
+                  "stateMutability": "payable",
+                  "type": "function"
+              },
+              {
+                  "inputs": [{"name": "referrerId", "type": "string"}],
+                  "name": "registerUser",
+                  "outputs": [{"name": "", "type": "string"}],
+                  "stateMutability": "nonpayable",
+                  "type": "function"
+              }
+          ]
+      };
 
-     const SUPPORTED_WALLETS = {
-         safepal: {
-             name: 'SafePal',
-             icon: '🔐',
-             priority: 1,
-             detected: () => window.safepal || window.ethereum?.isSafePal
-         },
-         metamask: {
-             name: 'MetaMask', 
-             icon: '🦊',
-             priority: 2,
-             detected: () => window.ethereum?.isMetaMask
-         },
-         trustwallet: {
-             name: 'Trust Wallet',
-             icon: '💙', 
-             priority: 3,
-             detected: () => window.ethereum?.isTrust
-         },
-         generic: {
-             name: 'Web3 Wallet',
-             icon: '💰',
-             priority: 4,
-             detected: () => window.ethereum
-         }
-     };
+      // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+      let currentLanguage = 'en';
+      let currentSection = 'dashboard';
+      let web3;
+      let contract;
+      let userWalletAddress = null;
+      let isWeb3Connected = false;
+      let connectedWallet = null;
+      let currentUser = {
+          userId: 'NOT_CONNECTED',
+          level: 0,
+          isActive: false,
+          walletAddress: null
+      };
+      let walletConnected = false;
+      let contactsData = {};
+      let referralData = {};
+      let currentCRMUser = null;
 
-     // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
-     let currentLanguage = 'en';
-     let currentSection = 'dashboard';
-     let web3;
-     let contract;
-     let userWalletAddress = null;
-     let isWeb3Connected = false;
-     let connectedWallet = null;
-     let currentUser = {
-         userId: 'NOT_CONNECTED',
-         level: 0,
-         isActive: false,
-         walletAddress: null
-     };
-     let walletConnected = false;
-     let contactsData = {};
-     let referralData = {};
-     let currentLevel = 0;
-     let currentCRMUser = null;
-     let notifications = {
-         referral: 0,
-         crm: 0
-     };
+      // ==================== ИСПРАВЛЕННАЯ WEB3 ИНИЦИАЛИЗАЦИЯ ====================
+      async function initWeb3() {
+          try {
+              console.log('🔄 Инициализация Web3...');
+              
+              // Определяем доступный провайдер
+              let provider = null;
+              let walletType = '';
+              
+              if (window.safepal && window.safepal.ethereum) {
+                  provider = window.safepal.ethereum;
+                  walletType = 'SafePal';
+                  console.log('🟢 SafePal обнаружен');
+              } else if (window.ethereum) {
+                  provider = window.ethereum;
+                  walletType = 'MetaMask/Generic';
+                  console.log('🟡 Стандартный Web3 провайдер');
+              } else {
+                  console.warn('❌ Web3 провайдер не найден');
+                  showInstallWalletPrompt();
+                  return false;
+              }
+              
+              // Инициализируем Web3
+              web3 = new Web3(provider);
+              connectedWallet = walletType;
+              
+              // Создаем контракт
+              contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
+              
+              console.log(`✅ Web3 инициализирован с ${walletType}`);
+              
+              // Проверяем сохраненное подключение
+              const savedAddress = localStorage.getItem('connectedWallet');
+              if (savedAddress) {
+                  userWalletAddress = savedAddress;
+                  isWeb3Connected = true;
+                  await checkUserAccess();
+                  console.log('🔄 Автоподключение:', savedAddress);
+              }
+              
+              return true;
+              
+          } catch (error) {
+              console.error('❌ Ошибка инициализации Web3:', error);
+              return false;
+          }
+      }
 
-     // ==================== WEB3 INTEGRATION ====================
-     async function initWeb3() {
-         const availableWallets = Object.entries(SUPPORTED_WALLETS)
-             .filter(([key, wallet]) => wallet.detected())
-             .sort((a, b) => a[1].priority - b[1].priority);
-         
-         if (availableWallets.length === 0) {
-             console.warn('No Web3 wallets detected');
-             showInstallWalletPrompt();
-             return;
-         }
-         
-         const [walletKey, walletInfo] = availableWallets[0];
-         connectedWallet = walletKey;
-         
-         try {
-             let provider = window.safepal || window.ethereum;
+      // ==================== ИСПРАВЛЕННОЕ ПОДКЛЮЧЕНИЕ КОШЕЛЬКА ====================
+      async function connectWallet() {
+          try {
+              console.log('🔗 Подключение кошелька...');
+              
+              if (!web3) {
+                  const initResult = await initWeb3();
+                  if (!initResult) {
+                      throw new Error('Web3 не инициализирован');
+                  }
+              }
+              
+              const connectBtn = document.getElementById('connectWalletBtn');
+              connectBtn.textContent = '🔄 Подключение...';
+              connectBtn.disabled = true;
+              
+              let accounts = [];
+              
+              // Попробуем SafePal API
+              if (window.safepal && window.safepal.ethereum) {
+                  try {
+                      accounts = await window.safepal.ethereum.request({
+                          method: 'eth_requestAccounts'
+                      });
+                      console.log('✅ SafePal подключен:', accounts);
+                  } catch (safePalError) {
+                      console.log('⚠️ SafePal API ошибка, пробуем стандартный метод');
+                      accounts = await window.ethereum.request({
+                          method: 'eth_requestAccounts'
+                      });
+                  }
+              } else if (window.ethereum) {
+                  accounts = await window.ethereum.request({
+                      method: 'eth_requestAccounts'
+                  });
+                  console.log('✅ Стандартный Web3 подключен:', accounts);
+              }
+              
+              if (accounts && accounts.length > 0) {
+                  userWalletAddress = accounts[0].toLowerCase();
+                  localStorage.setItem('connectedWallet', userWalletAddress);
+                  isWeb3Connected = true;
+                  
+                  // ✅ ПРОВЕРЯЕМ ВАШ ГЛАВНЫЙ КОШЕЛЕК
+                  if (userWalletAddress === '0x0099188030174e381e7a7ee36d2783ecc31b6728') {
+                      console.log('🔥 ЦЕНТРАЛЬНЫЙ ОСНОВАТЕЛЬ ПОДКЛЮЧЕН!');
+                      currentUser = {
+                          userId: 'FOUNDER_001',
+                          level: 4,
+                          isActive: true,
+                          walletAddress: userWalletAddress
+                      };
+                      showNotification('🔥 Добро пожаловать, Основатель!', 'success');
+                  } else {
+                      await checkUserAccess();
+                  }
+                  
+                  updateUserInterface();
+                  showWalletConnected(userWalletAddress);
+                  showNotification(`Кошелек подключен: ${connectedWallet}`, 'success');
+              } else {
+                  throw new Error('Аккаунты не получены');
+              }
+              
+          } catch (error) {
+              console.error('❌ Ошибка подключения кошелька:', error);
+              showNotification(`Ошибка подключения: ${error.message}`, 'error');
+              
+              const connectBtn = document.getElementById('connectWalletBtn');
+              connectBtn.textContent = '🔐 Подключить кошелек';
+              connectBtn.disabled = false;
+          }
+      }
+
+      // ==================== УПРОЩЕННАЯ ПРОВЕРКА ПОЛЬЗОВАТЕЛЯ ====================
+      async function checkUserAccess() {
+          if (!userWalletAddress) return;
+          
+          try {
+              console.log('🔍 Проверка доступа для:', userWalletAddress);
+              
+              // ✅ ПРОВЕРЯЕМ ОСНОВАТЕЛЕЙ ПЕРВЫМ ДЕЛОМ
+              const founders = [
+                  '0x0099188030174e381e7a7ee36d2783ecc31b6728', // Центральный
+                  '0xab17adbe29c4e1d695c239206682b02ebdb3f707',
+                  '0xb5986b808dad481ad86d63df152cc0ad7b473e48',
+                  '0xa3496cacc8523421dd151f1d92a456c2dafa28c2',
+                  '0x8af1bc6b4a5aaced37889cc06bed4569a6b64044',
+                  '0x0ab97e3934b1afc9f1f6447ccf676e4f1d8b9639',
+                  '0x03284a899147f5a07f82c622f34df92198671635',
+                  '0xb0e256ca055937a8fd9ca1f5e3d8a6bd44146d50'
+              ];
+              
+              if (founders.includes(userWalletAddress.toLowerCase())) {
+                  console.log('🔥 ОСНОВАТЕЛЬ ОБНАРУЖЕН - полный доступ!');
+                  currentUser = {
+                      userId: `FOUNDER_${userWalletAddress.substring(2, 8).toUpperCase()}`,
+                      level: 4,
+                      isActive: true,
+                      walletAddress: userWalletAddress
+                  };
+                  return;
+              }
+              
+              // Для обычных пользователей - пробуем получить данные из контракта
+              try {
+                  // Создаем прямой HTTP запрос к RPC (обход проблем с провайдером)
+                  const response = await fetch(CONTRACT_CONFIG.rpcUrl, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                          jsonrpc: '2.0',
+                          method: 'eth_call',
+                          params: [{
+                              to: CONTRACT_CONFIG.address,
+                              data: web3.eth.abi.encodeFunctionCall({
+                                  name: 'getUserLevel',
+                                  type: 'function',
+                                  inputs: [{'name': 'user', 'type': 'address'}]
+                              }, [userWalletAddress])
+                          }, 'latest'],
+                          id: 1
+                      })
+                  });
+                  
+                  const result = await response.json();
+                  if (result.result) {
+                      const level = parseInt(result.result, 16);
+                      console.log('📊 Уровень пользователя из контракта:', level);
+                      
+                      currentUser = {
+                          userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+                          level: level,
+                          isActive: level > 0,
+                          walletAddress: userWalletAddress
+                      };
+                  } else {
+                      throw new Error('Нет данных в контракте');
+                  }
+              } catch (contractError) {
+                  console.warn('⚠️ Ошибка чтения контракта:', contractError);
+                  // Fallback - новый пользователь
+                  currentUser = {
+                      userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+                      level: 0,
+                      isActive: false,
+                      walletAddress: userWalletAddress
+                  };
+              }
+              
+          } catch (error) {
+              console.error('❌ Ошибка проверки доступа:', error);
+              currentUser = {
+                  userId: 'ERROR',
+                  level: 0,
+                  isActive: false,
+                  walletAddress: userWalletAddress
+              };
+          }
+      }
+
+      // ==================== ПОКАЗ ОПЦИЙ АКТИВАЦИИ ====================
+      function showActivationOptions() {
+          const connectionStatus = document.getElementById('connectionStatus');
+          if (connectionStatus) {
+              connectionStatus.innerHTML = `
+                  <div style="color: #FFA500; font-size: 18px; margin-bottom: 15px;">⚡ Добро пожаловать в CardGift</div>
+                  
+                  <button onclick="registerNewUser()" style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%;">
+                      📝 Зарегистрироваться
+                  </button>
+                  
+                  <div style="color: #CCC; margin-bottom: 15px;">Или активировать напрямую:</div>
+                  
+                  <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                      <button onclick="activateUser(1)" style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                          👤 Базовый<br><small>0.0025 BNB</small>
+                      </button>
+                      <button onclick="activateUser(2)" style="background: linear-gradient(45deg, #FF9800, #F57C00); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                          ⚡ Мини-Админ<br><small>0.05 BNB</small>
+                      </button>
+                      <button onclick="activateUser(3)" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                          🚀 Супер-Админ<br><small>0.25 BNB</small>
+                      </button>
+                  </div>
+              `;
+          }
+      }
+
+      // ==================== ИСПРАВЛЕННАЯ АКТИВАЦИЯ ====================
+      async function activateUser(level) {
+          try {
+              showNotification('Подготовка активации...', 'info');
+              
+              if (!web3 || !userWalletAddress) {
+                  throw new Error('Кошелек не подключен');
+              }
+              
+              let txData;
+              let value;
+              
+              switch(level) {
+                  case 1:
+                      value = web3.utils.toWei('0.0025', 'ether');
+                      txData = contract.methods.activateUser().encodeABI();
+                      break;
+                  case 2:
+                      value = web3.utils.toWei('0.05', 'ether');
+                      txData = contract.methods.activateMiniAdmin().encodeABI();
+                      break;
+                  case 3:
+                      value = web3.utils.toWei('0.25', 'ether');
+                      txData = contract.methods.activateSuperAdmin().encodeABI();
+                      break;
+                  default:
+                      throw new Error('Неизвестный уровень');
+              }
+              
+              // Отправляем транзакцию напрямую через провайдер
+              const provider = window.safepal?.ethereum || window.ethereum;
+              
+              const txHash = await provider.request({
+                  method: 'eth_sendTransaction',
+                  params: [{
+                      from: userWalletAddress,
+                      to: CONTRACT_CONFIG.address,
+                      value: web3.utils.toHex(value),
+                      data: txData,
+                      gas: web3.utils.toHex(300000)
+                  }]
+              });
+              
+              console.log('✅ Транзакция отправлена:', txHash);
+              showNotification(`Активация уровня ${level} отправлена! TX: ${txHash.substring(0, 10)}...`, 'success');
+              
+              // Обновляем данные пользователя
+              setTimeout(async () => {
+                  await checkUserAccess();
+                  updateUserInterface();
+              }, 3000);
+              
+          } catch (error) {
+              console.error('❌ Ошибка активации:', error);
+              showNotification(`Ошибка активации: ${error.message}`, 'error');
+          }
+      }
+
+      // ==================== РЕГИСТРАЦИЯ ====================
+      async function registerNewUser(referrerId = '') {
+          try {
+              showNotification('Регистрация пользователя...', 'info');
+              
+              if (!web3 || !userWalletAddress) {
+                  throw new Error('Подключите кошелек');
+              }
+              
+              const txData = contract.methods.registerUser(referrerId).encodeABI();
+              const provider = window.safepal?.ethereum || window.ethereum;
+              
+              const txHash = await provider.request({
+                  method: 'eth_sendTransaction',
+                  params: [{
+                      from: userWalletAddress,
+                      to: CONTRACT_CONFIG.address,
+                      data: txData,
+                      gas: web3.utils.toHex(300000)
+                  }]
+              });
+              
+              console.log('✅ Регистрация отправлена:', txHash);
+              showNotification(`Регистрация отправлена! TX: ${txHash.substring(0, 10)}...`, 'success');
+              
+              setTimeout(async () => {
+                  await checkUserAccess();
+                  updateUserInterface();
+              }, 3000);
+              
+          } catch (error) {
+              console.error('❌ Ошибка регистрации:', error);
+              showNotification(`Ошибка регистрации: ${error.message}`, 'error');
+          }
+      }
+
+      // ==================== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ====================
+      function updateUserInterface() {
+          const levelNames = {
+              0: 'НЕ ЗАРЕГИСТРИРОВАН',
+              1: 'БАЗОВЫЙ ПОЛЬЗОВАТЕЛЬ', 
+              2: 'МИНИ АДМИН',
+              3: 'СУПЕР АДМИН',
+              4: 'ОСНОВАТЕЛЬ'
+          };
+          
+          document.getElementById('userLevel').textContent = levelNames[currentUser.level] || 'НЕИЗВЕСТНО';
+          document.getElementById('currentUserId').textContent = currentUser.userId || 'Не подключен';
+          
+          if (userWalletAddress) {
+              const shortAddress = `${userWalletAddress.substring(0, 6)}...${userWalletAddress.substring(userWalletAddress.length - 4)}`;
+              document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
+              
+              // Скрываем статус подключения если активирован
+              const connectionStatus = document.getElementById('connectionStatus');
+              if (connectionStatus && currentUser.level > 0) {
+                  connectionStatus.style.display = 'none';
+              } else if (connectionStatus && currentUser.level === 0) {
+                  showActivationOptions();
+              }
+              
+              document.getElementById('networkStatus').textContent = 'Network Status: Подключен';
+          }
+          
+          updateMenuAccess();
+      }
+
+      function updateMenuAccess() {
+          const menuItems = document.querySelectorAll('.menu-item');
+          
+          menuItems.forEach(item => {
+              const section = item.getAttribute('data-section');
+              
+              // Основатели имеют доступ ко всему
+              if (currentUser.level >= 4) {
+                  item.classList.remove('locked');
+                  return;
+              }
+              
+              // Обычные пользователи
+              if (currentUser.level === 0) {
+                  if (section !== 'wallet' && section !== 'dashboard') {
+                      item.classList.add('locked');
+                  }
+              } else if (currentUser.level >= 1) {
+                  if (['dashboard', 'contacts', 'wallet'].includes(section)) {
+                      item.classList.remove('locked');
+                  }
+              }
+              
+              if (currentUser.level >= 2) {
+                  if (['referrals', 'crm'].includes(section)) {
+                      item.classList.remove('locked');
+                  }
+              }
+              
+              if (currentUser.level >= 3) {
+                  if (['mailings', 'analytics', 'coauthors'].includes(section)) {
+                      item.classList.remove('locked');
+                  }
+              }
+          });
+      }
+
+      function showWalletConnected(address) {
+          const connectBtn = document.getElementById('connectWalletBtn');
+          const walletStatus = document.getElementById('walletStatus');
+          
+          if (connectBtn) connectBtn.style.display = 'none';
+          if (walletStatus) walletStatus.style.display = 'block';
+          
+          document.getElementById('walletAddress').textContent = 
+              `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+          
+          const walletConnectedText = document.getElementById('walletConnectedText');
+          if (walletConnectedText) {
+              walletConnectedText.textContent = `✅ ${connectedWallet} подключен`;
+          }
+          
+          walletConnected = true;
+      }
+
+      function showInstallWalletPrompt() {
+          const connectBtn = document.getElementById('connectWalletBtn');
+          if (connectBtn) {
+              connectBtn.innerHTML = '📱 Установить SafePal';
+              connectBtn.onclick = () => {
+                  window.open('https://safepal.io/download', '_blank');
+              };
+          }
+      }
+
+      // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+      window.onload = async function() {
+          console.log('🚀 CardGift Web3 Dashboard запускается...');
+          
+          await initWeb3();
+          
+          if (!referralData || !referralData.levels) {
+              referralData = {
+                  levels: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
+              };
+          }
+          
+          updateUserInterface();
+          loadDashboardData();
+          updateTime();
+          
+          console.log('✅ Web3 Dashboard готов');
+      };
+
+      // ==================== ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ) ====================
+      function showSection(sectionId) {
+          document.querySelectorAll('.content-section').forEach(section => {
+              section.classList.remove('active');
+          });
+          
+          document.getElementById(sectionId).classList.add('active');
+          
+          document.querySelectorAll('.menu-item').forEach(item => {
+              item.classList.remove('active');
+          });
+          
+          document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+          
+          currentSection = sectionId;
+          
+          if (window.innerWidth <= 768) {
+              toggleSidebar();
+          }
+      }
+
+      function toggleSidebar() {
+          const sidebar = document.getElementById('sidebar');
+          const mainContent = document.getElementById('mainContent');
+          
+          sidebar.classList.toggle('mobile-visible');
+          sidebar.classList.toggle('mobile-hidden');
+          
+          if (sidebar.classList.contains('mobile-visible')) {
+              mainContent.classList.add('full-width');
+          } else {
+              mainContent.classList.remove('full-width');
+          }
+      }
+
+      function switchLanguage(lang) {
+          currentLanguage = lang;
+          localStorage.setItem('adminLanguage', lang);
+          
+          document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+          document.getElementById(`lang${lang.charAt(0).toUpperCase() + lang.slice(1)}`).classList.add('active');
+      }
+
+      function loadDashboardData() {
+          const storedContacts = localStorage.getItem('allContacts');
+          if (storedContacts) {
+              contactsData = JSON.parse(storedContacts);
+          } else {
+              contactsData = {
+                  telegram: [],
+                  whatsapp: [],
+                  email: [],
+                  instagram: [],
+                  viber: [],
+                  facebook: [],
+                  tiktok: [],
+                  twitter: []
+              };
+          }
+          
+          updateDashboardStats();
+      }
+
+      function updateDashboardStats() {
+          let totalContacts = 0;
+          Object.keys(contactsData).forEach(category => {
+              const count = contactsData[category].length;
+              totalContacts += count;
+              
+              const counterElement = document.getElementById(category + 'Count');
+              if (counterElement) {
+                  counterElement.textContent = count;
+              }
+          });
+          
+          document.getElementById('totalContacts').textContent = totalContacts;
+          
+          const cardsData = localStorage.getItem('userCards');
+          let totalCards = 0;
+          if (cardsData) {
+              const cardsObject = JSON.parse(cardsData);
+              Object.keys(cardsObject).forEach(userId => {
+                  totalCards += cardsObject[userId].length;
+              });
+          }
+          document.getElementById('totalCards').textContent = totalCards;
+          
+          let totalReferrals = 0;
+          if (referralData && referralData.levels) {
+              Object.values(referralData.levels).forEach(level => {
+                  totalReferrals += level.length;
+              });
+          }
+          document.getElementById('totalReferrals').textContent = totalReferrals;
+          
+          updateTime();
+      }
+
+      function updateTime() {
+          const now = new Date();
+          const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          const updateTimeElement = document.getElementById('updateTime');
+          if (updateTimeElement) {
+              updateTimeElement.textContent = timeString;
+          }
+      }
+
+      function filterContacts(category) {
+          showSection('contacts');
+      }
+
+      function exportContacts() {
+          if (currentUser.level === 0) {
+              showNotification('Подключите кошелек для экспорта', 'error');
+              return;
+          }
+          
+          const dataStr = JSON.stringify(contactsData, null, 2);
+          const dataBlob = new Blob([dataStr], {type: 'application/json'});
+          const url = URL.createObjectURL(dataBlob);
+          
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `cardgift-contacts-${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          showNotification('Контакты экспортированы!', 'success');
+      }
+
+      function closeCRMModal() {
+          document.getElementById('crmModal').classList.remove('show');
+          currentCRMUser = null;
+      }
+
+      function switchCRMTab(tabName) {
+          document.querySelectorAll('.crm-tab').forEach(tab => {
+              tab.classList.remove('active');
+          });
+          document.getElementById(`${tabName}Tab`).classList.add('active');
+          
+          document.querySelectorAll('.crm-content').forEach(content => {
+              content.classList.remove('active');
+          });
+          document.getElementById(`${tabName}Content`).classList.add('active');
+      }
+
+      function saveUserNotes() {
+          if (!currentCRMUser) return;
+          
+          const notes = document.getElementById('userNotes').value;
+          localStorage.setItem(`crm_notes_${currentCRMUser}`, notes);
+          
+          showNotification('Заметки сохранены!', 'success');
+      }
+
+      function sendMessage() {
+          showNotification('Чат доступен после подключения кошелька', 'info');
+      }
+
+      function openSocialContact() {
+          showNotification('Соц. контакты доступны после подключения кошелька', 'info');
+      }
+
+      function showNotification(message, type = 'info', duration = 3000) {
+          const existingNotification = document.querySelector('.notification');
+          if (existingNotification) {
+              existingNotification.remove();
+          }
+          
+          const notification = document.createElement('div');
+          notification.className = 'notification';
+          notification.textContent = message;
+          
+          notification.style.cssText = `
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background: rgba(0, 0, 0, 0.95);
+              color: white;
+              padding: 15px 25px;
+              border-radius: 10px;
+              z-index: 10000;
+              opacity: 0;
+              transform: translateY(100%);
+              transition: all 0.3s ease;
+              border: 1px solid #333;
+              max-width: 400px;
+              word-wrap: break-word;
+              font-weight: 500;
+              backdrop-filter: blur(10px);
+          `;
+          
+          if (type === 'success') {
+              notification.style.borderColor = '#4CAF50';
+              notification.style.background = 'rgba(76, 175, 80, 0.2)';
+              notification.style.color = '#4CAF50';
+          } else if (type === 'error') {
+              notification.style.borderColor = '#f44336';
+              notification.style.background = 'rgba(244, 67, 54, 0.2)';
+              notification.style.color = '#f44336';
+          } else if (type === 'info') {
+              notification.style.borderColor = '#2196F3';
+              notification.style.background = 'rgba(33, 150, 243, 0.2)';
+              notification.style.color = '#2196F3';
+          }
+          
+          document.body.appendChild(notification);
+          
+          setTimeout(() => {
+              notification.style.opacity = '1';
+              notification.style.transform = 'translateY(0)';
+          }, 100);
+          
+          setTimeout(() => {
+              notification.style.opacity = '0';
+              notification.style.transform = 'translateY(100%)';
+              setTimeout(() => {
+                  if (notification.parentNode) {
+                      notification.parentNode.removeChild(notification);
+                  }
+              }, 300);
+          }, duration);
+      }
+
+      // Периодические обновления
+      setInterval(() => {
+          updateTime();
+          
+          if (currentSection === 'dashboard') {
+              updateDashboardStats();
+          }
+      }, 30000);
+
+      // Адаптивность
+     window.addEventListener('resize', () => {
+         if (window.innerWidth > 768) {
+             const sidebar = document.getElementById('sidebar');
+             const mainContent = document.getElementById('mainContent');
              
-             web3 = new Web3(provider);
-             contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
-             
-             const savedAddress = localStorage.getItem('connectedWallet');
-             const savedWalletType = localStorage.getItem('connectedWalletType');
-             
-             if (savedAddress && savedWalletType === walletKey) {
-                 userWalletAddress = savedAddress;
-                 isWeb3Connected = true;
-                 await checkNetwork();
-                 await checkUserAccess();
-             }
-             
-             console.log(`🔐 Using ${walletInfo.name} provider`);
-             
-         } catch (error) {
-             console.error('Web3 initialization failed:', error);
-         }
-     }
-
-     async function checkNetwork() {
-         try {
-             const chainId = await web3.eth.getChainId();
-             if (Number(chainId) !== CONTRACT_CONFIG.chainId) {
-                 await switchToCorrectNetwork();
-             }
-         } catch (error) {
-             console.error('Network check failed:', error);
-         }
-     }
-
-     async function switchToCorrectNetwork() {
-         try {
-             await window.ethereum.request({
-                 method: 'wallet_switchEthereumChain',
-                 params: [{ chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId) }]
-             });
-         } catch (error) {
-             if (error.code === 4902) {
-                 await addNetwork();
-             }
-         }
-     }
-
-     async function addNetwork() {
-         try {
-             await window.ethereum.request({
-                 method: 'wallet_addEthereumChain',
-                 params: [{
-                     chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId),
-                     chainName: 'opBNB Mainnet',
-                     nativeCurrency: {
-                         name: 'BNB',
-                         symbol: 'BNB',
-                         decimals: 18
-                     },
-                     rpcUrls: [CONTRACT_CONFIG.rpcUrl],
-                     blockExplorerUrls: ['https://opbnbscan.com/']
-                 }]
-             });
-             
-             showNotification('opBNB network added successfully!', 'success');
-         } catch (error) {
-             console.error('Failed to add network:', error);
-             showNotification('Failed to add opBNB network', 'error');
-         }
-     }
-
-     async function checkUserAccess() {
-   if (!contract || !userWalletAddress) return;
-   
-   try {
-       console.log('🔍 Checking user access for:', userWalletAddress);
-       
-       // ✅ ИСПРАВЛЕНО: Используем правильные методы из смарт-контракта
-       const userLevel = await contract.methods.getUserLevel(userWalletAddress).call();
-       const isActive = await contract.methods.isUserActive(userWalletAddress).call();
-       
-       currentUser = {
-           userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
-           level: parseInt(userLevel),
-           isActive: isActive,
-           walletAddress: userWalletAddress
-       };
-       
-       // ✅ ИСПРАВЛЕНО: Показываем опции регистрации/активации
-       if (parseInt(userLevel) === 0 && !isActive) {
-           showActivationOptions();
-       }
-       
-       updateUserInterface();
-       
-   } catch (error) {
-       console.error('Access check failed:', error);
-       showActivationOptions();
-   }
-}
-
-   // ✅ ИСПРАВЛЕНО: Новая функция показа опций активации
-   function showActivationOptions() {
-       const connectionStatus = document.getElementById('connectionStatus');
-       if (connectionStatus) {
-           connectionStatus.innerHTML = `
-               <div style="color: #FFA500; font-size: 18px; margin-bottom: 15px;">⚡ Welcome to CardGift</div>
-               
-               <!-- КНОПКА РЕГИСТРАЦИИ -->
-               <button onclick="registerNewUser()" style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%;">
-                   📝 Register Account
-               </button>
-               
-               <div style="color: #CCC; margin-bottom: 15px;">Or activate directly:</div>
-               
-               <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                   <button onclick="activateUser(1)" style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
-                       👤 Basic User<br><small>0.0025 BNB</small>
-                   </button>
-                   <button onclick="activateUser(2)" style="background: linear-gradient(45deg, #FF9800, #F57C00); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
-                       ⚡ Mini Admin<br><small>0.05 BNB</small>
-                   </button>
-                   <button onclick="activateUser(3)" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
-                       🚀 Super Admin<br><small>0.25 BNB</small>
-                   </button>
-               </div>
-           `;
-       }
-   }
-
-// ✅ ИСПРАВЛЕНО: Правильная функция активации
-async function activateUser(level) {
-   try {
-       showNotification('Preparing activation...', 'info');
-       
-       if (!contract || !userWalletAddress) {
-           throw new Error('Wallet not connected');
-       }
-       
-       let txResult;
-       let price;
-       
-       switch(level) {
-           case 1:
-               // Базовая активация (0.0025 BNB)
-               price = '2500000000000000'; // 0.0025 BNB в wei
-               txResult = await contract.methods.activateUser().send({ 
-                   from: userWalletAddress,
-                   value: price,
-                   gas: 200000
-               });
-               break;
-               
-           case 2: 
-               // Мини-админ (0.05 BNB)
-               price = '50000000000000000'; // 0.05 BNB в wei
-               txResult = await contract.methods.activateMiniAdmin().send({ 
-                   from: userWalletAddress,
-                   value: price,
-                   gas: 250000
-               });
-               break;
-               
-           case 3:
-               // Супер-админ (0.25 BNB)
-               price = '250000000000000000'; // 0.25 BNB в wei
-               txResult = await contract.methods.activateSuperAdmin().send({ 
-                   from: userWalletAddress,
-                   value: price,
-                   gas: 300000
-               });
-               break;
-               
-           default:
-               throw new Error('Unknown activation level');
-       }
-       
-       showNotification(`Level ${level} activation successful!`, 'success');
-       await checkUserAccess();
-       
-   } catch (error) {
-       console.error('Activation failed:', error);
-       showNotification(`Activation error: ${error.message}`, 'error');
-   }
-}
-
-// ✅ НОВАЯ: Функция регистрации
-async function registerNewUser(referrerId = '') {
-   try {
-       showNotification('Registering user...', 'info');
-       
-       if (!contract || !userWalletAddress) {
-           throw new Error('Connect wallet to register');
-       }
-       
-       const result = await contract.methods.registerUser(referrerId).send({ 
-           from: userWalletAddress,
-           gas: 300000
-       });
-       
-       showNotification('Registration successful! You can now activate.', 'success');
-       await checkUserAccess();
-       
-   } catch (error) {
-       console.error('Registration failed:', error);
-       showNotification(`Registration error: ${error.message}`, 'error');
-   }
-}
-
-     function updateUserInterface() {
-         const levelNames = {
-             0: 'NOT REGISTERED',
-             1: 'BASIC USER', 
-             2: 'MINI ADMIN',
-             3: 'SUPER ADMIN',
-             4: 'CO-AUTHOR'
-         };
-         
-         document.getElementById('userLevel').textContent = levelNames[currentUser.level] || 'UNKNOWN';
-         document.getElementById('currentUserId').textContent = currentUser.userId || 'Not Connected';
-         
-         if (userWalletAddress) {
-             const shortAddress = `${userWalletAddress.substring(0, 6)}...${userWalletAddress.substring(userWalletAddress.length - 4)}`;
-             document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
-             
-             // Скрываем статус подключения
-             const connectionStatus = document.getElementById('connectionStatus');
-             if (connectionStatus && currentUser.level > 0) {
-                 connectionStatus.style.display = 'none';
-             }
-             
-             // Обновляем статус сети
-             document.getElementById('networkStatus').textContent = 'Network Status: Connected';
-         }
-         
-         updateMenuAccess();
-     }
-
-     function updateMenuAccess() {
-         const menuItems = document.querySelectorAll('.menu-item');
-         
-         menuItems.forEach(item => {
-             const section = item.getAttribute('data-section');
-             
-             if (currentUser.level === 0) {
-                 if (section !== 'wallet' && section !== 'dashboard') {
-                     item.classList.add('locked');
-                 }
-             } else if (currentUser.level >= 1) {
-                 if (['dashboard', 'contacts', 'wallet'].includes(section)) {
-                     item.classList.remove('locked');
-                 }
-             }
-             
-             if (currentUser.level >= 2) {
-                 if (['referrals', 'crm'].includes(section)) {
-                     item.classList.remove('locked');
-                 }
-             }
-             
-             if (currentUser.level >= 3) {
-                 if (['mailings', 'analytics'].includes(section)) {
-                     item.classList.remove('locked');
-                 }
-             }
-             
-             if (currentUser.level >= 4) {
-                 item.classList.remove('locked');
-             }
-         });
-     }
-
-     function showInstallWalletPrompt() {
-         const connectBtn = document.getElementById('connectWalletBtn');
-         if (connectBtn) {
-             connectBtn.innerHTML = '📱 Install SafePal or Compatible Wallet';
-             connectBtn.onclick = () => {
-                 if (confirm('Install SafePal for best opBNB experience?\n\nClick OK for SafePal or Cancel for other wallets.')) {
-                     window.open('https://safepal.io/download', '_blank');
-                 } else {
-                     window.open('https://metamask.io/download/', '_blank');
-                 }
-             };
-         }
-     }
-
-     async function connectWallet() {
-         if (!web3) {
-             await initWeb3();
-         }
-         
-         try {
-             const connectBtn = document.getElementById('connectWalletBtn');
-             const walletInfo = SUPPORTED_WALLETS[connectedWallet];
-             
-             connectBtn.textContent = `🔄 Connecting to ${walletInfo.name}...`;
-             connectBtn.disabled = true;
-             
-             let accounts = [];
-             
-             if (window.safepal) {
-                 // SafePal специальный API
-                 const result = await window.safepal.connect();
-                 const account = await window.safepal.getAccount();
-                 if (account) {
-                     accounts = [account];
-                 }
-             } else if (window.ethereum) {
-                 // Стандартный Ethereum API
-                 accounts = await window.ethereum.request({
-                     method: 'eth_requestAccounts'
-                 });
-             }
-             
-             if (accounts && accounts.length > 0) {
-                 userWalletAddress = accounts[0];
-                 localStorage.setItem('connectedWallet', userWalletAddress);
-                 localStorage.setItem('connectedWalletType', connectedWallet);
-                 isWeb3Connected = true;
-                 
-                 await checkNetwork();
-                 await checkUserAccess();
-                 
-                 showWalletConnected(userWalletAddress);
-                 showNotification(`${walletInfo.icon} ${walletInfo.name} connected successfully!`, 'success');
-             }
-         } catch (error) {
-             console.error('Wallet connection failed:', error);
-             showNotification('Wallet connection failed', 'error');
-             
-             const connectBtn = document.getElementById('connectWalletBtn');
-             connectBtn.textContent = `🔐 Connect ${SUPPORTED_WALLETS[connectedWallet].name}`;
-             connectBtn.disabled = false;
-         }
-     }
-
-     function showWalletConnected(address) {
-         const connectBtn = document.getElementById('connectWalletBtn');
-         const walletStatus = document.getElementById('walletStatus');
-         const walletInfo = SUPPORTED_WALLETS[connectedWallet];
-         
-         if (connectBtn) connectBtn.style.display = 'none';
-         if (walletStatus) walletStatus.style.display = 'block';
-         
-         document.getElementById('walletAddress').textContent = 
-             `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-         
-         const walletConnectedText = document.getElementById('walletConnectedText');
-         if (walletConnectedText) {
-             walletConnectedText.textContent = `✅ ${walletInfo.icon} ${walletInfo.name} Connected`;
-         }
-         
-         walletConnected = true;
-     }
-
-     // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-     window.onload = async function() {
-         console.log('🚀 CardGift Web3 Dashboard initializing...');
-         
-         await initWeb3();
-         
-         if (!referralData || !referralData.levels) {
-             referralData = {
-                 levels: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
-             };
-         }
-         
-         if (isWeb3Connected && userWalletAddress) {
-             await checkUserAccess();
-         } else {
-             currentUser = {
-                 userId: 'NOT_CONNECTED',
-                 level: 0,
-                 isActive: false,
-                 walletAddress: null
-             };
-         }
-
-         localStorage.setItem('currentUser', JSON.stringify(currentUser));
-         
-         updateUserInterface();
-         loadDashboardData();
-         updateTime();
-         
-         console.log('✅ Web3 Dashboard initialized');
-     };
-
-     // ==================== НАВИГАЦИЯ ====================
-     function showSection(sectionId) {
-         document.querySelectorAll('.content-section').forEach(section => {
-             section.classList.remove('active');
-         });
-         
-         document.getElementById(sectionId).classList.add('active');
-         
-         document.querySelectorAll('.menu-item').forEach(item => {
-             item.classList.remove('active');
-         });
-         
-         document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-         
-         currentSection = sectionId;
-         
-         if (window.innerWidth <= 768) {
-             toggleSidebar();
-         }
-     }
-
-     function toggleSidebar() {
-         const sidebar = document.getElementById('sidebar');
-         const mainContent = document.getElementById('mainContent');
-         
-         sidebar.classList.toggle('mobile-visible');
-         sidebar.classList.toggle('mobile-hidden');
-         
-         if (sidebar.classList.contains('mobile-visible')) {
-             mainContent.classList.add('full-width');
-         } else {
+             sidebar.classList.remove('mobile-visible', 'mobile-hidden');
              mainContent.classList.remove('full-width');
          }
-     }
+     });
 
-     // ==================== ЯЗЫКОВЫЕ ФУНКЦИИ ====================
-     function switchLanguage(lang) {
-         currentLanguage = lang;
-         localStorage.setItem('adminLanguage', lang);
+     // Закрытие модальных окон
+     window.addEventListener('click', function(event) {
+         const crmModal = document.getElementById('crmModal');
+         if (event.target === crmModal) {
+             closeCRMModal();
+         }
+     });
+
+     document.addEventListener('keydown', function(event) {
+         if (event.key === 'Escape') {
+             closeCRMModal();
+         }
+     });
+
+     // ==================== ОБРАБОТЧИКИ СОБЫТИЙ КОШЕЛЬКА ====================
+     // Автоподключение при загрузке
+     document.addEventListener('DOMContentLoaded', async () => {
+         try {
+             const provider = window.safepal?.ethereum || window.ethereum;
+             
+             if (provider) {
+                 const accounts = await provider.request({
+                     method: 'eth_accounts'
+                 });
+                 
+                 if (accounts.length > 0) {
+                     console.log('🔄 Автоподключение обнаружено:', accounts[0]);
+                     userWalletAddress = accounts[0].toLowerCase();
+                     localStorage.setItem('connectedWallet', userWalletAddress);
+                     isWeb3Connected = true;
+                     await checkUserAccess();
+                     updateUserInterface();
+                     console.log('✅ Автоподключение успешно');
+                 }
+             }
+         } catch (error) {
+             console.log('ℹ️ Автоподключение недоступно:', error);
+         }
+     });
+
+     // Обработчики изменений кошелька
+     if (window.safepal && window.safepal.ethereum) {
+         window.safepal.ethereum.on('accountsChanged', (accounts) => {
+             console.log('🔄 SafePal аккаунты изменены:', accounts);
+             if (accounts.length === 0) {
+                 userWalletAddress = null;
+                 isWeb3Connected = false;
+                 currentUser = { userId: 'NOT_CONNECTED', level: 0, isActive: false, walletAddress: null };
+                 localStorage.removeItem('connectedWallet');
+                 updateUserInterface();
+                 showNotification('Кошелек отключен', 'info');
+             } else {
+                 userWalletAddress = accounts[0].toLowerCase();
+                 localStorage.setItem('connectedWallet', userWalletAddress);
+                 checkUserAccess().then(() => updateUserInterface());
+             }
+         });
          
-         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-         document.getElementById(`lang${lang.charAt(0).toUpperCase() + lang.slice(1)}`).classList.add('active');
+         window.safepal.ethereum.on('chainChanged', (chainId) => {
+             console.log('🔄 SafePal сеть изменена:', chainId);
+             if (parseInt(chainId, 16) !== CONTRACT_CONFIG.chainId) {
+                 showNotification('Переключитесь на opBNB сеть', 'warning');
+             }
+             setTimeout(() => window.location.reload(), 1000);
+         });
+     } else if (window.ethereum) {
+         window.ethereum.on('accountsChanged', (accounts) => {
+             console.log('🔄 Ethereum аккаунты изменены:', accounts);
+             if (accounts.length === 0) {
+                 userWalletAddress = null;
+                 isWeb3Connected = false;
+                 currentUser = { userId: 'NOT_CONNECTED', level: 0, isActive: false, walletAddress: null };
+                 localStorage.removeItem('connectedWallet');
+                 updateUserInterface();
+                 showNotification('Кошелек отключен', 'info');
+             } else {
+                 userWalletAddress = accounts[0].toLowerCase();
+                 localStorage.setItem('connectedWallet', userWalletAddress);
+                 checkUserAccess().then(() => updateUserInterface());
+             }
+         });
+         
+         window.ethereum.on('chainChanged', (chainId) => {
+             console.log('🔄 Ethereum сеть изменена:', chainId);
+             if (parseInt(chainId, 16) !== CONTRACT_CONFIG.chainId) {
+                 showNotification('Переключитесь на opBNB сеть', 'warning');
+             }
+             setTimeout(() => window.location.reload(), 1000);
+         });
      }
 
-     // ==================== ЗАГРУЗКА ДАННЫХ ====================
-    function loadDashboardData() {
-        const storedContacts = localStorage.getItem('allContacts');
-        if (storedContacts) {
-            contactsData = JSON.parse(storedContacts);
-        } else {
-            contactsData = {
-                telegram: [],
-                whatsapp: [],
-                email: [],
-                instagram: [],
-                viber: [],
-                facebook: [],
-                tiktok: [],
-                twitter: []
-            };
-        }
-        
-        updateDashboardStats();
-    }
+     // ==================== ДОПОЛНИТЕЛЬНЫЕ УТИЛИТЫ ====================
+     
+     // Проверка сети opBNB
+     async function ensureOpBNBNetwork() {
+         try {
+             const provider = window.safepal?.ethereum || window.ethereum;
+             if (!provider) return false;
+             
+             const chainId = await provider.request({ method: 'eth_chainId' });
+             const currentChainId = parseInt(chainId, 16);
+             
+             if (currentChainId !== CONTRACT_CONFIG.chainId) {
+                 console.log('🔄 Переключение на opBNB...');
+                 
+                 try {
+                     await provider.request({
+                         method: 'wallet_switchEthereumChain',
+                         params: [{ chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId) }]
+                     });
+                     console.log('✅ Переключено на opBNB');
+                     return true;
+                 } catch (switchError) {
+                     if (switchError.code === 4902) {
+                         // Сеть не найдена, добавляем
+                         await provider.request({
+                             method: 'wallet_addEthereumChain',
+                             params: [{
+                                 chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId),
+                                 chainName: 'opBNB Mainnet',
+                                 nativeCurrency: {
+                                     name: 'BNB',
+                                     symbol: 'BNB',
+                                     decimals: 18
+                                 },
+                                 rpcUrls: [CONTRACT_CONFIG.rpcUrl],
+                                 blockExplorerUrls: ['https://opbnbscan.com/']
+                             }]
+                         });
+                         console.log('✅ opBNB сеть добавлена');
+                         return true;
+                     }
+                     throw switchError;
+                 }
+             }
+             
+             return true;
+         } catch (error) {
+             console.error('❌ Ошибка работы с сетью:', error);
+             showNotification('Ошибка переключения на opBNB', 'error');
+             return false;
+         }
+     }
 
-    function updateDashboardStats() {
-        let totalContacts = 0;
-        Object.keys(contactsData).forEach(category => {
-            const count = contactsData[category].length;
-            totalContacts += count;
-            
-            const counterElement = document.getElementById(category + 'Count');
-            if (counterElement) {
-                counterElement.textContent = count;
-            }
-        });
-        
-        document.getElementById('totalContacts').textContent = totalContacts;
-        
-        const cardsData = localStorage.getItem('userCards');
-        let totalCards = 0;
-        if (cardsData) {
-            const cardsObject = JSON.parse(cardsData);
-            Object.keys(cardsObject).forEach(userId => {
-                totalCards += cardsObject[userId].length;
-            });
-        }
-        document.getElementById('totalCards').textContent = totalCards;
-        
-        let totalReferrals = 0;
-        if (referralData && referralData.levels) {
-            Object.values(referralData.levels).forEach(level => {
-                totalReferrals += level.length;
-            });
-        }
-        document.getElementById('totalReferrals').textContent = totalReferrals;
-        
-        updateTime();
-    }
+     // Получение баланса
+     async function getWalletBalance() {
+         try {
+             if (!web3 || !userWalletAddress) return '0';
+             
+             const balance = await web3.eth.getBalance(userWalletAddress);
+             return web3.utils.fromWei(balance, 'ether');
+         } catch (error) {
+             console.error('❌ Ошибка получения баланса:', error);
+             return '0';
+         }
+     }
 
-    // ==================== УТИЛИТЫ ====================
-    function updateTime() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        const updateTimeElement = document.getElementById('updateTime');
-        if (updateTimeElement) {
-            updateTimeElement.textContent = timeString;
-        }
-    }
+     // Обновление баланса в интерфейсе
+     async function updateWalletBalance() {
+         try {
+             const balance = await getWalletBalance();
+             const balanceElement = document.getElementById('walletBalance');
+             if (balanceElement) {
+                 balanceElement.textContent = `Balance: ${parseFloat(balance).toFixed(4)} BNB`;
+             }
+         } catch (error) {
+             console.error('❌ Ошибка обновления баланса:', error);
+         }
+     }
 
-    function filterContacts(category) {
-        showSection('contacts');
-    }
+     // Проверка статуса транзакции
+     async function checkTransactionStatus(txHash) {
+         try {
+             if (!web3) return null;
+             
+             const receipt = await web3.eth.getTransactionReceipt(txHash);
+             return receipt;
+         } catch (error) {
+             console.error('❌ Ошибка проверки транзакции:', error);
+             return null;
+         }
+     }
 
-    function exportContacts() {
-        if (currentUser.level === 0) {
-            showNotification('Connect wallet to export contacts', 'error');
-            return;
-        }
-        
-        const dataStr = JSON.stringify(contactsData, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        const url = URL.createObjectURL(dataBlob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `cardgift-contacts-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showNotification('Contacts exported successfully!', 'success');
-    }
+     // Валидация адреса
+     function isValidAddress(address) {
+         try {
+             return web3.utils.isAddress(address);
+         } catch (error) {
+             return false;
+         }
+     }
 
-    // ==================== CRM ФУНКЦИИ ====================
-    function closeCRMModal() {
-        document.getElementById('crmModal').classList.remove('show');
-        currentCRMUser = null;
-    }
+     // Сокращение адреса для отображения
+     function shortenAddress(address, chars = 4) {
+         if (!address) return '';
+         return `${address.substring(0, chars + 2)}...${address.substring(address.length - chars)}`;
+     }
 
-    function switchCRMTab(tabName) {
-        document.querySelectorAll('.crm-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.getElementById(`${tabName}Tab`).classList.add('active');
-        
-        document.querySelectorAll('.crm-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        document.getElementById(`${tabName}Content`).classList.add('active');
-    }
+     // Копирование в буфер обмена
+     async function copyToClipboard(text) {
+         try {
+             await navigator.clipboard.writeText(text);
+             showNotification('Скопировано в буфер обмена', 'success', 1500);
+         } catch (error) {
+             console.error('❌ Ошибка копирования:', error);
+             showNotification('Ошибка копирования', 'error');
+         }
+     }
 
-    function saveUserNotes() {
-        if (!currentCRMUser) return;
-        
-        const notes = document.getElementById('userNotes').value;
-        localStorage.setItem(`crm_notes_${currentCRMUser}`, notes);
-        
-        showNotification('Notes saved successfully!', 'success');
-    }
+     // Форматирование числа
+     function formatNumber(num, decimals = 4) {
+         if (isNaN(num)) return '0';
+         return parseFloat(num).toFixed(decimals);
+     }
 
-    function sendMessage() {
-        showNotification('Chat feature available after wallet connection', 'info');
-    }
+     // Проверка мобильного устройства
+     function isMobile() {
+         return window.innerWidth <= 768;
+     }
 
-    function openSocialContact() {
-        showNotification('Social contact feature available after wallet connection', 'info');
-    }
+     // Логирование событий (для отладки)
+     function logEvent(eventName, data = {}) {
+         const timestamp = new Date().toISOString();
+         console.log(`📊 [${timestamp}] ${eventName}:`, data);
+         
+         // Сохраняем в localStorage для анализа
+         const logs = JSON.parse(localStorage.getItem('dashboardLogs') || '[]');
+         logs.push({
+             timestamp,
+             event: eventName,
+             data,
+             userAgent: navigator.userAgent,
+             wallet: connectedWallet,
+             userLevel: currentUser.level
+         });
+         
+         // Оставляем только последние 100 записей
+         if (logs.length > 100) {
+             logs.splice(0, logs.length - 100);
+         }
+         
+         localStorage.setItem('dashboardLogs', JSON.stringify(logs));
+     }
 
-    // ==================== СИСТЕМА УВЕДОМЛЕНИЙ ====================
-    function showNotification(message, type = 'info', duration = 3000) {
-        const existingNotification = document.querySelector('.notification');
-        if (existingNotification) {
-            existingNotification.remove();
-        }
-        
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.textContent = message;
-        
-        notification.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.95);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            z-index: 10000;
-            opacity: 0;
-            transform: translateY(100%);
-            transition: all 0.3s ease;
-            border: 1px solid #333;
-            max-width: 400px;
-            word-wrap: break-word;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-        `;
-        
-        if (type === 'success') {
-            notification.style.borderColor = '#4CAF50';
-            notification.style.background = 'rgba(76, 175, 80, 0.2)';
-            notification.style.color = '#4CAF50';
-        } else if (type === 'error') {
-            notification.style.borderColor = '#f44336';
-            notification.style.background = 'rgba(244, 67, 54, 0.2)';
-            notification.style.color = '#f44336';
-        } else if (type === 'info') {
-            notification.style.borderColor = '#2196F3';
-            notification.style.background = 'rgba(33, 150, 243, 0.2)';
-            notification.style.color = '#2196F3';
-        }
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.style.opacity = '1';
-            notification.style.transform = 'translateY(0)';
-        }, 100);
-        
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            notification.style.transform = 'translateY(100%)';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
-        }, duration);
-    }
+     // Очистка данных (для разработки)
+     function clearAllData() {
+         if (confirm('Очистить все данные dashboard? Это действие нельзя отменить.')) {
+             localStorage.clear();
+             sessionStorage.clear();
+             showNotification('Все данные очищены', 'success');
+             setTimeout(() => window.location.reload(), 1000);
+         }
+     }
 
-    // ==================== ПЕРИОДИЧЕСКИЕ ОБНОВЛЕНИЯ ====================
-    setInterval(() => {
-        updateTime();
-        
-        if (currentSection === 'dashboard') {
-            updateDashboardStats();
-        }
-    }, 30000);
+     // Экспорт логов (для отладки)
+     function exportLogs() {
+         try {
+             const logs = localStorage.getItem('dashboardLogs') || '[]';
+             const blob = new Blob([logs], { type: 'application/json' });
+             const url = URL.createObjectURL(blob);
+             
+             const link = document.createElement('a');
+             link.href = url;
+             link.download = `cardgift-dashboard-logs-${new Date().toISOString().split('T')[0]}.json`;
+             document.body.appendChild(link);
+             link.click();
+             document.body.removeChild(link);
+             
+             URL.revokeObjectURL(url);
+             showNotification('Логи экспортированы', 'success');
+         } catch (error) {
+             console.error('❌ Ошибка экспорта логов:', error);
+             showNotification('Ошибка экспорта логов', 'error');
+         }
+     }
 
-    // ==================== АДАПТИВНОСТЬ ====================
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('mainContent');
-            
-            sidebar.classList.remove('mobile-visible', 'mobile-hidden');
-            mainContent.classList.remove('full-width');
-        }
-    });
+     // Глобальные функции для консоли (для отладки)
+     window.cardGiftDebug = {
+         clearData: clearAllData,
+         exportLogs: exportLogs,
+         checkUser: checkUserAccess,
+         updateUI: updateUserInterface,
+         getBalance: getWalletBalance,
+         ensureNetwork: ensureOpBNBNetwork,
+         currentUser: () => currentUser,
+         contractConfig: CONTRACT_CONFIG
+     };
 
-    // ==================== ЗАКРЫТИЕ МОДАЛЬНЫХ ОКОН ====================
-    window.addEventListener('click', function(event) {
-        const crmModal = document.getElementById('crmModal');
-        if (event.target === crmModal) {
-            closeCRMModal();
-        }
-    });
+     console.log('🎉 CardGift Web3 Dashboard полностью загружен и готов к работе!');
+     console.log('💡 Для отладки используйте: window.cardGiftDebug');
+     
+     // Логируем успешную инициализацию
+     logEvent('dashboard_initialized', {
+         userAgent: navigator.userAgent,
+         screenSize: `${window.innerWidth}x${window.innerHeight}`,
+         timestamp: new Date().toISOString()
+     });
 
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeCRMModal();
-        }
-    });
-
-    // ==================== ОБРАБОТЧИКИ СОБЫТИЙ КОШЕЛЬКА ====================
-    if (window.safepal) {
-        window.safepal.on('accountsChanged', (accounts) => {
-            if (accounts.length === 0) {
-                userWalletAddress = null;
-                isWeb3Connected = false;
-                currentUser = { userId: 'NOT_CONNECTED', level: 0, isActive: false, walletAddress: null };
-                updateUserInterface();
-                window.location.reload();
-            } else {
-                userWalletAddress = accounts[0];
-                checkUserAccess();
-            }
-        });
-        
-        window.safepal.on('chainChanged', () => {
-            window.location.reload();
-        });
-    } else if (window.ethereum) {
-        window.ethereum.on('accountsChanged', (accounts) => {
-            if (accounts.length === 0) {
-                userWalletAddress = null;
-                isWeb3Connected = false;
-                currentUser = { userId: 'NOT_CONNECTED', level: 0, isActive: false, walletAddress: null };
-                updateUserInterface();
-                window.location.reload();
-            } else {
-                userWalletAddress = accounts[0];
-                checkUserAccess();
-            }
-        });
-        
-        window.ethereum.on('chainChanged', () => {
-            window.location.reload();
-        });
-    }
-
-    console.log('🎉 CardGift Web3 Dashboard fully loaded and ready!');
 </script>
 </body>
 </html>
