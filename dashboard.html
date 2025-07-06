@@ -354,13 +354,21 @@
            margin-bottom: 30px;
        }
 
-       /* LEVEL BUTTONS */
+       /* ✅ ИСПРАВЛЕННЫЕ LEVEL BUTTONS - с горизонтальным скроллом */
        .level-buttons {
            display: flex;
            gap: 10px;
            margin-bottom: 20px;
-           flex-wrap: wrap;
-           justify-content: center;
+           overflow-x: auto;
+           overflow-y: hidden;
+           scrollbar-width: none; /* Firefox */
+           -ms-overflow-style: none; /* IE/Edge */
+           padding: 5px;
+           justify-content: flex-start;
+       }
+
+       .level-buttons::-webkit-scrollbar {
+           display: none; /* Chrome/Safari */
        }
 
        .level-btn {
@@ -370,6 +378,7 @@
            border-radius: 50%;
            width: 50px;
            height: 50px;
+           min-width: 50px; /* ✅ Предотвращает сжатие */
            display: flex;
            align-items: center;
            justify-content: center;
@@ -377,6 +386,7 @@
            cursor: pointer;
            transition: all 0.3s ease;
            position: relative;
+           flex-shrink: 0; /* ✅ Предотвращает сжатие */
        }
 
        .level-btn:hover {
@@ -438,14 +448,24 @@
            font-weight: bold;
        }
 
-       /* TEAM TABLE */
+       /* ✅ ИСПРАВЛЕННАЯ TEAM TABLE - с горизонтальным скроллом */
        .team-table {
            overflow-x: auto;
+           overflow-y: hidden;
+           scrollbar-width: none; /* Firefox */
+           -ms-overflow-style: none; /* IE/Edge */
+           border-radius: 10px;
+           border: 1px solid rgba(255, 215, 0, 0.2);
+       }
+
+       .team-table::-webkit-scrollbar {
+           display: none; /* Chrome/Safari */
        }
 
        .team-table table {
            width: 100%;
            border-collapse: collapse;
+           min-width: 600px; /* ✅ Минимальная ширина для скролла */
        }
 
        .team-table th {
@@ -455,6 +475,7 @@
            text-align: left;
            border-bottom: 2px solid #FFD700;
            font-size: 14px;
+           white-space: nowrap; /* ✅ Предотвращает перенос текста */
        }
 
        .team-table td {
@@ -462,6 +483,7 @@
            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
            color: #FFF;
            font-size: 13px;
+           white-space: nowrap; /* ✅ Предотвращает перенос текста */
        }
 
        .team-table tr:hover {
@@ -583,6 +605,13 @@
            display: flex;
            gap: 10px;
            margin-bottom: 20px;
+           overflow-x: auto; /* ✅ Горизонтальный скролл для табов */
+           scrollbar-width: none;
+           -ms-overflow-style: none;
+       }
+
+       .crm-tabs::-webkit-scrollbar {
+           display: none;
        }
 
        .crm-tab {
@@ -593,6 +622,8 @@
            border-radius: 8px;
            cursor: pointer;
            transition: all 0.3s ease;
+           white-space: nowrap; /* ✅ Предотвращает перенос текста */
+           flex-shrink: 0; /* ✅ Предотвращает сжатие */
        }
 
        .crm-tab.active {
@@ -776,7 +807,7 @@
            line-height: 1.6;
        }
 
-       /* RESPONSIVE */
+       /* ✅ УЛУЧШЕННАЯ АДАПТИВНОСТЬ */
        @media (max-width: 768px) {
            .sidebar {
                transform: translateX(-100%);
@@ -816,13 +847,17 @@
                right: 10px;
            }
 
+           /* ✅ Мобильные стили для level-buttons */
            .level-buttons {
-               gap: 5px;
+               gap: 8px;
+               padding: 10px 5px;
+               justify-content: flex-start;
            }
 
            .level-btn {
-               width: 40px;
-               height: 40px;
+               width: 45px;
+               height: 45px;
+               min-width: 45px;
                font-size: 14px;
            }
 
@@ -831,6 +866,7 @@
                margin: 10px;
            }
 
+           /* ✅ Мобильные стили для таблиц */
            .team-table {
                font-size: 12px;
            }
@@ -838,6 +874,35 @@
            .team-table th,
            .team-table td {
                padding: 8px 4px;
+               font-size: 11px;
+           }
+
+           /* ✅ Адаптивные табы CRM */
+           .crm-tabs {
+               gap: 5px;
+           }
+
+           .crm-tab {
+               padding: 6px 12px;
+               font-size: 12px;
+           }
+       }
+
+       /* ✅ Дополнительные мобильные стили */
+       @media (max-width: 480px) {
+           .level-btn {
+               width: 40px;
+               height: 40px;
+               min-width: 40px;
+               font-size: 12px;
+           }
+
+           .level-buttons {
+               gap: 5px;
+           }
+
+           .team-table table {
+               min-width: 500px; /* Уменьшено для очень маленьких экранов */
            }
        }
 
@@ -911,976 +976,1134 @@
                <div class="menu-icon">💎</div>
                <span id="menuWallet">Web3 Wallet</span>
            </div>
-           <div class="menu-item locked" onclick="showSection('settings')" data-section="settings">
-               <div class="menu-icon">⚙️</div>
-               <span id="menuSettings">Settings</span>
-           </div>
-       </nav>
-   </div>
-
-   <!-- CRM MODAL -->
-   <div class="crm-modal" id="crmModal">
-       <div class="crm-modal-content">
-           <div class="crm-header">
-               <div class="crm-title" id="crmModalTitle">User CRM</div>
-               <button class="close-btn" onclick="closeCRMModal()">×</button>
-           </div>
-           
-           <div class="crm-tabs">
-               <button class="crm-tab active" onclick="switchCRMTab('notes')" id="notesTab">📝 Notes</button>
-               <button class="crm-tab" onclick="switchCRMTab('chat')" id="chatTab">💬 Chat</button>
-               <button class="crm-tab" onclick="switchCRMTab('social')" id="socialTab">📱 Social</button>
-           </div>
-           
-           <div class="crm-content active" id="notesContent">
-               <textarea class="notes-textarea" id="userNotes" placeholder="Write your notes about this user..."></textarea>
-               <button class="save-btn" onclick="saveUserNotes()">💾 Save Notes</button>
-           </div>
-           
-           <div class="crm-content" id="chatContent">
-               <div class="chat-container">
-                   <div class="chat-messages" id="chatMessages">
-                       <div style="text-align: center; color: #CCC; padding: 20px;">
-                           No messages yet. Start a conversation!
-                       </div>
-                   </div>
-                   <div class="chat-input-area">
-                       <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">
-                       <button class="send-btn" onclick="sendMessage()">Send</button>
-                   </div>
-               </div>
-           </div>
-           
-           <div class="crm-content" id="socialContent">
-               <div style="color: #CCC; line-height: 1.6;">
-                   <h4 style="color: #FFD700; margin-bottom: 10px;">Contact Information:</h4>
-                   <div id="userSocialInfo">
-                       <p><strong>Platform:</strong> <span id="userPlatform">-</span></p>
-                       <p><strong>Contact:</strong> <span id="userContact">-</span></p>
-                       <p><strong>Registration Date:</strong> <span id="userRegDate">-</span></p>
-                   </div>
-                   <button style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; margin-top: 15px;" onclick="openSocialContact()">
-                       📱 Open in Social Media
-                   </button>
-               </div>
-           </div>
-       </div>
-   </div>
-
-   <!-- MAIN CONTENT -->
-   <div class="main-content" id="mainContent">
-       
-       <!-- DASHBOARD SECTION -->
-      <div id="dashboard" class="content-section active">
-          <div class="section-header">
-              <h1 class="section-title" id="dashboardTitle">📊 Web3 Dashboard</h1>
-              <div style="color: #CCC; font-size: 14px;" id="lastUpdate">Last update: <span id="updateTime">--:--</span></div>
+          <div class="menu-item locked" onclick="showSection('settings')" data-section="settings">
+              <div class="menu-icon">⚙️</div>
+              <span id="menuSettings">Settings</span>
           </div>
+      </nav>
+  </div>
 
-          <!-- CONNECTION STATUS -->
-          <div class="referral-section" style="margin-bottom: 30px;">
-              <h3 style="color: #FFD700; margin-bottom: 15px;">🔐 Connection Status</h3>
-              <div id="connectionStatus" style="text-align: center; padding: 20px;">
-                  <div style="color: #FF4444; font-size: 18px; margin-bottom: 10px;">⚠️ Wallet Not Connected</div>
-                  <div style="color: #CCC;">Connect your SafePal wallet to access all features</div>
-                  <button style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 15px 30px; cursor: pointer; margin-top: 15px; font-weight: bold;" onclick="showSection('wallet')">
-                      🔐 Connect Wallet
-                  </button>
-              </div>
+  <!-- CRM MODAL -->
+  <div class="crm-modal" id="crmModal">
+      <div class="crm-modal-content">
+          <div class="crm-header">
+              <div class="crm-title" id="crmModalTitle">User CRM</div>
+              <button class="close-btn" onclick="closeCRMModal()">×</button>
           </div>
-
-          <!-- MAIN STATS -->
-          <div class="stats-grid">
-              <div class="stat-card">
-                  <div class="stat-icon">👥</div>
-                  <div class="stat-number" id="totalContacts">0</div>
-                  <div class="stat-label" id="totalContactsLabel">Total Contacts</div>
-              </div>
-              <div class="stat-card">
-                  <div class="stat-icon">🔗</div>
-                  <div class="stat-number" id="totalReferrals">0</div>
-                  <div class="stat-label" id="totalReferralsLabel">Active Referrals</div>
-              </div>
-              <div class="stat-card">
-                  <div class="stat-icon">💎</div>
-                  <div class="stat-number" id="totalEarnings">0.000</div>
-                  <div class="stat-label" id="totalEarningsLabel">Earnings (opBNB)</div>
-              </div>
-              <div class="stat-card">
-                  <div class="stat-icon">🎁</div>
-                  <div class="stat-number" id="totalCards">0</div>
-                  <div class="stat-label" id="totalCardsLabel">Cards Generated</div>
-              </div>
+          
+          <div class="crm-tabs">
+              <button class="crm-tab active" onclick="switchCRMTab('notes')" id="notesTab">📝 Notes</button>
+              <button class="crm-tab" onclick="switchCRMTab('chat')" id="chatTab">💬 Chat</button>
+              <button class="crm-tab" onclick="switchCRMTab('social')" id="socialTab">📱 Social</button>
           </div>
-
-          <!-- CONTACT CATEGORIES -->
-          <h3 style="color: #FFD700; margin-bottom: 20px;" id="contactCategoriesTitle">📱 Contact Categories</h3>
-          <div class="contact-categories">
-              <div class="category-card" onclick="filterContacts('telegram')">
-                  <div class="category-icon">📱</div>
-                  <div class="category-name">Telegram</div>
-                  <div class="category-count" id="telegramCount">0</div>
-              </div>
-              <div class="category-card" onclick="filterContacts('whatsapp')">
-                  <div class="category-icon">💬</div>
-                  <div class="category-name">WhatsApp</div>
-                  <div class="category-count" id="whatsappCount">0</div>
-              </div>
-              <div class="category-card" onclick="filterContacts('email')">
-                  <div class="category-icon">📧</div>
-                  <div class="category-name">Email</div>
-                  <div class="category-count" id="emailCount">0</div>
-              </div>
-              <div class="category-card" onclick="filterContacts('instagram')">
-                  <div class="category-icon">📷</div>
-                  <div class="category-name">Instagram</div>
-                  <div class="category-count" id="instagramCount">0</div>
-              </div>
-              <div class="category-card" onclick="filterContacts('viber')">
-                  <div class="category-icon">💜</div>
-                  <div class="category-name">Viber</div>
-                  <div class="category-count" id="viberCount">0</div>
-              </div>
-              <div class="category-card" onclick="filterContacts('facebook')">
-                  <div class="category-icon">👤</div>
-                  <div class="category-name">Facebook</div>
-                  <div class="category-count" id="facebookCount">0</div>
-              </div>
-              <div class="category-card" onclick="filterContacts('tiktok')">
-                  <div class="category-icon">🎵</div>
-                  <div class="category-name">TikTok</div>
-                  <div class="category-count" id="tiktokCount">0</div>
-              </div>
-              <div class="category-card" onclick="filterContacts('twitter')">
-                  <div class="category-icon">🐦</div>
-                  <div class="category-name">Twitter/X</div>
-                  <div class="category-count" id="twitterCount">0</div>
-              </div>
+          
+          <div class="crm-content active" id="notesContent">
+              <textarea class="notes-textarea" id="userNotes" placeholder="Write your notes about this user..."></textarea>
+              <button class="save-btn" onclick="saveUserNotes()">💾 Save Notes</button>
           </div>
-
-          <!-- RECENT ACTIVITY -->
-          <div class="referral-section">
-              <h3 style="color: #FFD700; margin-bottom: 15px;" id="recentActivityTitle">📈 Recent Activity</h3>
-              <div id="recentActivityList">
-                  <div style="text-align: center; color: #CCC; padding: 20px;" id="noActivityText">
-                      Connect your wallet to see activity
+          
+          <div class="crm-content" id="chatContent">
+              <div class="chat-container">
+                  <div class="chat-messages" id="chatMessages">
+                      <div style="text-align: center; color: #CCC; padding: 20px;">
+                          No messages yet. Start a conversation!
+                      </div>
+                  </div>
+                  <div class="chat-input-area">
+                      <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">
+                      <button class="send-btn" onclick="sendMessage()">Send</button>
                   </div>
               </div>
           </div>
-      </div>
-
-      <!-- CONTACTS SECTION -->
-      <div id="contacts" class="content-section">
-          <div class="section-header">
-              <h1 class="section-title" id="contactsTitle">👥 Contact Management</h1>
-              <button style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 10px 20px; cursor: pointer;" onclick="exportContacts()">
-                  📥 <span id="exportBtn">Export All</span>
-              </button>
-          </div>
-
-          <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 20px;">
-              <div id="contactsTable">
-                  <div style="text-align: center; color: #CCC; padding: 40px;" id="noContactsText">
-                      Connect wallet to manage contacts
+          
+          <div class="crm-content" id="socialContent">
+              <div style="color: #CCC; line-height: 1.6;">
+                  <h4 style="color: #FFD700; margin-bottom: 10px;">Contact Information:</h4>
+                  <div id="userSocialInfo">
+                      <p><strong>Platform:</strong> <span id="userPlatform">-</span></p>
+                      <p><strong>Contact:</strong> <span id="userContact">-</span></p>
+                      <p><strong>Registration Date:</strong> <span id="userRegDate">-</span></p>
                   </div>
-              </div>
-          </div>
-      </div>
-
-      <!-- REFERRALS SECTION -->
-      <div id="referrals" class="content-section">
-          <div class="section-header">
-              <h1 class="section-title" id="referralsTitle">🔗 Referral Network</h1>
-              <div style="color: #CCC;" id="networkStatus">Network Status: Disconnected</div>
-          </div>
-
-          <div class="referral-section">
-              <div style="text-align: center; color: #CCC; padding: 40px;">
-                  Connect wallet to view referral network
-              </div>
-          </div>
-      </div>
-
-      <!-- CRM SECTION -->
-      <div id="crm" class="content-section">
-          <div class="section-header">
-              <h1 class="section-title" id="crmTitle">💬 CRM & Internal Chat</h1>
-          </div>
-
-          <div class="referral-section">
-              <div style="text-align: center; color: #CCC; padding: 40px;">
-                  Connect wallet to access CRM features
-              </div>
-          </div>
-      </div>
-
-      <!-- CO-AUTHORS SECTION -->
-      <div id="coauthors" class="content-section">
-          <div class="section-header">
-              <h1 class="section-title" id="coauthorsTitle">👑 Co-Authors Management</h1>
-          </div>
-
-          <div class="coauthors-section">
-              <div style="text-align: center; color: #CCC; padding: 40px;">
-                  Connect wallet to manage co-authors
-              </div>
-          </div>
-      </div>
-
-      <!-- MAILINGS SECTION -->
-      <div id="mailings" class="content-section">
-          <div class="development-placeholder">
-              <div class="development-icon">🚧</div>
-              <div class="development-title" id="mailingsDevTitle">Mass Mailings System</div>
-              <div class="development-text" id="mailingsDevText">
-                  Advanced mailing system is currently in development.<br>
-                  This section will include:<br><br>
-                  • Multi-platform messaging (Telegram, WhatsApp, Email)<br>
-                  • Template management<br>
-                  • Scheduling and automation<br>
-                  • Delivery analytics<br>
-                  • Anti-spam protection
-              </div>
-          </div>
-      </div>
-
-      <!-- ANALYTICS SECTION -->
-      <div id="analytics" class="content-section">
-          <div class="development-placeholder">
-              <div class="development-icon">📊</div>
-              <div class="development-title" id="analyticsDevTitle">Advanced Analytics</div>
-              <div class="development-text" id="analyticsDevText">
-                  Comprehensive analytics dashboard is in development.<br>
-                  Features coming soon:<br><br>
-                  • Real-time statistics<br>
-                  • Contact growth charts<br>
-                  • Conversion tracking<br>
-                  • Revenue analytics<br>
-                  • Performance reports
-              </div>
-          </div>
-      </div>
-
-      <!-- WALLET SECTION -->
-      <div id="wallet" class="content-section">
-          <div class="section-header">
-              <h1 class="section-title" id="walletTitle">💎 Web3 Wallet</h1>
-              <div style="color: #CCC;" id="walletNetwork">Network: opBNB Mainnet</div>
-          </div>
-
-          <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 30px;">
-              <h3 style="color: #FFD700; margin-bottom: 15px;" id="walletConnectionTitle">🔗 Blockchain Connection</h3>
-              
-              <button id="connectWalletBtn" style="background: linear-gradient(45deg, #1E88E5, #1565C0); color: white; border: none; border-radius: 12px; padding: 15px 30px; font-weight: bold; cursor: pointer; width: 100%; transition: all 0.3s ease; margin-bottom: 15px;" onclick="connectWallet()">
-                  <span id="connectWalletText">🔐 Connect SafePal Wallet</span>
-              </button>
-              
-              <div id="walletStatus" style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4CAF50; border-radius: 10px; padding: 15px; text-align: center; display: none;">
-                  <div style="font-weight: bold; margin-bottom: 10px;" id="walletConnectedText">✅ SafePal Connected</div>
-                  <div id="walletAddress" style="color: #4CAF50; margin-bottom: 5px;"></div>
-                  <div id="walletBalance" style="color: #CCC; font-size: 14px;"></div>
-              </div>
-
-              <!-- SMART CONTRACT INFO -->
-              <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 10px; padding: 20px; margin-top: 20px;">
-                  <h4 style="color: #FFD700; margin-bottom: 10px;" id="contractInfoTitle">📄 Smart Contract Info</h4>
-                  <div style="color: #CCC; font-size: 14px;">
-                      <div><strong id="contractStatusLabel">Status:</strong> <span style="color: #4CAF50;" id="contractStatus">Active</span></div>
-                      <div><strong id="contractNetworkLabel">Network:</strong> opBNB Mainnet</div>
-                      <div><strong id="contractAddressLabel">Address:</strong> <span style="word-break: break-all;" id="contractAddress">0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618</span></div>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <!-- SETTINGS SECTION -->
-      <div id="settings" class="content-section">
-          <div class="section-header">
-              <h1 class="section-title" id="settingsTitle">⚙️ Settings</h1>
-          </div>
-
-          <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px;">
-              <h3 style="color: #FFD700; margin-bottom: 15px;" id="languageSettingsTitle">🌍 Language Settings</h3>
-              <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                  <button class="lang-btn active" onclick="switchLanguage('en')" style="padding: 10px 20px; border-radius: 8px;">
-                      🇺🇸 English
-                  </button>
-                  <button class="lang-btn" onclick="switchLanguage('ru')" style="padding: 10px 20px; border-radius: 8px;">
-                      🇷🇺 Русский
-                  </button>
-                  <button class="lang-btn" onclick="switchLanguage('ua')" style="padding: 10px 20px; border-radius: 8px;">
-                      🇺🇦 Українська
+                  <button style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer; margin-top: 15px;" onclick="openSocialContact()">
+                      📱 Open in Social Media
                   </button>
               </div>
           </div>
       </div>
   </div>
 
-  <script>
-      // ==================== WEB3 CONFIGURATION ====================
-      const CONTRACT_CONFIG = {
-          address: '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618',
-          network: 'opBNB',
-          chainId: 204,
-          rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
-          abi: [
-              {
-                  "inputs": [{"name": "user", "type": "address"}],
-                  "name": "getUserLevel",
-                  "outputs": [{"name": "", "type": "uint256"}],
-                  "stateMutability": "view",
-                  "type": "function"
-              },
-              {
-                  "inputs": [{"name": "user", "type": "address"}],
-                  "name": "getUserReferrals", 
-                  "outputs": [{"name": "", "type": "address[]"}],
-                  "stateMutability": "view",
-                  "type": "function"
-              },
-              {
-                  "inputs": [{"name": "user", "type": "address"}],
-                  "name": "isUserActive",
-                  "outputs": [{"name": "", "type": "bool"}],
-                  "stateMutability": "view", 
-                  "type": "function"
-              },
-              {
-                  "inputs": [{"name": "user", "type": "address"}],
-                  "name": "getTotalEarnings",
-                  "outputs": [{"name": "", "type": "uint256"}],
-                  "stateMutability": "view",
-                  "type": "function"
-              },
-              {
-                  "inputs": [],
-                  "name": "register",
-                  "outputs": [],
-                  "stateMutability": "nonpayable",
-                  "type": "function"
-              }
-          ]
-      };
+  <!-- MAIN CONTENT -->
+  <div class="main-content" id="mainContent">
+      
+      <!-- DASHBOARD SECTION -->
+     <div id="dashboard" class="content-section active">
+         <div class="section-header">
+             <h1 class="section-title" id="dashboardTitle">📊 Web3 Dashboard</h1>
+             <div style="color: #CCC; font-size: 14px;" id="lastUpdate">Last update: <span id="updateTime">--:--</span></div>
+         </div>
 
-      const SUPPORTED_WALLETS = {
-          safepal: {
-              name: 'SafePal',
-              icon: '🔐',
-              priority: 1,
-              detected: () => window.ethereum?.isSafePal || window.ethereum
-          },
-          metamask: {
-              name: 'MetaMask', 
-              icon: '🦊',
-              priority: 2,
-              detected: () => window.ethereum?.isMetaMask
-          },
-          trustwallet: {
-              name: 'Trust Wallet',
-              icon: '💙', 
-              priority: 3,
-              detected: () => window.ethereum?.isTrust
-          },
-          generic: {
-              name: 'Web3 Wallet',
-              icon: '💰',
-              priority: 4,
-              detected: () => window.ethereum
-          }
-      };
+         <!-- CONNECTION STATUS -->
+         <div class="referral-section" style="margin-bottom: 30px;">
+             <h3 style="color: #FFD700; margin-bottom: 15px;">🔐 Connection Status</h3>
+             <div id="connectionStatus" style="text-align: center; padding: 20px;">
+                 <div style="color: #FF4444; font-size: 18px; margin-bottom: 10px;">⚠️ Wallet Not Connected</div>
+                 <div style="color: #CCC;">Connect your SafePal wallet to access all features</div>
+                 <button style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 15px 30px; cursor: pointer; margin-top: 15px; font-weight: bold;" onclick="showSection('wallet')">
+                     🔐 Connect Wallet
+                 </button>
+             </div>
+         </div>
 
-      // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
-      let currentLanguage = 'en';
-      let currentSection = 'dashboard';
-      let web3;
-      let contract;
-      let userWalletAddress = null;
-      let isWeb3Connected = false;
-      let connectedWallet = null;
-      let currentUser = {
-          userId: 'NOT_CONNECTED',
-          level: 0,
-          isActive: false,
-          walletAddress: null
-      };
-      let walletConnected = false;
-      let contactsData = {};
-      let referralData = {};
-      let currentLevel = 0;
-      let currentCRMUser = null;
-      let notifications = {
-          referral: 0,
-          crm: 0
-      };
+         <!-- MAIN STATS -->
+         <div class="stats-grid">
+             <div class="stat-card">
+                 <div class="stat-icon">👥</div>
+                 <div class="stat-number" id="totalContacts">0</div>
+                 <div class="stat-label" id="totalContactsLabel">Total Contacts</div>
+             </div>
+             <div class="stat-card">
+                 <div class="stat-icon">🔗</div>
+                 <div class="stat-number" id="totalReferrals">0</div>
+                 <div class="stat-label" id="totalReferralsLabel">Active Referrals</div>
+             </div>
+             <div class="stat-card">
+                 <div class="stat-icon">💎</div>
+                 <div class="stat-number" id="totalEarnings">0.000</div>
+                 <div class="stat-label" id="totalEarningsLabel">Earnings (opBNB)</div>
+             </div>
+             <div class="stat-card">
+                 <div class="stat-icon">🎁</div>
+                 <div class="stat-number" id="totalCards">0</div>
+                 <div class="stat-label" id="totalCardsLabel">Cards Generated</div>
+             </div>
+         </div>
 
-      // ==================== WEB3 INTEGRATION ====================
-      async function initWeb3() {
-          const availableWallets = Object.entries(SUPPORTED_WALLETS)
-              .filter(([key, wallet]) => wallet.detected())
-              .sort((a, b) => a[1].priority - b[1].priority);
-          
-          if (availableWallets.length === 0) {
-              console.warn('No Web3 wallets detected');
-              showInstallWalletPrompt();
-              return;
-          }
-          
-          const [walletKey, walletInfo] = availableWallets[0];
-          connectedWallet = walletKey;
-          
-          try {
-              let provider = window.ethereum;
-              
-              web3 = new Web3(provider);
-              contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
-              
-              const savedAddress = localStorage.getItem('connectedWallet');
-              const savedWalletType = localStorage.getItem('connectedWalletType');
-              
-              if (savedAddress && savedWalletType === walletKey) {
-                  userWalletAddress = savedAddress;
-                  isWeb3Connected = true;
-                  await checkNetwork();
-                  await checkUserAccess();
-              }
-              
-              console.log(`🔐 Using ${walletInfo.name} provider`);
-              
-          } catch (error) {
-              console.error('Web3 initialization failed:', error);
-          }
-      }
+         <!-- CONTACT CATEGORIES -->
+         <h3 style="color: #FFD700; margin-bottom: 20px;" id="contactCategoriesTitle">📱 Contact Categories</h3>
+         <div class="contact-categories">
+             <div class="category-card" onclick="filterContacts('telegram')">
+                 <div class="category-icon">📱</div>
+                 <div class="category-name">Telegram</div>
+                 <div class="category-count" id="telegramCount">0</div>
+             </div>
+             <div class="category-card" onclick="filterContacts('whatsapp')">
+                 <div class="category-icon">💬</div>
+                 <div class="category-name">WhatsApp</div>
+                 <div class="category-count" id="whatsappCount">0</div>
+             </div>
+             <div class="category-card" onclick="filterContacts('email')">
+                 <div class="category-icon">📧</div>
+                 <div class="category-name">Email</div>
+                 <div class="category-count" id="emailCount">0</div>
+             </div>
+             <div class="category-card" onclick="filterContacts('instagram')">
+                 <div class="category-icon">📷</div>
+                 <div class="category-name">Instagram</div>
+                 <div class="category-count" id="instagramCount">0</div>
+             </div>
+             <div class="category-card" onclick="filterContacts('viber')">
+                 <div class="category-icon">💜</div>
+                 <div class="category-name">Viber</div>
+                 <div class="category-count" id="viberCount">0</div>
+             </div>
+             <div class="category-card" onclick="filterContacts('facebook')">
+                 <div class="category-icon">👤</div>
+                 <div class="category-name">Facebook</div>
+                 <div class="category-count" id="facebookCount">0</div>
+             </div>
+             <div class="category-card" onclick="filterContacts('tiktok')">
+                 <div class="category-icon">🎵</div>
+                 <div class="category-name">TikTok</div>
+                 <div class="category-count" id="tiktokCount">0</div>
+             </div>
+             <div class="category-card" onclick="filterContacts('twitter')">
+                 <div class="category-icon">🐦</div>
+                 <div class="category-name">Twitter/X</div>
+                 <div class="category-count" id="twitterCount">0</div>
+             </div>
+         </div>
 
-      async function checkNetwork() {
-          try {
-              const chainId = await web3.eth.getChainId();
-              if (Number(chainId) !== CONTRACT_CONFIG.chainId) {
-                  await switchToCorrectNetwork();
-              }
-          } catch (error) {
-              console.error('Network check failed:', error);
-          }
-      }
+         <!-- RECENT ACTIVITY -->
+         <div class="referral-section">
+             <h3 style="color: #FFD700; margin-bottom: 15px;" id="recentActivityTitle">📈 Recent Activity</h3>
+             <div id="recentActivityList">
+                 <div style="text-align: center; color: #CCC; padding: 20px;" id="noActivityText">
+                     Connect your wallet to see activity
+                 </div>
+             </div>
+         </div>
+     </div>
 
-      async function switchToCorrectNetwork() {
-          try {
-              await window.ethereum.request({
-                  method: 'wallet_switchEthereumChain',
-                  params: [{ chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId) }]
-              });
-          } catch (error) {
-              if (error.code === 4902) {
-                  await addNetwork();
-              }
-          }
-      }
+     <!-- CONTACTS SECTION -->
+     <div id="contacts" class="content-section">
+         <div class="section-header">
+             <h1 class="section-title" id="contactsTitle">👥 Contact Management</h1>
+             <button style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 10px; padding: 10px 20px; cursor: pointer;" onclick="exportContacts()">
+                 📥 <span id="exportBtn">Export All</span>
+             </button>
+         </div>
 
-      async function addNetwork() {
-          try {
-              await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                  params: [{
-                      chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId),
-                      chainName: 'opBNB Mainnet',
-                      nativeCurrency: {
-                          name: 'BNB',
-                          symbol: 'BNB',
-                          decimals: 18
-                      },
-                      rpcUrls: [CONTRACT_CONFIG.rpcUrl],
-                      blockExplorerUrls: ['https://opbnbscan.com/']
-                  }]
-              });
-              
-              showNotification('opBNB network added successfully!', 'success');
-          } catch (error) {
-              console.error('Failed to add network:', error);
-              showNotification('Failed to add opBNB network', 'error');
-          }
-      }
+         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 20px;">
+             <div id="contactsTable">
+                 <div style="text-align: center; color: #CCC; padding: 40px;" id="noContactsText">
+                     Connect wallet to manage contacts
+                 </div>
+             </div>
+         </div>
+     </div>
 
-      async function checkUserAccess() {
-          if (!contract || !userWalletAddress) return;
-          
-          try {
-              console.log('🔍 Checking user access for:', userWalletAddress);
-              
-              const userLevel = await contract.methods.getUserLevel(userWalletAddress).call();
-              const isActive = await contract.methods.isUserActive(userWalletAddress).call();
-              
-              currentUser = {
-                  userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
-                  level: parseInt(userLevel),
-                  isActive: isActive,
-                  walletAddress: userWalletAddress
-              };
-              
-              if (parseInt(userLevel) === 0) {
-                  showRegistrationPrompt();
-              }
-              
-              updateUserInterface();
-              
-          } catch (error) {
-              console.error('Access check failed:', error);
-              currentUser = {
-                  userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
-                  level: 1,
-                  isActive: true,
-                  walletAddress: userWalletAddress
-              };
-              updateUserInterface();
-          }
-      }
+     <!-- REFERRALS SECTION -->
+     <div id="referrals" class="content-section">
+         <div class="section-header">
+             <h1 class="section-title" id="referralsTitle">🔗 Referral Network</h1>
+             <div style="color: #CCC;" id="networkStatus">Network Status: Disconnected</div>
+         </div>
 
-      function showRegistrationPrompt() {
-          if (confirm('Вы не зарегистрированы в системе. Хотите зарегистрироваться?')) {
-              registerUser();
-          }
-      }
+         <div class="referral-section">
+             <div style="text-align: center; color: #CCC; padding: 40px;">
+                 Connect wallet to view referral network
+             </div>
+         </div>
+     </div>
 
-      async function registerUser() {
-          try {
-              await contract.methods.register().send({ from: userWalletAddress });
-              showNotification('Registration successful!', 'success');
-              await checkUserAccess();
-          } catch (error) {
-              showNotification('Registration failed', 'error');
-          }
-      }
+     <!-- CRM SECTION -->
+     <div id="crm" class="content-section">
+         <div class="section-header">
+             <h1 class="section-title" id="crmTitle">💬 CRM & Internal Chat</h1>
+         </div>
 
-      function updateUserInterface() {
-          const levelNames = {
-              0: 'NOT REGISTERED',
-              1: 'BASIC USER', 
-              2: 'MINI ADMIN',
-              3: 'CO-AUTHOR',
-              4: 'MASTER ADMIN'
-          };
-          
-          document.getElementById('userLevel').textContent = levelNames[currentUser.level] || 'UNKNOWN';
-          document.getElementById('currentUserId').textContent = currentUser.userId || 'Not Connected';
-          
-          if (userWalletAddress) {
-              const shortAddress = `${userWalletAddress.substring(0, 6)}...${userWalletAddress.substring(userWalletAddress.length - 4)}`;
-              document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
-              
-              // Скрываем статус подключения
-              const connectionStatus = document.getElementById('connectionStatus');
-              if (connectionStatus) {
-                  connectionStatus.style.display = 'none';
-              }
-              
-              // Обновляем статус сети
-              document.getElementById('networkStatus').textContent = 'Network Status: Connected';
-          }
-          
-          updateMenuAccess();
-      }
+         <div class="referral-section">
+             <div style="text-align: center; color: #CCC; padding: 40px;">
+                 Connect wallet to access CRM features
+             </div>
+         </div>
+     </div>
 
-      function updateMenuAccess() {
-          const menuItems = document.querySelectorAll('.menu-item');
-          
-          menuItems.forEach(item => {
-              const section = item.getAttribute('data-section');
-              
-              if (currentUser.level === 0) {
-                  if (section !== 'wallet' && section !== 'dashboard') {
-                      item.classList.add('locked');
-                  }
-              } else if (currentUser.level >= 1) {
-                  if (['dashboard', 'contacts', 'wallet'].includes(section)) {
-                      item.classList.remove('locked');
-                  }
-              }
-              
-              if (currentUser.level >= 2) {
-                  if (['referrals', 'crm'].includes(section)) {
-                      item.classList.remove('locked');
-                  }
-              }
-              
-              if (currentUser.level >= 3) {
-                  if (['mailings', 'analytics'].includes(section)) {
-                      item.classList.remove('locked');
-                  }
-              }
-              
-              if (currentUser.level >= 4) {
-                  item.classList.remove('locked');
-              }
-          });
-      }
+     <!-- CO-AUTHORS SECTION -->
+     <div id="coauthors" class="content-section">
+         <div class="section-header">
+             <h1 class="section-title" id="coauthorsTitle">👑 Co-Authors Management</h1>
+         </div>
 
-      function showInstallWalletPrompt() {
-          const connectBtn = document.getElementById('connectWalletBtn');
-          if (connectBtn) {
-              connectBtn.innerHTML = '📱 Install SafePal or Compatible Wallet';
-              connectBtn.onclick = () => {
-                  if (confirm('Install SafePal for best opBNB experience?\n\nClick OK for SafePal or Cancel for other wallets.')) {
-                      window.open('https://safepal.io/download', '_blank');
-                  } else {
-                      window.open('https://metamask.io/download/', '_blank');
-                  }
-              };
-          }
-      }
+         <div class="coauthors-section">
+             <div style="text-align: center; color: #CCC; padding: 40px;">
+                 Connect wallet to manage co-authors
+             </div>
+         </div>
+     </div>
 
-      async function connectWallet() {
-          if (!web3) {
-              await initWeb3();
-          }
-          
-          try {
-              const connectBtn = document.getElementById('connectWalletBtn');
-              const walletInfo = SUPPORTED_WALLETS[connectedWallet];
-              
-              connectBtn.textContent = `🔄 Connecting to ${walletInfo.name}...`;
-              connectBtn.disabled = true;
-              
-              const accounts = await window.ethereum.request({
-                  method: 'eth_requestAccounts'
-              });
-              
-              if (accounts && accounts.length > 0) {
-                  userWalletAddress = accounts[0];
-                  localStorage.setItem('connectedWallet', userWalletAddress);
-                  localStorage.setItem('connectedWalletType', connectedWallet);
-                  isWeb3Connected = true;
-                  
-                  await checkNetwork();
-                  await checkUserAccess();
-                  
-                  showWalletConnected(userWalletAddress);
-                  showNotification(`${walletInfo.icon} ${walletInfo.name} connected successfully!`, 'success');
-              }
-          } catch (error) {
-              console.error('Wallet connection failed:', error);
-              showNotification('Wallet connection failed', 'error');
-              
-              const connectBtn = document.getElementById('connectWalletBtn');
-              connectBtn.textContent = `🔐 Connect ${SUPPORTED_WALLETS[connectedWallet].name}`;
-              connectBtn.disabled = false;
-          }
-      }
+     <!-- MAILINGS SECTION -->
+     <div id="mailings" class="content-section">
+         <div class="development-placeholder">
+             <div class="development-icon">🚧</div>
+             <div class="development-title" id="mailingsDevTitle">Mass Mailings System</div>
+             <div class="development-text" id="mailingsDevText">
+                 Advanced mailing system is currently in development.<br>
+                 This section will include:<br><br>
+                 • Multi-platform messaging (Telegram, WhatsApp, Email)<br>
+                 • Template management<br>
+                 • Scheduling and automation<br>
+                 • Delivery analytics<br>
+                 • Anti-spam protection
+             </div>
+         </div>
+     </div>
 
-      function showWalletConnected(address) {
-          const connectBtn = document.getElementById('connectWalletBtn');
-          const walletStatus = document.getElementById('walletStatus');
-          const walletInfo = SUPPORTED_WALLETS[connectedWallet];
-          
-          if (connectBtn) connectBtn.style.display = 'none';
-          if (walletStatus) walletStatus.style.display = 'block';
-          
-          document.getElementById('walletAddress').textContent = 
-              `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-          
-          const walletConnectedText = document.getElementById('walletConnectedText');
-          if (walletConnectedText) {
-              walletConnectedText.textContent = `✅ ${walletInfo.icon} ${walletInfo.name} Connected`;
-          }
-          
-          walletConnected = true;
-      }
+     <!-- ANALYTICS SECTION -->
+     <div id="analytics" class="content-section">
+         <div class="development-placeholder">
+             <div class="development-icon">📊</div>
+             <div class="development-title" id="analyticsDevTitle">Advanced Analytics</div>
+             <div class="development-text" id="analyticsDevText">
+                 Comprehensive analytics dashboard is in development.<br>
+                 Features coming soon:<br><br>
+                 • Real-time statistics<br>
+                 • Contact growth charts<br>
+                 • Conversion tracking<br>
+                 • Revenue analytics<br>
+                 • Performance reports
+             </div>
+         </div>
+     </div>
 
-      // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-      window.onload = async function() {
-          console.log('🚀 CardGift Web3 Dashboard initializing...');
-          
-          await initWeb3();
-          
-          if (!referralData || !referralData.levels) {
-              referralData = {
-                  levels: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
-              };
-          }
-          
-          if (isWeb3Connected && userWalletAddress) {
-              await checkUserAccess();
-          } else {
-              currentUser = {
-                  userId: 'NOT_CONNECTED',
-                  level: 0,
-                  isActive: false,
-                  walletAddress: null
-              };
-          }
+     <!-- WALLET SECTION -->
+     <div id="wallet" class="content-section">
+         <div class="section-header">
+             <h1 class="section-title" id="walletTitle">💎 Web3 Wallet</h1>
+             <div style="color: #CCC;" id="walletNetwork">Network: opBNB Mainnet</div>
+         </div>
 
-          localStorage.setItem('currentUser', JSON.stringify(currentUser));
-          
-          updateUserInterface();
-          loadDashboardData();
-          updateTime();
-          
-          console.log('✅ Web3 Dashboard initialized');
-      };
-
-      // ==================== НАВИГАЦИЯ ====================
-      function showSection(sectionId) {
-          document.querySelectorAll('.content-section').forEach(section => {
-              section.classList.remove('active');
-          });
-          
-          document.getElementById(sectionId).classList.add('active');
-          
-          document.querySelectorAll('.menu-item').forEach(item => {
-              item.classList.remove('active');
-          });
-          
-          document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-          
-          currentSection = sectionId;
-          
-          if (window.innerWidth <= 768) {
-              toggleSidebar();
-          }
-      }
-
-      function toggleSidebar() {
-          const sidebar = document.getElementById('sidebar');
-          const mainContent = document.getElementById('mainContent');
-          
-          sidebar.classList.toggle('mobile-visible');
-          sidebar.classList.toggle('mobile-hidden');
-          
-          if (sidebar.classList.contains('mobile-visible')) {
-              mainContent.classList.add('full-width');
-          } else {
-              mainContent.classList.remove('full-width');
-          }
-      }
-
-      // ==================== ЯЗЫКОВЫЕ ФУНКЦИИ ====================
-      function switchLanguage(lang) {
-          currentLanguage = lang;
-          localStorage.setItem('adminLanguage', lang);
-          
-          document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-          document.getElementById(`lang${lang.charAt(0).toUpperCase() + lang.slice(1)}`).classList.add('active');
-      }
-
-      // ==================== ЗАГРУЗКА ДАННЫХ ====================
-     function loadDashboardData() {
-         const storedContacts = localStorage.getItem('allContacts');
-         if (storedContacts) {
-             contactsData = JSON.parse(storedContacts);
-         } else {
-             contactsData = {
-                 telegram: [],
-                 whatsapp: [],
-                 email: [],
-                 instagram: [],
-                 viber: [],
-                 facebook: [],
-                 tiktok: [],
-                 twitter: []
-             };
-         }
-         
-         updateDashboardStats();
-     }
-
-     function updateDashboardStats() {
-         let totalContacts = 0;
-         Object.keys(contactsData).forEach(category => {
-             const count = contactsData[category].length;
-             totalContacts += count;
+         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 30px;">
+             <h3 style="color: #FFD700; margin-bottom: 15px;" id="walletConnectionTitle">🔗 Blockchain Connection</h3>
              
-             const counterElement = document.getElementById(category + 'Count');
-             if (counterElement) {
-                 counterElement.textContent = count;
-             }
-         });
-         
-         document.getElementById('totalContacts').textContent = totalContacts;
-         
-         const cardsData = localStorage.getItem('userCards');
-         let totalCards = 0;
-         if (cardsData) {
-             const cardsObject = JSON.parse(cardsData);
-             Object.keys(cardsObject).forEach(userId => {
-                 totalCards += cardsObject[userId].length;
-             });
-         }
-         document.getElementById('totalCards').textContent = totalCards;
-         
-         let totalReferrals = 0;
-         if (referralData && referralData.levels) {
-             Object.values(referralData.levels).forEach(level => {
-                 totalReferrals += level.length;
-             });
-         }
-         document.getElementById('totalReferrals').textContent = totalReferrals;
-         
-         updateTime();
-     }
+             <button id="connectWalletBtn" style="background: linear-gradient(45deg, #1E88E5, #1565C0); color: white; border: none; border-radius: 12px; padding: 15px 30px; font-weight: bold; cursor: pointer; width: 100%; transition: all 0.3s ease; margin-bottom: 15px;" onclick="connectWallet()">
+                 <span id="connectWalletText">🔐 Connect SafePal Wallet</span>
+             </button>
+             
+             <div id="walletStatus" style="background: rgba(76, 175, 80, 0.1); border: 1px solid #4CAF50; border-radius: 10px; padding: 15px; text-align: center; display: none;">
+                 <div style="font-weight: bold; margin-bottom: 10px;" id="walletConnectedText">✅ SafePal Connected</div>
+                 <div id="walletAddress" style="color: #4CAF50; margin-bottom: 5px;"></div>
+                 <div id="walletBalance" style="color: #CCC; font-size: 14px;"></div>
+             </div>
 
-     // ==================== УТИЛИТЫ ====================
-     function updateTime() {
-         const now = new Date();
-         const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-         const updateTimeElement = document.getElementById('updateTime');
-         if (updateTimeElement) {
-             updateTimeElement.textContent = timeString;
+             <!-- SMART CONTRACT INFO -->
+             <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 10px; padding: 20px; margin-top: 20px;">
+                 <h4 style="color: #FFD700; margin-bottom: 10px;" id="contractInfoTitle">📄 Smart Contract Info</h4>
+                 <div style="color: #CCC; font-size: 14px;">
+                     <div><strong id="contractStatusLabel">Status:</strong> <span style="color: #4CAF50;" id="contractStatus">Active</span></div>
+                     <div><strong id="contractNetworkLabel">Network:</strong> opBNB Mainnet</div>
+                     <div><strong id="contractAddressLabel">Address:</strong> <span style="word-break: break-all;" id="contractAddress">0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618</span></div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <!-- SETTINGS SECTION -->
+     <div id="settings" class="content-section">
+         <div class="section-header">
+             <h1 class="section-title" id="settingsTitle">⚙️ Settings</h1>
+         </div>
+
+         <div style="background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 15px; padding: 25px;">
+             <h3 style="color: #FFD700; margin-bottom: 15px;" id="languageSettingsTitle">🌍 Language Settings</h3>
+             <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                 <button class="lang-btn active" onclick="switchLanguage('en')" style="padding: 10px 20px; border-radius: 8px;">
+                     🇺🇸 English
+                 </button>
+                 <button class="lang-btn" onclick="switchLanguage('ru')" style="padding: 10px 20px; border-radius: 8px;">
+                     🇷🇺 Русский
+                 </button>
+                 <button class="lang-btn" onclick="switchLanguage('ua')" style="padding: 10px 20px; border-radius: 8px;">
+                     🇺🇦 Українська
+                 </button>
+             </div>
+         </div>
+     </div>
+ </div>
+
+ <script>
+     // ==================== WEB3 CONFIGURATION ====================
+     const CONTRACT_CONFIG = {
+         address: '0xBb8A0c28A91f8D6B6c4175c0D497164dFC846618',
+         network: 'opBNB',
+         chainId: 204,
+         rpcUrl: 'https://opbnb-mainnet-rpc.bnbchain.org',
+         abi: [
+   {
+       "inputs": [{"name": "user", "type": "address"}],
+       "name": "getUserLevel",
+       "outputs": [{"name": "", "type": "uint256"}],
+       "stateMutability": "view",
+       "type": "function"
+   },
+   {
+       "inputs": [{"name": "user", "type": "address"}],
+       "name": "getUserReferrals", 
+       "outputs": [{"name": "", "type": "address[]"}],
+       "stateMutability": "view",
+       "type": "function"
+   },
+   {
+       "inputs": [{"name": "user", "type": "address"}],
+       "name": "isUserActive",
+       "outputs": [{"name": "", "type": "bool"}],
+       "stateMutability": "view", 
+       "type": "function"
+   },
+   {
+       "inputs": [{"name": "user", "type": "address"}],
+       "name": "getTotalEarnings",
+       "outputs": [{"name": "", "type": "uint256"}],
+       "stateMutability": "view",
+       "type": "function"
+   },
+   {
+       "inputs": [],
+       "name": "activateUser",
+       "outputs": [],
+       "stateMutability": "payable",
+       "type": "function"
+   },
+   {
+       "inputs": [],
+       "name": "activateMiniAdmin",
+       "outputs": [],
+       "stateMutability": "payable",
+       "type": "function"
+   },
+   {
+       "inputs": [],
+       "name": "activateSuperAdmin",
+       "outputs": [],
+       "stateMutability": "payable",
+       "type": "function"
+   },
+   {
+       "inputs": [{"name": "referrerId", "type": "string"}],
+       "name": "registerUser",
+       "outputs": [{"name": "", "type": "string"}],
+       "stateMutability": "nonpayable",
+       "type": "function"
+   }
+]
+     };
+
+     const SUPPORTED_WALLETS = {
+         safepal: {
+             name: 'SafePal',
+             icon: '🔐',
+             priority: 1,
+             detected: () => window.safepal || window.ethereum?.isSafePal
+         },
+         metamask: {
+             name: 'MetaMask', 
+             icon: '🦊',
+             priority: 2,
+             detected: () => window.ethereum?.isMetaMask
+         },
+         trustwallet: {
+             name: 'Trust Wallet',
+             icon: '💙', 
+             priority: 3,
+             detected: () => window.ethereum?.isTrust
+         },
+         generic: {
+             name: 'Web3 Wallet',
+             icon: '💰',
+             priority: 4,
+             detected: () => window.ethereum
          }
-     }
+     };
 
-     function filterContacts(category) {
-         showSection('contacts');
-     }
+     // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+     let currentLanguage = 'en';
+     let currentSection = 'dashboard';
+     let web3;
+     let contract;
+     let userWalletAddress = null;
+     let isWeb3Connected = false;
+     let connectedWallet = null;
+     let currentUser = {
+         userId: 'NOT_CONNECTED',
+         level: 0,
+         isActive: false,
+         walletAddress: null
+     };
+     let walletConnected = false;
+     let contactsData = {};
+     let referralData = {};
+     let currentLevel = 0;
+     let currentCRMUser = null;
+     let notifications = {
+         referral: 0,
+         crm: 0
+     };
 
-     function exportContacts() {
-         if (currentUser.level === 0) {
-             showNotification('Connect wallet to export contacts', 'error');
+     // ==================== WEB3 INTEGRATION ====================
+     async function initWeb3() {
+         const availableWallets = Object.entries(SUPPORTED_WALLETS)
+             .filter(([key, wallet]) => wallet.detected())
+             .sort((a, b) => a[1].priority - b[1].priority);
+         
+         if (availableWallets.length === 0) {
+             console.warn('No Web3 wallets detected');
+             showInstallWalletPrompt();
              return;
          }
          
-         const dataStr = JSON.stringify(contactsData, null, 2);
-         const dataBlob = new Blob([dataStr], {type: 'application/json'});
-         const url = URL.createObjectURL(dataBlob);
+         const [walletKey, walletInfo] = availableWallets[0];
+         connectedWallet = walletKey;
          
-         const link = document.createElement('a');
-         link.href = url;
-         link.download = `cardgift-contacts-${new Date().toISOString().split('T')[0]}.json`;
-         document.body.appendChild(link);
-         link.click();
-         document.body.removeChild(link);
+         try {
+             let provider = window.safepal || window.ethereum;
+             
+             web3 = new Web3(provider);
+             contract = new web3.eth.Contract(CONTRACT_CONFIG.abi, CONTRACT_CONFIG.address);
+             
+             const savedAddress = localStorage.getItem('connectedWallet');
+             const savedWalletType = localStorage.getItem('connectedWalletType');
+             
+             if (savedAddress && savedWalletType === walletKey) {
+                 userWalletAddress = savedAddress;
+                 isWeb3Connected = true;
+                 await checkNetwork();
+                 await checkUserAccess();
+             }
+             
+             console.log(`🔐 Using ${walletInfo.name} provider`);
+             
+         } catch (error) {
+             console.error('Web3 initialization failed:', error);
+         }
+     }
+
+     async function checkNetwork() {
+         try {
+             const chainId = await web3.eth.getChainId();
+             if (Number(chainId) !== CONTRACT_CONFIG.chainId) {
+                 await switchToCorrectNetwork();
+             }
+         } catch (error) {
+             console.error('Network check failed:', error);
+         }
+     }
+
+     async function switchToCorrectNetwork() {
+         try {
+             await window.ethereum.request({
+                 method: 'wallet_switchEthereumChain',
+                 params: [{ chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId) }]
+             });
+         } catch (error) {
+             if (error.code === 4902) {
+                 await addNetwork();
+             }
+         }
+     }
+
+     async function addNetwork() {
+         try {
+             await window.ethereum.request({
+                 method: 'wallet_addEthereumChain',
+                 params: [{
+                     chainId: web3.utils.toHex(CONTRACT_CONFIG.chainId),
+                     chainName: 'opBNB Mainnet',
+                     nativeCurrency: {
+                         name: 'BNB',
+                         symbol: 'BNB',
+                         decimals: 18
+                     },
+                     rpcUrls: [CONTRACT_CONFIG.rpcUrl],
+                     blockExplorerUrls: ['https://opbnbscan.com/']
+                 }]
+             });
+             
+             showNotification('opBNB network added successfully!', 'success');
+         } catch (error) {
+             console.error('Failed to add network:', error);
+             showNotification('Failed to add opBNB network', 'error');
+         }
+     }
+
+     async function checkUserAccess() {
+   if (!contract || !userWalletAddress) return;
+   
+   try {
+       console.log('🔍 Checking user access for:', userWalletAddress);
+       
+       // ✅ ИСПРАВЛЕНО: Используем правильные методы из смарт-контракта
+       const userLevel = await contract.methods.getUserLevel(userWalletAddress).call();
+       const isActive = await contract.methods.isUserActive(userWalletAddress).call();
+       
+       currentUser = {
+           userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+           level: parseInt(userLevel),
+           isActive: isActive,
+           walletAddress: userWalletAddress
+       };
+       
+       // ✅ ИСПРАВЛЕНО: Показываем опции регистрации/активации
+       if (parseInt(userLevel) === 0 && !isActive) {
+           showActivationOptions();
+       }
+       
+       updateUserInterface();
+       
+   } catch (error) {
+       console.error('Access check failed:', error);
+       showActivationOptions();
+   }
+}
+
+   // ✅ ИСПРАВЛЕНО: Новая функция показа опций активации
+   function showActivationOptions() {
+       const connectionStatus = document.getElementById('connectionStatus');
+       if (connectionStatus) {
+           connectionStatus.innerHTML = `
+               <div style="color: #FFA500; font-size: 18px; margin-bottom: 15px;">⚡ Welcome to CardGift</div>
+               
+               <!-- КНОПКА РЕГИСТРАЦИИ -->
+               <button onclick="registerNewUser()" style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%;">
+                   📝 Register Account
+               </button>
+               
+               <div style="color: #CCC; margin-bottom: 15px;">Or activate directly:</div>
+               
+               <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                   <button onclick="activateUser(1)" style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                       👤 Basic User<br><small>0.0025 BNB</small>
+                   </button>
+                   <button onclick="activateUser(2)" style="background: linear-gradient(45deg, #FF9800, #F57C00); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                       ⚡ Mini Admin<br><small>0.05 BNB</small>
+                   </button>
+                   <button onclick="activateUser(3)" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                       🚀 Super Admin<br><small>0.25 BNB</small>
+                   </button>
+               </div>
+           `;
+       }
+   }
+
+// ✅ ИСПРАВЛЕНО: Правильная функция активации
+async function activateUser(level) {
+   try {
+       showNotification('Preparing activation...', 'info');
+       
+       if (!contract || !userWalletAddress) {
+           throw new Error('Wallet not connected');
+       }
+       
+       let txResult;
+       let price;
+       
+       switch(level) {
+           case 1:
+               // Базовая активация (0.0025 BNB)
+               price = '2500000000000000'; // 0.0025 BNB в wei
+               txResult = await contract.methods.activateUser().send({ 
+                   from: userWalletAddress,
+                   value: price,
+                   gas: 200000
+               });
+               break;
+               
+           case 2: 
+               // Мини-админ (0.05 BNB)
+               price = '50000000000000000'; // 0.05 BNB в wei
+               txResult = await contract.methods.activateMiniAdmin().send({ 
+                   from: userWalletAddress,
+                   value: price,
+                   gas: 250000
+               });
+               break;
+               
+           case 3:
+               // Супер-админ (0.25 BNB)
+               price = '250000000000000000'; // 0.25 BNB в wei
+               txResult = await contract.methods.activateSuperAdmin().send({ 
+                   from: userWalletAddress,
+                   value: price,
+                   gas: 300000
+               });
+               break;
+               
+           default:
+               throw new Error('Unknown activation level');
+       }
+       
+       showNotification(`Level ${level} activation successful!`, 'success');
+       await checkUserAccess();
+       
+   } catch (error) {
+       console.error('Activation failed:', error);
+       showNotification(`Activation error: ${error.message}`, 'error');
+   }
+}
+
+// ✅ НОВАЯ: Функция регистрации
+async function registerNewUser(referrerId = '') {
+   try {
+       showNotification('Registering user...', 'info');
+       
+       if (!contract || !userWalletAddress) {
+           throw new Error('Connect wallet to register');
+       }
+       
+       const result = await contract.methods.registerUser(referrerId).send({ 
+           from: userWalletAddress,
+           gas: 300000
+       });
+       
+       showNotification('Registration successful! You can now activate.', 'success');
+       await checkUserAccess();
+       
+   } catch (error) {
+       console.error('Registration failed:', error);
+       showNotification(`Registration error: ${error.message}`, 'error');
+   }
+}
+
+     function updateUserInterface() {
+         const levelNames = {
+             0: 'NOT REGISTERED',
+             1: 'BASIC USER', 
+             2: 'MINI ADMIN',
+             3: 'SUPER ADMIN',
+             4: 'CO-AUTHOR'
+         };
          
-         showNotification('Contacts exported successfully!', 'success');
-     }
-
-     // ==================== CRM ФУНКЦИИ ====================
-     function closeCRMModal() {
-         document.getElementById('crmModal').classList.remove('show');
-         currentCRMUser = null;
-     }
-
-     function switchCRMTab(tabName) {
-         document.querySelectorAll('.crm-tab').forEach(tab => {
-             tab.classList.remove('active');
-         });
-         document.getElementById(`${tabName}Tab`).classList.add('active');
+         document.getElementById('userLevel').textContent = levelNames[currentUser.level] || 'UNKNOWN';
+         document.getElementById('currentUserId').textContent = currentUser.userId || 'Not Connected';
          
-         document.querySelectorAll('.crm-content').forEach(content => {
-             content.classList.remove('active');
-         });
-         document.getElementById(`${tabName}Content`).classList.add('active');
-     }
-
-     function saveUserNotes() {
-         if (!currentCRMUser) return;
-         
-         const notes = document.getElementById('userNotes').value;
-         localStorage.setItem(`crm_notes_${currentCRMUser}`, notes);
-         
-         showNotification('Notes saved successfully!', 'success');
-     }
-
-     function sendMessage() {
-         showNotification('Chat feature available after wallet connection', 'info');
-     }
-
-     function openSocialContact() {
-         showNotification('Social contact feature available after wallet connection', 'info');
-     }
-
-     // ==================== СИСТЕМА УВЕДОМЛЕНИЙ ====================
-     function showNotification(message, type = 'info', duration = 3000) {
-         const existingNotification = document.querySelector('.notification');
-         if (existingNotification) {
-             existingNotification.remove();
+         if (userWalletAddress) {
+             const shortAddress = `${userWalletAddress.substring(0, 6)}...${userWalletAddress.substring(userWalletAddress.length - 4)}`;
+             document.getElementById('currentUserId').textContent = `${currentUser.userId} (${shortAddress})`;
+             
+             // Скрываем статус подключения
+             const connectionStatus = document.getElementById('connectionStatus');
+             if (connectionStatus && currentUser.level > 0) {
+                 connectionStatus.style.display = 'none';
+             }
+             
+             // Обновляем статус сети
+             document.getElementById('networkStatus').textContent = 'Network Status: Connected';
          }
          
-         const notification = document.createElement('div');
-         notification.className = 'notification';
-         notification.textContent = message;
+         updateMenuAccess();
+     }
+
+     function updateMenuAccess() {
+         const menuItems = document.querySelectorAll('.menu-item');
          
-         notification.style.cssText = `
-             position: fixed;
-             bottom: 20px;
-             right: 20px;
-             background: rgba(0, 0, 0, 0.95);
-             color: white;
-             padding: 15px 25px;
-             border-radius: 10px;
-             z-index: 10000;
-             opacity: 0;
-             transform: translateY(100%);
-             transition: all 0.3s ease;
-             border: 1px solid #333;
-             max-width: 400px;
-             word-wrap: break-word;
-             font-weight: 500;
-             backdrop-filter: blur(10px);
-         `;
-         
-         if (type === 'success') {
-             notification.style.borderColor = '#4CAF50';
-             notification.style.background = 'rgba(76, 175, 80, 0.2)';
-             notification.style.color = '#4CAF50';
-         } else if (type === 'error') {
-             notification.style.borderColor = '#f44336';
-             notification.style.background = 'rgba(244, 67, 54, 0.2)';
-             notification.style.color = '#f44336';
-         } else if (type === 'info') {
-             notification.style.borderColor = '#2196F3';
-             notification.style.background = 'rgba(33, 150, 243, 0.2)';
-             notification.style.color = '#2196F3';
-         }
-         
-         document.body.appendChild(notification);
-         
-         setTimeout(() => {
-             notification.style.opacity = '1';
-             notification.style.transform = 'translateY(0)';
-         }, 100);
-         
-         setTimeout(() => {
-             notification.style.opacity = '0';
-             notification.style.transform = 'translateY(100%)';
-             setTimeout(() => {
-                 if (notification.parentNode) {
-                     notification.parentNode.removeChild(notification);
+         menuItems.forEach(item => {
+             const section = item.getAttribute('data-section');
+             
+             if (currentUser.level === 0) {
+                 if (section !== 'wallet' && section !== 'dashboard') {
+                     item.classList.add('locked');
                  }
-             }, 300);
-         }, duration);
+             } else if (currentUser.level >= 1) {
+                 if (['dashboard', 'contacts', 'wallet'].includes(section)) {
+                     item.classList.remove('locked');
+                 }
+             }
+             
+             if (currentUser.level >= 2) {
+                 if (['referrals', 'crm'].includes(section)) {
+                     item.classList.remove('locked');
+                 }
+             }
+             
+             if (currentUser.level >= 3) {
+                 if (['mailings', 'analytics'].includes(section)) {
+                     item.classList.remove('locked');
+                 }
+             }
+             
+             if (currentUser.level >= 4) {
+                 item.classList.remove('locked');
+             }
+         });
      }
 
-     // ==================== ПЕРИОДИЧЕСКИЕ ОБНОВЛЕНИЯ ====================
-     setInterval(() => {
+     function showInstallWalletPrompt() {
+         const connectBtn = document.getElementById('connectWalletBtn');
+         if (connectBtn) {
+             connectBtn.innerHTML = '📱 Install SafePal or Compatible Wallet';
+             connectBtn.onclick = () => {
+                 if (confirm('Install SafePal for best opBNB experience?\n\nClick OK for SafePal or Cancel for other wallets.')) {
+                     window.open('https://safepal.io/download', '_blank');
+                 } else {
+                     window.open('https://metamask.io/download/', '_blank');
+                 }
+             };
+         }
+     }
+
+     async function connectWallet() {
+         if (!web3) {
+             await initWeb3();
+         }
+         
+         try {
+             const connectBtn = document.getElementById('connectWalletBtn');
+             const walletInfo = SUPPORTED_WALLETS[connectedWallet];
+             
+             connectBtn.textContent = `🔄 Connecting to ${walletInfo.name}...`;
+             connectBtn.disabled = true;
+             
+             let accounts = [];
+             
+             if (window.safepal) {
+                 // SafePal специальный API
+                 const result = await window.safepal.connect();
+                 const account = await window.safepal.getAccount();
+                 if (account) {
+                     accounts = [account];
+                 }
+             } else if (window.ethereum) {
+                 // Стандартный Ethereum API
+                 accounts = await window.ethereum.request({
+                     method: 'eth_requestAccounts'
+                 });
+             }
+             
+             if (accounts && accounts.length > 0) {
+                 userWalletAddress = accounts[0];
+                 localStorage.setItem('connectedWallet', userWalletAddress);
+                 localStorage.setItem('connectedWalletType', connectedWallet);
+                 isWeb3Connected = true;
+                 
+                 await checkNetwork();
+                 await checkUserAccess();
+                 
+                 showWalletConnected(userWalletAddress);
+                 showNotification(`${walletInfo.icon} ${walletInfo.name} connected successfully!`, 'success');
+             }
+         } catch (error) {
+             console.error('Wallet connection failed:', error);
+             showNotification('Wallet connection failed', 'error');
+             
+             const connectBtn = document.getElementById('connectWalletBtn');
+             connectBtn.textContent = `🔐 Connect ${SUPPORTED_WALLETS[connectedWallet].name}`;
+             connectBtn.disabled = false;
+         }
+     }
+
+     function showWalletConnected(address) {
+         const connectBtn = document.getElementById('connectWalletBtn');
+         const walletStatus = document.getElementById('walletStatus');
+         const walletInfo = SUPPORTED_WALLETS[connectedWallet];
+         
+         if (connectBtn) connectBtn.style.display = 'none';
+         if (walletStatus) walletStatus.style.display = 'block';
+         
+         document.getElementById('walletAddress').textContent = 
+             `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+         
+         const walletConnectedText = document.getElementById('walletConnectedText');
+         if (walletConnectedText) {
+             walletConnectedText.textContent = `✅ ${walletInfo.icon} ${walletInfo.name} Connected`;
+         }
+         
+         walletConnected = true;
+     }
+
+     // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+     window.onload = async function() {
+         console.log('🚀 CardGift Web3 Dashboard initializing...');
+         
+         await initWeb3();
+         
+         if (!referralData || !referralData.levels) {
+             referralData = {
+                 levels: { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
+             };
+         }
+         
+         if (isWeb3Connected && userWalletAddress) {
+             await checkUserAccess();
+         } else {
+             currentUser = {
+                 userId: 'NOT_CONNECTED',
+                 level: 0,
+                 isActive: false,
+                 walletAddress: null
+             };
+         }
+
+         localStorage.setItem('currentUser', JSON.stringify(currentUser));
+         
+         updateUserInterface();
+         loadDashboardData();
          updateTime();
          
-         if (currentSection === 'dashboard') {
-             updateDashboardStats();
-         }
-     }, 30000);
+         console.log('✅ Web3 Dashboard initialized');
+     };
 
-     // ==================== АДАПТИВНОСТЬ ====================
-     window.addEventListener('resize', () => {
-         if (window.innerWidth > 768) {
-             const sidebar = document.getElementById('sidebar');
-             const mainContent = document.getElementById('mainContent');
-             
-             sidebar.classList.remove('mobile-visible', 'mobile-hidden');
+     // ==================== НАВИГАЦИЯ ====================
+     function showSection(sectionId) {
+         document.querySelectorAll('.content-section').forEach(section => {
+             section.classList.remove('active');
+         });
+         
+         document.getElementById(sectionId).classList.add('active');
+         
+         document.querySelectorAll('.menu-item').forEach(item => {
+             item.classList.remove('active');
+         });
+         
+         document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+         
+         currentSection = sectionId;
+         
+         if (window.innerWidth <= 768) {
+             toggleSidebar();
+         }
+     }
+
+     function toggleSidebar() {
+         const sidebar = document.getElementById('sidebar');
+         const mainContent = document.getElementById('mainContent');
+         
+         sidebar.classList.toggle('mobile-visible');
+         sidebar.classList.toggle('mobile-hidden');
+         
+         if (sidebar.classList.contains('mobile-visible')) {
+             mainContent.classList.add('full-width');
+         } else {
              mainContent.classList.remove('full-width');
          }
-     });
+     }
 
-     // ==================== ЗАКРЫТИЕ МОДАЛЬНЫХ ОКОН ====================
-     window.addEventListener('click', function(event) {
-         const crmModal = document.getElementById('crmModal');
-         if (event.target === crmModal) {
-             closeCRMModal();
-         }
-     });
+     // ==================== ЯЗЫКОВЫЕ ФУНКЦИИ ====================
+     function switchLanguage(lang) {
+         currentLanguage = lang;
+         localStorage.setItem('adminLanguage', lang);
+         
+         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+         document.getElementById(`lang${lang.charAt(0).toUpperCase() + lang.slice(1)}`).classList.add('active');
+     }
 
-     document.addEventListener('keydown', function(event) {
-         if (event.key === 'Escape') {
-             closeCRMModal();
-         }
-     });
+     // ==================== ЗАГРУЗКА ДАННЫХ ====================
+    function loadDashboardData() {
+        const storedContacts = localStorage.getItem('allContacts');
+        if (storedContacts) {
+            contactsData = JSON.parse(storedContacts);
+        } else {
+            contactsData = {
+                telegram: [],
+                whatsapp: [],
+                email: [],
+                instagram: [],
+                viber: [],
+                facebook: [],
+                tiktok: [],
+                twitter: []
+            };
+        }
+        
+        updateDashboardStats();
+    }
 
-     console.log('🎉 CardGift Web3 Dashboard fully loaded and ready!');
- </script>
+    function updateDashboardStats() {
+        let totalContacts = 0;
+        Object.keys(contactsData).forEach(category => {
+            const count = contactsData[category].length;
+            totalContacts += count;
+            
+            const counterElement = document.getElementById(category + 'Count');
+            if (counterElement) {
+                counterElement.textContent = count;
+            }
+        });
+        
+        document.getElementById('totalContacts').textContent = totalContacts;
+        
+        const cardsData = localStorage.getItem('userCards');
+        let totalCards = 0;
+        if (cardsData) {
+            const cardsObject = JSON.parse(cardsData);
+            Object.keys(cardsObject).forEach(userId => {
+                totalCards += cardsObject[userId].length;
+            });
+        }
+        document.getElementById('totalCards').textContent = totalCards;
+        
+        let totalReferrals = 0;
+        if (referralData && referralData.levels) {
+            Object.values(referralData.levels).forEach(level => {
+                totalReferrals += level.length;
+            });
+        }
+        document.getElementById('totalReferrals').textContent = totalReferrals;
+        
+        updateTime();
+    }
+
+    // ==================== УТИЛИТЫ ====================
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const updateTimeElement = document.getElementById('updateTime');
+        if (updateTimeElement) {
+            updateTimeElement.textContent = timeString;
+        }
+    }
+
+    function filterContacts(category) {
+        showSection('contacts');
+    }
+
+    function exportContacts() {
+        if (currentUser.level === 0) {
+            showNotification('Connect wallet to export contacts', 'error');
+            return;
+        }
+        
+        const dataStr = JSON.stringify(contactsData, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `cardgift-contacts-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification('Contacts exported successfully!', 'success');
+    }
+
+    // ==================== CRM ФУНКЦИИ ====================
+    function closeCRMModal() {
+        document.getElementById('crmModal').classList.remove('show');
+        currentCRMUser = null;
+    }
+
+    function switchCRMTab(tabName) {
+        document.querySelectorAll('.crm-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.getElementById(`${tabName}Tab`).classList.add('active');
+        
+        document.querySelectorAll('.crm-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${tabName}Content`).classList.add('active');
+    }
+
+    function saveUserNotes() {
+        if (!currentCRMUser) return;
+        
+        const notes = document.getElementById('userNotes').value;
+        localStorage.setItem(`crm_notes_${currentCRMUser}`, notes);
+        
+        showNotification('Notes saved successfully!', 'success');
+    }
+
+    function sendMessage() {
+        showNotification('Chat feature available after wallet connection', 'info');
+    }
+
+    function openSocialContact() {
+        showNotification('Social contact feature available after wallet connection', 'info');
+    }
+
+    // ==================== СИСТЕМА УВЕДОМЛЕНИЙ ====================
+    function showNotification(message, type = 'info', duration = 3000) {
+        const existingNotification = document.querySelector('.notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+            max-width: 400px;
+            word-wrap: break-word;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        `;
+        
+        if (type === 'success') {
+            notification.style.borderColor = '#4CAF50';
+            notification.style.background = 'rgba(76, 175, 80, 0.2)';
+            notification.style.color = '#4CAF50';
+        } else if (type === 'error') {
+            notification.style.borderColor = '#f44336';
+            notification.style.background = 'rgba(244, 67, 54, 0.2)';
+            notification.style.color = '#f44336';
+        } else if (type === 'info') {
+            notification.style.borderColor = '#2196F3';
+            notification.style.background = 'rgba(33, 150, 243, 0.2)';
+            notification.style.color = '#2196F3';
+        }
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+        }, 100);
+        
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, duration);
+    }
+
+    // ==================== ПЕРИОДИЧЕСКИЕ ОБНОВЛЕНИЯ ====================
+    setInterval(() => {
+        updateTime();
+        
+        if (currentSection === 'dashboard') {
+            updateDashboardStats();
+        }
+    }, 30000);
+
+    // ==================== АДАПТИВНОСТЬ ====================
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.remove('mobile-visible', 'mobile-hidden');
+            mainContent.classList.remove('full-width');
+        }
+    });
+
+    // ==================== ЗАКРЫТИЕ МОДАЛЬНЫХ ОКОН ====================
+    window.addEventListener('click', function(event) {
+        const crmModal = document.getElementById('crmModal');
+        if (event.target === crmModal) {
+            closeCRMModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeCRMModal();
+        }
+    });
+
+    // ==================== ОБРАБОТЧИКИ СОБЫТИЙ КОШЕЛЬКА ====================
+    if (window.safepal) {
+        window.safepal.on('accountsChanged', (accounts) => {
+            if (accounts.length === 0) {
+                userWalletAddress = null;
+                isWeb3Connected = false;
+                currentUser = { userId: 'NOT_CONNECTED', level: 0, isActive: false, walletAddress: null };
+                updateUserInterface();
+                window.location.reload();
+            } else {
+                userWalletAddress = accounts[0];
+                checkUserAccess();
+            }
+        });
+        
+        window.safepal.on('chainChanged', () => {
+            window.location.reload();
+        });
+    } else if (window.ethereum) {
+        window.ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length === 0) {
+                userWalletAddress = null;
+                isWeb3Connected = false;
+                currentUser = { userId: 'NOT_CONNECTED', level: 0, isActive: false, walletAddress: null };
+                updateUserInterface();
+                window.location.reload();
+            } else {
+                userWalletAddress = accounts[0];
+                checkUserAccess();
+            }
+        });
+        
+        window.ethereum.on('chainChanged', () => {
+            window.location.reload();
+        });
+    }
+
+    console.log('🎉 CardGift Web3 Dashboard fully loaded and ready!');
+</script>
 </body>
 </html>
