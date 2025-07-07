@@ -2182,13 +2182,13 @@
                 <h3 style="color: #FFD700; margin-bottom: 20px;">🚀 Account Activation</h3>
                 <div class="activation-buttons" id="activationButtonsContainer">
                     <button class="activation-btn" onclick="activateUser(1)" id="activateAccountBtn">
-                        🔐 Activate Account<br><small>0.0025 BNB</small>
-                    </button>
-                    <button class="activation-btn mini-admin" onclick="activateUser(2)" id="miniAdminBtn">
-                        ⚡ Mini Admin<br><small>0.05 BNB</small>
-                    </button>
-                    <button class="activation-btn super-admin" onclick="activateUser(3)" id="superAdminBtn">
-                        🚀 Super Admin<br><small>0.25 BNB</small>
+                            🔐 Активация аккаунта<br><small>0.0025 opBNB</small>
+                        </button>
+                        <button class="activation-btn mini-admin" onclick="activateUser(2)" id="miniAdminBtn">
+                            ⚡ Mini Admin<br><small>0.05 opBNB</small>
+                        </button>
+                        <button class="activation-btn super-admin" onclick="activateUser(3)" id="superAdminBtn">
+                            🚀 Super Admin<br><small>0.25 opBNB</small>
                     </button>
                 </div>
             </div>
@@ -2738,31 +2738,28 @@
 
     // ✅ ИСПРАВЛЕНО: Показ опций активации
     function showActivationOptions() {
-        const connectionStatus = document.getElementById('connectionStatus');
-        if (connectionStatus) {
-            connectionStatus.innerHTML = `
-                <div style="color: #FFA500; font-size: 18px; margin-bottom: 15px;">⚡ Choose Your Level</div>
-                
-                <button onclick="registerNewUser()" style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%;">
-                    📝 Register Account
+    const connectionStatus = document.getElementById('connectionStatus');
+    if (connectionStatus) {
+        connectionStatus.innerHTML = `
+            <div style="color: #FFA500; font-size: 18px; margin-bottom: 15px;">⚡ Choose Your Level</div>
+            
+            <button onclick="activateUser(1)" style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%;">
+                🔐 Активация аккаунта<br><small>0.0025 opBNB</small>
+            </button>
+            
+            <div style="color: #CCC; margin-bottom: 15px;">or upgrade to:</div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="activateUser(2)" style="background: linear-gradient(45deg, #FF9800, #F57C00); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                    ⚡ Mini Admin<br><small>0.05 opBNB</small>
                 </button>
-                
-                <div style="color: #CCC; margin-bottom: 15px;">or activate directly:</div>
-                
-                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button onclick="activateUser(1)" style="background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
-                        🔐 Activate Account<br><small>0.0025 BNB</small>
-                    </button>
-                    <button onclick="activateUser(2)" style="background: linear-gradient(45deg, #FF9800, #F57C00); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
-                        ⚡ Mini Admin<br><small>0.05 BNB</small>
-                    </button>
-                    <button onclick="activateUser(3)" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
-                        🚀 Super Admin<br><small>0.25 BNB</small>
-                    </button>
-                </div>
-            `;
-        }
+                <button onclick="activateUser(3)" style="background: linear-gradient(45deg, #9C27B0, #7B1FA2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold;">
+                    🚀 Super Admin<br><small>0.25 opBNB</small>
+                </button>
+            </div>
+        `;
     }
+}
 
     // ✅ ИСПРАВЛЕНО: Правильная функция активации с блокировкой кнопок
     async function activateUser(level) {
@@ -3922,7 +3919,75 @@
             // Settings
             settingsTitle: "⚙️ Settings",
             languageSettingsTitle: "🌍 Language Settings"
-        },
+			adminSettings: "Admin Settings",
+			
+			// Settings - недостающие переводы
+        automaticBackup: "Automatic Backup",
+        automaticBackupDesc: "Automatically create backup copies of contact database",
+        systemNotifications: "System Notifications", 
+        systemNotificationsDesc: "Receive notifications about new registrations and system events",
+        interfaceMode: "Interface Mode",
+        interfaceModeDesc: "Choose between dark and light interface themes",
+        darkMode: "🌙 Dark Mode",
+        lightMode: "☀️ Light Mode",
+        dataManagement: "Data Management",
+        exportAllData: "Export All Data",
+        exportAllDataDesc: "Download all your contacts, notes, and CRM data",
+        importData: "Import Data",
+        importDataDesc: "Import contacts and data from backup files",
+        clearCache: "Clear Cache",
+        clearCacheDesc: "Clear temporary data and cached files to free up space",
+        securitySettings: "Security Settings",
+        walletAutoConnect: "Wallet Auto-Connect",
+        walletAutoConnectDesc: "Automatically connect to your wallet when visiting the dashboard",
+        sessionTimeout: "Session Timeout",
+        sessionTimeoutDesc: "Set automatic logout time for security",
+        transactionConfirmation: "Transaction Confirmation",
+        transactionConfirmationDesc: "Always confirm transactions before sending",
+        notificationSettings: "Notification Settings",
+        newReferralNotifications: "New Referral Notifications",
+        newReferralNotificationsDesc: "Get notified when someone joins through your referral link",
+        crmMessageNotifications: "CRM Message Notifications",
+        crmMessageNotificationsDesc: "Receive notifications for new CRM messages",
+        systemUpdateNotifications: "System Update Notifications",
+        systemUpdateNotificationsDesc: "Get notified about system updates and new features",
+        advancedSettings: "Advanced Settings",
+        debugMode: "Debug Mode",
+        debugModeDesc: "Enable debug mode for troubleshooting (developers only)",
+        performanceMode: "Performance Mode",
+        performanceModeDesc: "Optimize for better performance on slower devices",
+        resetAllSettings: "Reset All Settings",
+        resetAllSettingsDesc: "Reset all settings to default values",
+        resetSettings: "🔄 Reset Settings",
+        
+        // Activation buttons
+        activateAccount: "🔐 Активация аккаунта",
+        miniAdmin: "⚡ Mini Admin", 
+        superAdmin: "🚀 Super Admin",
+        
+        // CRM
+        userCRM: "User CRM",
+        notes: "📝 Notes",
+        chat: "💬 Chat",
+        social: "📱 Social",
+        writeNotes: "Write your notes about this user...",
+        saveNotes: "💾 Save Notes",
+        noMessages: "No messages yet. Start a conversation!",
+        typeMessage: "Type your message...",
+        send: "Send",
+        contactInformation: "Contact Information:",
+        platform: "Platform:",
+        contact: "Contact:",
+        registrationDate: "Registration Date:",
+        openSocialMedia: "📱 Open in Social Media",
+        
+        // New Chat Dialog
+        newChat: "💬 New Chat",
+        startConversation: "Start a conversation with a user",
+        enterUserId: "Enter User ID...",
+        startChat: "Start Chat",
+        cancel: "Cancel"
+    },
         
         ru: {
             // Dashboard
@@ -3993,6 +4058,74 @@
             // Settings
             settingsTitle: "⚙️ Настройки",
             languageSettingsTitle: "🌍 Языковые настройки"
+			
+			// Settings - недостающие переводы
+        adminSettings: "Настройки администратора",
+        automaticBackup: "Автоматическое резервное копирование",
+        automaticBackupDesc: "Автоматически создавать резервные копии базы контактов",
+        systemNotifications: "Системные уведомления",
+        systemNotificationsDesc: "Получать уведомления о новых регистрациях и системных событиях",
+        interfaceMode: "Режим интерфейса",
+        interfaceModeDesc: "Выберите между темной и светлой темами интерфейса",
+        darkMode: "🌙 Темный режим",
+        lightMode: "☀️ Светлый режим",
+        dataManagement: "Управление данными",
+        exportAllData: "Экспортировать все данные",
+        exportAllDataDesc: "Скачать все ваши контакты, заметки и CRM данные",
+        importData: "Импортировать данные",
+        importDataDesc: "Импортировать контакты и данные из резервных файлов",
+        clearCache: "Очистить кеш",
+        clearCacheDesc: "Очистить временные данные и кешированные файлы для освобождения места",
+        securitySettings: "Настройки безопасности",
+        walletAutoConnect: "Автоподключение кошелька",
+        walletAutoConnectDesc: "Автоматически подключаться к кошельку при посещении панели управления",
+        sessionTimeout: "Таймаут сессии",
+        sessionTimeoutDesc: "Установить время автоматического выхода для безопасности",
+        transactionConfirmation: "Подтверждение транзакций",
+        transactionConfirmationDesc: "Всегда подтверждать транзакции перед отправкой",
+        notificationSettings: "Настройки уведомлений",
+        newReferralNotifications: "Уведомления о новых рефералах",
+        newReferralNotificationsDesc: "Получать уведомления когда кто-то регистрируется по вашей реферальной ссылке",
+        crmMessageNotifications: "Уведомления CRM сообщений",
+        crmMessageNotificationsDesc: "Получать уведомления о новых CRM сообщениях",
+        systemUpdateNotifications: "Уведомления о системных обновлениях",
+        systemUpdateNotificationsDesc: "Получать уведомления о системных обновлениях и новых функциях",
+        advancedSettings: "Расширенные настройки",
+        debugMode: "Режим отладки",
+        debugModeDesc: "Включить режим отладки для устранения неполадок (только для разработчиков)",
+        performanceMode: "Режим производительности",
+        performanceModeDesc: "Оптимизировать для лучшей производительности на медленных устройствах",
+        resetAllSettings: "Сбросить все настройки",
+        resetAllSettingsDesc: "Сбросить все настройки к значениям по умолчанию",
+        resetSettings: "🔄 Сбросить настройки",
+        
+        // Activation buttons
+        activateAccount: "🔐 Активация аккаунта",
+        miniAdmin: "⚡ Мини Админ",
+        superAdmin: "🚀 Супер Админ",
+        
+        // CRM
+        userCRM: "CRM пользователя",
+        notes: "📝 Заметки",
+        chat: "💬 Чат",
+        social: "📱 Соцсети",
+        writeNotes: "Напишите ваши заметки об этом пользователе...",
+        saveNotes: "💾 Сохранить заметки",
+        noMessages: "Сообщений пока нет. Начните разговор!",
+        typeMessage: "Введите ваше сообщение...",
+        send: "Отправить",
+        contactInformation: "Контактная информация:",
+        platform: "Платформа:",
+        contact: "Контакт:",
+        registrationDate: "Дата регистрации:",
+        openSocialMedia: "📱 Открыть в соцсети",
+        
+        // New Chat Dialog
+        newChat: "💬 Новый чат",
+        startConversation: "Начать разговор с пользователем",
+        enterUserId: "Введите ID пользователя...",
+        startChat: "Начать чат",
+        cancel: "Отмена"
         },
         
         ua: {
@@ -4064,6 +4197,74 @@
             // Settings
             settingsTitle: "⚙️ Налаштування",
             languageSettingsTitle: "🌍 Мовні налаштування"
+			
+			// Settings - недостающие переводы
+        adminSettings: "Налаштування адміністратора",
+        automaticBackup: "Автоматичне резервне копіювання",
+        automaticBackupDesc: "Автоматично створювати резервні копії бази контактів",
+        systemNotifications: "Системні сповіщення",
+        systemNotificationsDesc: "Отримувати сповіщення про нові реєстрації та системні події",
+        interfaceMode: "Режим інтерфейсу",
+        interfaceModeDesc: "Оберіть між темною та світлою темами інтерфейсу",
+        darkMode: "🌙 Темний режим",
+        lightMode: "☀️ Світлий режим",
+        dataManagement: "Управління даними",
+        exportAllData: "Експортувати всі дані",
+        exportAllDataDesc: "Завантажити всі ваші контакти, нотатки та CRM дані",
+        importData: "Імпортувати дані",
+        importDataDesc: "Імпортувати контакти та дані з резервних файлів",
+        clearCache: "Очистити кеш",
+        clearCacheDesc: "Очистити тимчасові дані та кешовані файли для звільнення місця",
+        securitySettings: "Налаштування безпеки",
+        walletAutoConnect: "Автопідключення гаманця",
+        walletAutoConnectDesc: "Автоматично підключатися до гаманця при відвідуванні панелі управління",
+        sessionTimeout: "Таймаут сесії",
+        sessionTimeoutDesc: "Встановити час автоматичного виходу для безпеки",
+        transactionConfirmation: "Підтвердження транзакцій",
+        transactionConfirmationDesc: "Завжди підтверджувати транзакції перед відправкою",
+        notificationSettings: "Налаштування сповіщень",
+        newReferralNotifications: "Сповіщення про нових рефералів",
+        newReferralNotificationsDesc: "Отримувати сповіщення коли хтось реєструється за вашим реферальним посиланням",
+        crmMessageNotifications: "Сповіщення CRM повідомлень",
+        crmMessageNotificationsDesc: "Отримувати сповіщення про нові CRM повідомлення",
+        systemUpdateNotifications: "Сповіщення про системні оновлення",
+        systemUpdateNotificationsDesc: "Отримувати сповіщення про системні оновлення та нові функції",
+        advancedSettings: "Розширені налаштування",
+        debugMode: "Режим налагодження",
+        debugModeDesc: "Увімкнути режим налагодження для усунення неполадок (тільки для розробників)",
+        performanceMode: "Режим продуктивності",
+        performanceModeDesc: "Оптимізувати для кращої продуктивності на повільних пристроях",
+        resetAllSettings: "Скинути всі налаштування",
+        resetAllSettingsDesc: "Скинути всі налаштування до значень за замовчуванням",
+        resetSettings: "🔄 Скинути налаштування",
+        
+        // Activation buttons
+        activateAccount: "🔐 Активація акаунта",
+        miniAdmin: "⚡ Міні Адмін",
+        superAdmin: "🚀 Супер Адмін",
+        
+        // CRM
+        userCRM: "CRM користувача",
+        notes: "📝 Нотатки",
+        chat: "💬 Чат",
+        social: "📱 Соцмережі",
+        writeNotes: "Напишіть ваші нотатки про цього користувача...",
+        saveNotes: "💾 Зберегти нотатки",
+        noMessages: "Повідомлень поки немає. Почніть розмову!",
+        typeMessage: "Введіть ваше повідомлення...",
+        send: "Відправити",
+        contactInformation: "Контактна інформація:",
+        platform: "Платформа:",
+        contact: "Контакт:",
+        registrationDate: "Дата реєстрації:",
+        openSocialMedia: "📱 Відкрити в соцмережі",
+        
+        // New Chat Dialog
+        newChat: "💬 Новий чат",
+        startConversation: "Почати розмову з користувачем",
+        enterUserId: "Введіть ID користувача...",
+        startChat: "Почати чат",
+        cancel: "Скасувати"
         }
     };
 
