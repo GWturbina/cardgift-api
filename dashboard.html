@@ -4552,7 +4552,6 @@ const translations = {
 
     // Автоматическая загрузка сохраненного языка
     function loadSavedLanguage() {
-	    extendTranslations(); // ✅ Добавить эту строку
         const savedLang = localStorage.getItem('adminLanguage') || 'en';
         currentLanguage = savedLang;
         applyTranslations(savedLang);
