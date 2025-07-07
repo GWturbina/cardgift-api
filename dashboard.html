@@ -2293,6 +2293,10 @@
         document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
         
         currentSection = sectionId;
+		
+		if (sectionId === 'coauthors') {
+    loadCoauthorsInterface();
+}
 
     // ✅ ДОБАВЛЕНО: Загружаем интерфейс соавторов
     if (sectionId === 'coauthors') {
@@ -2912,6 +2916,33 @@ function cancelNewChat() {
         showNotification('Only the main founder can manage co-authors', 'error');
         return;
     }
+	
+	function loadCoauthorsInterface() {
+    const coauthorsContent = document.getElementById('coauthorsMainContent');
+    
+    if (userWalletAddress && userWalletAddress.toLowerCase() === '0x0099188030174e381e7a7ee36d2783ecc31b6728') {
+        coauthorsContent.innerHTML = `
+            <h3 style="color: #D2691E; margin-bottom: 15px;">👑 Co-Authors Management (Author)</h3>
+            <button class="add-coauthor-btn" onclick="addNewCoauthor()">➕ Add New Co-Author</button>
+            <div id="coauthorsList" style="margin-top: 20px;">Loading...</div>
+        `;
+        loadCoauthorsList();
+    } else {
+        coauthorsContent.innerHTML = `
+            <h3 style="color: #D2691E; margin-bottom: 15px;">⚙️ Permissions Management (Co-Author)</h3>
+            <div style="text-align: center; color: #CCC; padding: 40px;">Permissions management in development</div>
+        `;
+    }
+}
+
+function loadCoauthorsList() {
+    const coauthors = JSON.parse(localStorage.getItem('coauthorsList') || '[]');
+    const listContainer = document.getElementById('coauthorsList');
+    
+    if (coauthors.length === 0) {
+        listContainer.innerHTML = '<div style="text-align: center; color: #CCC; padding: 20px;">No co-authors yet</div>';
+    }
+}
     
     const coauthorAddress = prompt('Enter co-author wallet address:');
     if (coauthorAddress && web3.utils.isAddress(coauthorAddress)) {
@@ -2932,6 +2963,7 @@ function cancelNewChat() {
         showNotification('Invalid wallet address', 'error');
     }
 }
+
 
 function loadCoauthorsInterface() {
     const coauthorsContent = document.getElementById('coauthorsMainContent');
