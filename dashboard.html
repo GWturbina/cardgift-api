@@ -1600,21 +1600,29 @@
                 <div class="stat-label" id="totalContactsLabel">Total Contacts</div>
             </div>
 			<!-- NAVIGATION TO MAIN SITE -->
-        <!-- QUICK ACCESS -->
-        <h3 style="color: #FFD700; margin: 30px 0 15px 0;">⚡ Quick Access</h3>
-        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-            <button onclick="openMainSite()" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; border-radius: 12px; padding: 12px 25px; cursor: pointer; font-weight: bold; transition: transform 0.3s ease;">
-                🏠 Main Site
-            </button>
-            <button onclick="openGenerator()" style="background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; border: none; border-radius: 12px; padding: 12px 25px; cursor: pointer; font-weight: bold; transition: transform 0.3s ease;">
-                🎨 Card Generator
-            </button>
+        <h3 style="color: #FFD700; margin: 30px 0 20px 0;">🌐 Quick Navigation</h3>
+        <div class="stats-grid">
+            <div class="stat-card" onclick="openMainSite()" style="cursor: pointer;">
+                <div class="stat-icon">🏠</div>
+                <div class="stat-number">Main Site</div>
+                <div class="stat-label">cardgift.bnb</div>
+            </div>
+            <div class="stat-card" onclick="openGenerator()" style="cursor: pointer;">
+                <div class="stat-icon">🎨</div>
+                <div class="stat-number">Generator</div>
+                <div class="stat-label">Create Cards</div>
+            </div>
+            <div class="stat-card" onclick="openRegistration()" style="cursor: pointer;">
+                <div class="stat-icon">📝</div>
+                <div class="stat-number">Registration</div>
+                <div class="stat-label">Sign Up Users</div>
+            </div>
+            <div class="stat-card" onclick="openCardViewer()" style="cursor: pointer;">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-number">Card Viewer</div>
+                <div class="stat-label">View Cards</div>
+            </div>
         </div>
-        
-        <style>
-        button:hover {
-            transform: translateY(-2px);
-        }
             <div class="stat-card">
                 <div class="stat-icon">🔗</div>
                 <div class="stat-number" id="totalReferrals">0</div>
@@ -5498,6 +5506,14 @@ function openMainSite() {
 
 function openGenerator() {
     window.open('https://cardgift.bnb/generator.html', '_blank');
+}
+
+function openRegistration() {
+    window.open('https://cardgift.bnb/registration.html', '_blank');
+}
+
+function openCardViewer() {
+    window.open('https://cardgift.bnb/card-viewer.html', '_blank');
 }
 </script>
 </body>
