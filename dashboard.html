@@ -3138,7 +3138,7 @@ function showSafePalHelp(isMobile) {
     }
 }
 
-async function openInSafePalApp() {
+function openInSafePalApp() {
     const currentUrl = window.location.href;
     window.location.href = `safepal://dapp?url=${encodeURIComponent(currentUrl)}`;
     setTimeout(() => showNotification('Open SafePal App → Browser → Enter: cardgift.bnb/dashboard.html', 'info', 8000), 1000);
@@ -3154,62 +3154,6 @@ function installSafePalExtension() {
 
 function retryConnection() {
     window.location.reload();
-}
-
-// ✅ ПРИОРИТЕТ #1: SafePal (мобильное приложение)
-        if (isMobile && window.safepal && window.safepal.ethereum) {
-            console.log('🔥 SafePal Mobile App detected - PRIORITY CONNECTION');
-            try {
-                const accounts = await window.safepal.ethereum.request({
-                    method: 'eth_requestAccounts'
-                });
-                handleWalletConnection(accounts[0], 'SafePal App');
-                return;
-            } catch (error) {
-                console.log('SafePal App connection failed, trying alternatives...');
-            }
-        }
-        
-        // ✅ ПРИОРИТЕТ #2: SafePal (расширение браузера)
-        if (!isMobile && window.safepalProvider) {
-            console.log('🔥 SafePal Extension detected - PRIORITY CONNECTION');
-            try {
-                const accounts = await window.safepalProvider.request({
-                    method: 'eth_requestAccounts'
-                });
-                handleWalletConnection(accounts[0], 'SafePal Extension');
-                return;
-            } catch (error) {
-                console.log('SafePal Extension connection failed, trying alternatives...');
-            }
-        }
-        
-        // ✅ ПРИОРИТЕТ #3: Обычный Web3 (может быть SafePal через window.ethereum)
-        if (window.ethereum) {
-            try {
-                const accounts = await window.ethereum.request({
-                    method: 'eth_requestAccounts'
-                });
-                
-                const walletName = window.ethereum.isSafePal ? 'SafePal Wallet' : 
-                                   window.ethereum.isMetaMask ? 'MetaMask' :
-                                   window.ethereum.isTrust ? 'Trust Wallet' : 'Web3 Wallet';
-                
-                console.log(`🔗 Connected via: ${walletName}`);
-                handleWalletConnection(accounts[0], walletName);
-                return;
-            } catch (error) {
-                console.log('Web3 connection failed:', error);
-            }
-        }
-        
-        // ✅ FALLBACK: Показываем помощь
-        showSafePalHelp(isMobile);
-        
-    } catch (error) {
-        console.error('Connection process failed:', error);
-        showSafePalHelp(isMobile);
-    }
 }
 
 // ✅ ДОБАВИТЬ ЭТУ ФУНКЦИЮ СЮДА:
