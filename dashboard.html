@@ -1903,34 +1903,47 @@
                     isActive: false,
                     walletAddress: userWalletAddress
                 };
-                showActivationOptions();
-            }
-            
-            updateUserInterface();
-            
-        } catch (error) {
-            console.error('Access check failed:', error);
-            // Fallback для новых пользователей
-            currentUser = {
-                userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
-                level: 0,
-                isActive: false,
-                walletAddress: userWalletAddress
-            };
-            updateUserInterface();
-            showActivationOptions();
-        }
-    }
+                
+                // ✅ ИСПРАВЛЕНО: Проверяем что это не основатель
+                const founders = [
+                    '0x0099188030174e381e7a7ee36d2783ecc31b6728',
+                    '0xab17adbe29c4e1d695c239206682b02ebdb3f707',
+                    '0xb5986b808dad481ad86d63df152cc0ad7b473e48',
+                    '0xa3496cacc8523421dd151f1d92a456c2dafa28c2',
+                    '0x8af1bc6b4a5aaced37889cc06bed4569a6b64044',
+                    '0x0ab97e3934b1afc9f1f6447ccf676e4f1d8b9639',
+                    '0x03284a899147f5a07f82c622f34df92198671635',
+                    '0xb0e256ca055937a8fd9ca1f5e3d8a6bd44146d50'
+                ];
+                
+                if (!founders.includes(userWalletAddress.toLowerCase())) {
+                    showActivationOptions();
+                }
+                
+                updateUserInterface();
+                
+                } catch (error) {
+                    console.error('Access check failed:', error);
+                    // Fallback для новых пользователей
+                    currentUser = {
+                        userId: `CG${userWalletAddress.substring(2, 8).toUpperCase()}`,
+                        level: 0,
+                        isActive: false,
+                        walletAddress: userWalletAddress
+                    };
+                    updateUserInterface();
+                    
+                    // ✅ ИСПРАВЛЕНО: Проверяем что это не основатель
+                    if (!founders.includes(userWalletAddress.toLowerCase())) {
+                        showActivationOptions();
+                    }
+                }
 
     function showActivationOptions() {
         const connectionStatus = document.getElementById('connectionStatus');
         if (connectionStatus) {
             connectionStatus.innerHTML = `
                 <div style="color: #FFA500; font-size: 18px; margin-bottom: 15px;">⚡ Choose Your Level</div>
-                
-                <button onclick="registerNewUser()" style="background: linear-gradient(45deg, #2196F3, #1976D2); color: white; border: none; border-radius: 10px; padding: 12px 20px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%;">
-                    📝 Register Account
-                </button>
                 
                 <div style="color: #CCC; margin-bottom: 15px;">or activate directly:</div>
                 
@@ -2112,6 +2125,7 @@
         }
         
         updateMenuAccess();
+        console.log('Current user level:', currentUser.level, 'Address:', userWalletAddress);
     }
 
     function updateMenuAccess() {
