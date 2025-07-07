@@ -1510,19 +1510,19 @@
  <div class="crm-modal" id="crmModal">
      <div class="crm-modal-content">
          <div class="crm-header">
-             <div class="crm-title" id="crmModalTitle">User CRM</div>
+             <div class="crm-title" id="crmModalTitle"><span id="userCRM">User CRM</span></div>
              <button class="close-btn" onclick="closeCRMModal()">×</button>
          </div>
          
          <div class="crm-tabs">
-             <button class="crm-tab active" onclick="switchCRMTab('notes')" id="notesTab">📝 Notes</button>
-             <button class="crm-tab" onclick="switchCRMTab('chat')" id="chatTab">💬 Chat</button>
-             <button class="crm-tab" onclick="switchCRMTab('social')" id="socialTab">📱 Social</button>
+             <button class="crm-tab active" onclick="switchCRMTab('notes')" id="notesTab"><span id="notes">📝 Notes</span></button>
+             <button class="crm-tab" onclick="switchCRMTab('chat')" id="chatTab"><span id="chat">💬 Chat</span></button>
+             <button class="crm-tab" onclick="switchCRMTab('social')" id="socialTab"><span id="social">📱 Social</span></button>
          </div>
          
          <div class="crm-content active" id="notesContent">
-             <textarea class="notes-textarea" id="userNotes" placeholder="Write your notes about this user..."></textarea>
-             <button class="save-btn" onclick="saveUserNotes()">💾 Save Notes</button>
+             <textarea class="notes-textarea" id="userNotes" placeholder="" data-placeholder="writeNotes"></textarea>
+             <button class="save-btn" onclick="saveUserNotes()"><span id="saveNotes">💾 Save Notes</span></button>
          </div>
          
          <div class="crm-content" id="chatContent">
@@ -1533,8 +1533,8 @@
                      </div>
                  </div>
                  <div class="chat-input-area">
-                     <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">
-                     <button class="send-btn" onclick="sendMessage()">Send</button>
+                     <input type="text" class="chat-input" id="chatInput" placeholder="" data-placeholder="typeMessage">
+                     <button class="send-btn" onclick="sendMessage()"><span id="send">Send</span></button>
                  </div>
              </div>
          </div>
@@ -1558,15 +1558,15 @@
  <!-- ✅ НОВЫЙ DIALOG ДЛЯ СОЗДАНИЯ ЧАТА -->
  <div class="new-chat-dialog" id="newChatDialog">
      <div class="dialog-header">
-         <div class="dialog-title">💬 New Chat</div>
-         <p style="color: #CCC; margin-bottom: 0;">Start a conversation with a user</p>
+         <div class="dialog-title" id="newChat">💬 New Chat</div>
+         <p style="color: #CCC; margin-bottom: 0;" id="startConversation">Start a conversation with a user</p>
      </div>
      
      <input type="text" class="dialog-input" id="newChatUserId" placeholder="Enter User ID..." maxlength="50">
      
      <div class="dialog-buttons">
-         <button class="dialog-btn primary" onclick="confirmNewChat()">Start Chat</button>
-         <button class="dialog-btn secondary" onclick="cancelNewChat()">Cancel</button>
+         <button class="dialog-btn primary" onclick="confirmNewChat()"><span id="startChat">Start Chat</span></button>
+         <button class="dialog-btn secondary" onclick="cancelNewChat()"><span id="cancel">Cancel</span></button>
      </div>
  </div>
 
@@ -2232,36 +2232,35 @@
         <div class="settings-section" id="adminSettingsSection" style="display: none;">
             <div class="settings-header">
                 <div class="settings-icon">👑</div>
-                <div class="settings-title">Admin Settings</div>
+                <div class="settings-title" id="adminSettings">Admin Settings</div>
             </div>
             <div class="settings-grid">
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Automatic Backup</div>
-                        <div class="setting-toggle" onclick="toggleSetting(this, 'autoBackup')" id="autoBackupToggle"></div>
+                        <div class="setting-item-title" id="automaticBackup">Automatic Backup</div>
+                        <div class="setting-item-description" id="automaticBackupDesc">Automatically create backup copies of contact database</div>
                     </div>
                     <div class="setting-item-description">Automatically create backup copies of contact database</div>
                 </div>
-
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">System Notifications</div>
-                        <div class="setting-toggle active" onclick="toggleSetting(this, 'systemNotifications')" id="systemNotificationsToggle"></div>
+                        <div class="setting-item-title" id="systemNotifications">System Notifications</div>
+                        <div class="setting-item-description" id="systemNotificationsDesc">Receive notifications about new registrations and system events</div>
                     </div>
                     <div class="setting-item-description">Receive notifications about new registrations and system events</div>
                 </div>
-
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Interface Mode</div>
+                        <div class="setting-item-title" id="interfaceMode">Interface Mode</div>
+                        <div class="setting-item-description" id="interfaceModeDesc">Choose between dark and light interface themes</div>
                     </div>
                     <div class="setting-item-description">Choose between dark and light interface themes</div>
                     <div style="display: flex; gap: 10px; margin-top: 10px;">
                         <button class="setting-button" onclick="setTheme('dark')" id="darkModeBtn">
-                            🌙 Dark Mode
+                            <span id="darkMode">🌙 Dark Mode</span>
                         </button>
                         <button class="setting-button" onclick="setTheme('light')" id="lightModeBtn">
-                            ☀️ Light Mode
+                            <span id="lightMode">☀️ Light Mode</span>
                         </button>
                     </div>
                 </div>
@@ -2272,12 +2271,13 @@
         <div class="settings-section">
             <div class="settings-header">
                 <div class="settings-icon">💾</div>
-                <div class="settings-title">Data Management</div>
+                <div class="settings-title" id="dataManagement">Data Management</div>
             </div>
             <div class="settings-grid">
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Export All Data</div>
+                        <div class="setting-item-title" id="exportAllData">Export All Data</div>
+                        <div class="setting-item-description" id="exportAllDataDesc">Download all your contacts, notes, and CRM data</div>
                     </div>
                     <div class="setting-item-description">Download all your contacts, notes, and CRM data</div>
                     <button class="setting-button" onclick="exportAllData()">
@@ -2287,7 +2287,8 @@
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Import Data</div>
+                        <div class="setting-item-title" id="importData">Import Data</div>
+                        <div class="setting-item-description" id="importDataDesc">Import contacts and data from backup files</div>
                     </div>
                     <div class="setting-item-description">Import contacts and data from backup files</div>
                     <button class="setting-button" onclick="importData()">
@@ -2297,7 +2298,8 @@
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Clear Cache</div>
+                        <div class="setting-item-title" id="clearCache">Clear Cache</div>
+                        <div class="setting-item-description" id="clearCacheDesc">Clear temporary data and cached files to free up space</div>
                     </div>
                     <div class="setting-item-description">Clear temporary data and cached files to free up space</div>
                     <button class="setting-button danger" onclick="clearCache()">
@@ -2311,20 +2313,21 @@
         <div class="settings-section">
             <div class="settings-header">
                 <div class="settings-icon">🔒</div>
-                <div class="settings-title">Security Settings</div>
+                <div class="settings-title" id="securitySettings">Security Settings</div>
             </div>
             <div class="settings-grid">
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Wallet Auto-Connect</div>
-                        <div class="setting-toggle active" onclick="toggleSetting(this, 'autoConnect')" id="autoConnectToggle"></div>
+                        <div class="setting-item-title" id="walletAutoConnect">Wallet Auto-Connect</div>
+                        <div class="setting-item-description" id="walletAutoConnectDesc">Automatically connect to your wallet when visiting the dashboard</div>
                     </div>
                     <div class="setting-item-description">Automatically connect to your wallet when visiting the dashboard</div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Session Timeout</div>
+                        <div class="setting-item-title" id="sessionTimeout">Session Timeout</div>
+                        <div class="setting-item-description" id="sessionTimeoutDesc">Set automatic logout time for security</div>
                     </div>
                     <div class="setting-item-description">Set automatic logout time for security</div>
                     <select style="background: rgba(255, 255, 255, 0.1); border: 1px solid #FFD700; border-radius: 8px; padding: 8px 12px; color: #FFF; margin-top: 10px;" onchange="setSessionTimeout(this.value)">
@@ -2338,8 +2341,8 @@
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Transaction Confirmation</div>
-                        <div class="setting-toggle active" onclick="toggleSetting(this, 'confirmTx')" id="confirmTxToggle"></div>
+                        <div class="setting-item-title" id="transactionConfirmation">Transaction Confirmation</div>
+                        <div class="setting-item-description" id="transactionConfirmationDesc">Always confirm transactions before sending</div>
                     </div>
                     <div class="setting-item-description">Always confirm transactions before sending</div>
                 </div>
@@ -2350,29 +2353,29 @@
         <div class="settings-section">
             <div class="settings-header">
                 <div class="settings-icon">🔔</div>
-                <div class="settings-title">Notification Settings</div>
+                <div class="settings-title" id="notificationSettings">Notification Settings</div>
             </div>
             <div class="settings-grid">
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">New Referral Notifications</div>
-                        <div class="setting-toggle active" onclick="toggleSetting(this, 'newReferralNotif')" id="newReferralNotifToggle"></div>
+                        <div class="setting-item-title" id="newReferralNotifications">New Referral Notifications</div>
+                        <div class="setting-item-description" id="newReferralNotificationsDesc">Get notified when someone joins through your referral link</div>
                     </div>
                     <div class="setting-item-description">Get notified when someone joins through your referral link</div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">CRM Message Notifications</div>
-                        <div class="setting-toggle active" onclick="toggleSetting(this, 'crmNotif')" id="crmNotifToggle"></div>
+                        <div class="setting-item-title" id="crmMessageNotifications">CRM Message Notifications</div>
+                        <div class="setting-item-description" id="crmMessageNotificationsDesc">Receive notifications for new CRM messages</div>
                     </div>
                     <div class="setting-item-description">Receive notifications for new CRM messages</div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">System Update Notifications</div>
-                        <div class="setting-toggle active" onclick="toggleSetting(this, 'systemUpdateNotif')" id="systemUpdateNotifToggle"></div>
+                        <div class="setting-item-title" id="systemUpdateNotifications">System Update Notifications</div>
+                        <div class="setting-item-description" id="systemUpdateNotificationsDesc">Get notified about system updates and new features</div>
                     </div>
                     <div class="setting-item-description">Get notified about system updates and new features</div>
                 </div>
@@ -2383,32 +2386,33 @@
         <div class="settings-section">
             <div class="settings-header">
                 <div class="settings-icon">⚙️</div>
-                <div class="settings-title">Advanced Settings</div>
+                <div class="settings-title" id="advancedSettings">Advanced Settings</div>
             </div>
             <div class="settings-grid">
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Debug Mode</div>
-                        <div class="setting-toggle" onclick="toggleSetting(this, 'debugMode')" id="debugModeToggle"></div>
+                        <div class="setting-item-title" id="debugMode">Debug Mode</div>
+                        <div class="setting-item-description" id="debugModeDesc">Enable debug mode for troubleshooting (developers only)</div>
                     </div>
                     <div class="setting-item-description">Enable debug mode for troubleshooting (developers only)</div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Performance Mode</div>
-                        <div class="setting-toggle" onclick="toggleSetting(this, 'performanceMode')" id="performanceModeToggle"></div>
+                        <div class="setting-item-title" id="performanceMode">Performance Mode</div>
+                        <div class="setting-item-description" id="performanceModeDesc">Optimize for better performance on slower devices</div>
                     </div>
                     <div class="setting-item-description">Optimize for better performance on slower devices</div>
                 </div>
 
                 <div class="setting-item">
                     <div class="setting-item-header">
-                        <div class="setting-item-title">Reset All Settings</div>
+                        <div class="setting-item-title" id="resetAllSettings">Reset All Settings</div>
+                        <div class="setting-item-description" id="resetAllSettingsDesc">Reset all settings to default values</div>
                     </div>
                     <div class="setting-item-description">Reset all settings to default values</div>
                     <button class="setting-button danger" onclick="resetAllSettings()">
-                        🔄 Reset Settings
+                        <span id="resetSettings">🔄 Reset Settings</span>
                     </button>
                 </div>
             </div>
@@ -4035,7 +4039,11 @@ const translations = {
         connectionStatus: "🔐 Connection Status",
         walletNotConnected: "⚠️ Wallet Not Connected",
         connectWalletDesc: "Connect your SafePal wallet to access all features",
-        connectWallet: "🔐 Connect Wallet",
+        connectWallet: "🔐 Connect Wallet",		
+		writeNotes: "Write your notes about this user...",
+        typeMessage: "Type your message...",
+        enterUserId: "Enter User ID...",
+        searchContacts: "Search by name or contact...",
         
         // Menu
         menuDashboard: "Dashboard",
@@ -4173,6 +4181,10 @@ const translations = {
         walletNotConnected: "⚠️ Кошелек не подключен",
         connectWalletDesc: "Подключите SafePal для доступа к функциям",
         connectWallet: "🔐 Подключить кошелек",
+		writeNotes: "Напишите ваши заметки об этом пользователе...",
+        typeMessage: "Введите ваше сообщение...",
+        enterUserId: "Введите ID пользователя...",
+        searchContacts: "Поиск по имени или контакту...",
         
         // Menu
         menuDashboard: "Панель",
@@ -4310,6 +4322,10 @@ const translations = {
         walletNotConnected: "⚠️ Гаманець не підключено",
         connectWalletDesc: "Підключіть SafePal для доступу до функцій",
         connectWallet: "🔐 Підключити гаманець",
+		writeNotes: "Напишіть ваші нотатки про цього користувача...",
+        typeMessage: "Введіть ваше повідомлення...",
+        enterUserId: "Введіть ID користувача...",
+        searchContacts: "Пошук за іменем або контактом...",
         
         // Menu
         menuDashboard: "Панель",
