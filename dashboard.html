@@ -3138,7 +3138,7 @@ function showSafePalHelp(isMobile) {
     }
 }
 
-function openInSafePalApp() {
+async function openInSafePalApp() {
     const currentUrl = window.location.href;
     window.location.href = `safepal://dapp?url=${encodeURIComponent(currentUrl)}`;
     setTimeout(() => showNotification('Open SafePal App → Browser → Enter: cardgift.bnb/dashboard.html', 'info', 8000), 1000);
