@@ -4550,8 +4550,26 @@ const translations = {
         console.log(`🌍 Язык изменен на: ${lang}`);
     }
 
+    function extendTranslations() {
+        // Пустая функция для совместимости
+    }
+    
     // Автоматическая загрузка сохраненного языка
     function loadSavedLanguage() {
+        const savedLang = localStorage.getItem('adminLanguage') || 'en';
+        currentLanguage = savedLang;
+        applyTranslations(savedLang);
+        
+        // Обновляем кнопку
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById(`lang${savedLang.charAt(0).toUpperCase() + savedLang.slice(1)}`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
+    }
+
+    // Автоматическая загрузка сохраненного языка
+	   function loadSavedLanguage() {
         const savedLang = localStorage.getItem('adminLanguage') || 'en';
         currentLanguage = savedLang;
         applyTranslations(savedLang);
