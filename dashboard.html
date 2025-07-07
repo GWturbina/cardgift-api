@@ -2802,11 +2802,27 @@
     }
 
     function createNewChat() {
-        const userId = prompt('Enter User ID to start a new chat:');
-        if (userId) {
-            openCRMModal(userId);
-        }
+    // Создаем модальное окно вместо prompt
+    const modalHtml = '<div id="newChatModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; align-items: center; justify-content: center;"><div style="background: #1a1a1a; border: 2px solid #FFD700; border-radius: 15px; padding: 30px; max-width: 400px; width: 90%;"><h3 style="color: #FFD700; margin-bottom: 20px; text-align: center;">💬 New Chat</h3><input type="text" id="newChatUserId" placeholder="Enter User ID..." style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid #FFD700; border-radius: 8px; color: #FFF; margin-bottom: 20px;"><div style="display: flex; gap: 10px; justify-content: center;"><button onclick="confirmNewChat()" style="background: #4CAF50; color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer;">Start Chat</button><button onclick="cancelNewChat()" style="background: #f44336; color: white; border: none; border-radius: 8px; padding: 10px 20px; cursor: pointer;">Cancel</button></div></div></div>';
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    document.getElementById('newChatUserId').focus();
+}
+
+function confirmNewChat() {
+    const userId = document.getElementById('newChatUserId').value.trim();
+    if (userId) {
+        cancelNewChat();
+        openCRMModal(userId);
     }
+}
+
+function cancelNewChat() {
+    const modal = document.getElementById('newChatModal');
+    if (modal) {
+        modal.remove();
+    }
+}
 
     function exportCRMData() {
         if (currentUser.level < 2) {
