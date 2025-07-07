@@ -1599,6 +1599,30 @@
                 <div class="stat-number" id="totalContacts">0</div>
                 <div class="stat-label" id="totalContactsLabel">Total Contacts</div>
             </div>
+			<!-- NAVIGATION TO MAIN SITE -->
+        <h3 style="color: #FFD700; margin: 30px 0 20px 0;">🌐 Quick Navigation</h3>
+        <div class="stats-grid">
+            <div class="stat-card" onclick="openMainSite()" style="cursor: pointer;">
+                <div class="stat-icon">🏠</div>
+                <div class="stat-number">Main Site</div>
+                <div class="stat-label">cardgift.bnb</div>
+            </div>
+            <div class="stat-card" onclick="openGenerator()" style="cursor: pointer;">
+                <div class="stat-icon">🎨</div>
+                <div class="stat-number">Generator</div>
+                <div class="stat-label">Create Cards</div>
+            </div>
+            <div class="stat-card" onclick="openRegistration()" style="cursor: pointer;">
+                <div class="stat-icon">📝</div>
+                <div class="stat-number">Registration</div>
+                <div class="stat-label">Sign Up Users</div>
+            </div>
+            <div class="stat-card" onclick="openCardViewer()" style="cursor: pointer;">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-number">Card Viewer</div>
+                <div class="stat-label">View Cards</div>
+            </div>
+        </div>
             <div class="stat-card">
                 <div class="stat-icon">🔗</div>
                 <div class="stat-number" id="totalReferrals">0</div>
@@ -5475,6 +5499,22 @@ const translations = {
     console.log('  ✅ Auto-connect improved');
     console.log('💎 Ready for production!');
 
+// ==================== НАВИГАЦИЯ К ОСНОВНЫМ ФАЙЛАМ ====================
+function openMainSite() {
+    window.open('https://cardgift.bnb/', '_blank');
+}
+
+function openGenerator() {
+    window.open('https://cardgift.bnb/generator.html', '_blank');
+}
+
+function openRegistration() {
+    window.open('https://cardgift.bnb/registration.html', '_blank');
+}
+
+function openCardViewer() {
+    window.open('https://cardgift.bnb/card-viewer.html', '_blank');
+}
 </script>
 </body>
 </html>
