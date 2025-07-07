@@ -1496,24 +1496,9 @@
     </div>
 
     <!-- CO-AUTHORS SECTION -->
-    <div id="coauthors" class="content-section">
-        <div class="section-header">
-            <h1 class="section-title" id="coauthorsTitle">👑 Co-Authors Management</h1>
-        </div>
-
-        <div class="coauthors-section">
-            <h3 style="color: #D2691E; margin-bottom: 15px;">👑 Current Co-Authors</h3>
-            <button class="add-coauthor-btn" onclick="addNewCoauthor()">
-                ➕ Add New Co-Author
-            </button>
-            
-            <div id="coauthorsList" style="margin-top: 20px;">
-                <div style="text-align: center; color: #CCC; padding: 40px;">
-                    No co-authors assigned yet
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="coauthors-section" id="coauthorsMainContent">
+    <!-- Контент будет загружаться динамически -->
+</div>
 
     <!-- MAILINGS SECTION -->
     <div id="mailings" class="content-section">
@@ -2158,8 +2143,16 @@
             }
             
             if (currentUser.level >= 4) {
+            if (section === 'coauthors') {
+                if (userWalletAddress && userWalletAddress.toLowerCase() === '0x0099188030174e381e7a7ee36d2783ecc31b6728') {
+                    item.classList.remove('locked');
+                } else {
+                    item.classList.add('locked');
+                }
+            } else {
                 item.classList.remove('locked');
             }
+        }
         });
     }
 
@@ -2300,6 +2293,11 @@
         document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
         
         currentSection = sectionId;
+
+    // ✅ ДОБАВЛЕНО: Загружаем интерфейс соавторов
+    if (sectionId === 'coauthors') {
+        loadCoauthorsInterface();
+    }
         
         if (window.innerWidth <= 768) {
             toggleSidebar();
@@ -2910,18 +2908,119 @@ function cancelNewChat() {
 
     // ==================== CO-AUTHORS ФУНКЦИИ ====================
     function addNewCoauthor() {
-        if (currentUser.level < 4) {
-            showNotification('Only founders can manage co-authors', 'error');
-            return;
-        }
-        
-        const coauthorAddress = prompt('Enter co-author wallet address:');
-        if (coauthorAddress && web3.utils.isAddress(coauthorAddress)) {
-            showNotification(`Co-author ${coauthorAddress} will be added`, 'success');
-        } else {
-            showNotification('Invalid wallet address', 'error');
-        }
+    if (!userWalletAddress || userWalletAddress.toLowerCase() !== '0x0099188030174e381e7a7ee36d2783ecc31b6728') {
+        showNotification('Only the main founder can manage co-authors', 'error');
+        return;
     }
+    
+    const coauthorAddress = prompt('Enter co-author wallet address:');
+    if (coauthorAddress && web3.utils.isAddress(coauthorAddress)) {
+        let coauthors = JSON.parse(localStorage.getItem('coauthorsList') || '[]');
+        
+        const newCoauthor = {
+            address: coauthorAddress,
+            addedDate: new Date().toISOString(),
+            status: 'active'
+        };
+        
+        coauthors.push(newCoauthor);
+        localStorage.setItem('coauthorsList', JSON.stringify(coauthors));
+        
+        showNotification(`Co-author ${coauthorAddress} added successfully`, 'success');
+        loadCoauthorsInterface();
+    } else {
+        showNotification('Invalid wallet address', 'error');
+    }
+}
+
+function loadCoauthorsInterface() {
+    const coauthorsContent = document.getElementById('coauthorsMainContent');
+    
+    // Проверяем кто открыл секцию
+    if (userWalletAddress && userWalletAddress.toLowerCase() === '0x0099188030174e381e7a7ee36d2783ecc31b6728') {
+        // АВТОР - полный доступ
+        coauthorsContent.innerHTML = `
+            <h3 style="color: #D2691E; margin-bottom: 15px;">👑 Co-Authors Management (Author)</h3>
+            <button class="add-coauthor-btn" onclick="addNewCoauthor()">
+                ➕ Add New Co-Author
+            </button>
+            
+            <div id="coauthorsList" style="margin-top: 20px;">
+                <div style="text-align: center; color: #CCC; padding: 40px;">
+                    Loading co-authors list...
+                </div>
+            </div>
+        `;
+        
+        // Загружаем список соавторов
+        loadCoauthorsList();
+    } else {
+        // СОАВТОР - только управление полномочиями
+        coauthorsContent.innerHTML = `
+            <h3 style="color: #D2691E; margin-bottom: 15px;">⚙️ Permissions Management (Co-Author)</h3>
+            
+            <div class="development-placeholder">
+                <div class="development-icon">🚧</div>
+                <div class="development-title">Permissions Management</div>
+                <div class="development-text" style="color: #CCC; line-height: 1.6;">
+                    Co-author permissions management system is in development.<br><br>
+                    Available features:<br>
+                    • View assigned permissions<br>
+                    • Request additional access<br>
+                    • Manage team members<br>
+                    • Configure user roles
+                </div>
+            </div>
+        `;
+    }
+}
+
+function loadCoauthorsList() {
+    const coauthors = JSON.parse(localStorage.getItem('coauthorsList') || '[]');
+    const listContainer = document.getElementById('coauthorsList');
+    
+    if (coauthors.length === 0) {
+        listContainer.innerHTML = `
+            <div style="text-align: center; color: #CCC; padding: 40px;">
+                No co-authors assigned yet
+            </div>
+        `;
+        return;
+    }
+    
+    let listHTML = '';
+    coauthors.forEach((coauthor, index) => {
+        listHTML += `
+            <div class="coauthor-item">
+                <div class="coauthor-info">
+                    <div style="color: #D2691E; font-weight: bold;">${coauthor.address}</div>
+                    <div style="color: #CCC; font-size: 12px;">Added: ${new Date(coauthor.addedDate).toLocaleDateString()}</div>
+                </div>
+                <div class="coauthor-actions">
+                    <button class="action-btn" onclick="editCoauthor(${index})">Edit</button>
+                    <button class="action-btn danger" onclick="removeCoauthor(${index})">Remove</button>
+                </div>
+            </div>
+        `;
+    });
+    
+    listContainer.innerHTML = listHTML;
+}
+
+function editCoauthor(index) {
+    showNotification('Co-author editing feature coming soon', 'info');
+}
+
+function removeCoauthor(index) {
+    if (confirm('Are you sure you want to remove this co-author?')) {
+        let coauthors = JSON.parse(localStorage.getItem('coauthorsList') || '[]');
+        coauthors.splice(index, 1);
+        localStorage.setItem('coauthorsList', JSON.stringify(coauthors));
+        
+        showNotification('Co-author removed successfully', 'success');
+        loadCoauthorsList();
+    }
+}
 
     // ==================== ЯЗЫКОВЫЕ ФУНКЦИИ ====================
     function switchLanguage(lang) {
