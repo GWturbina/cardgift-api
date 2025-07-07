@@ -2802,13 +2802,11 @@
     }
 
     function createNewChat() {
-    setTimeout(() => {
         const userId = prompt('Enter User ID to start a new chat:');
-        if (userId && userId.trim()) {
-            openCRMModal(userId.trim());
+        if (userId) {
+            openCRMModal(userId);
         }
-    }, 100);
-}
+    }
 
     function exportCRMData() {
         if (currentUser.level < 2) {
