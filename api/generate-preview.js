@@ -1,5 +1,4 @@
-export default function handler(req, res) {
-    // Разрешаем CORS
+export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,18 +12,19 @@ export default function handler(req, res) {
     }
     
     try {
-        const cardData = req.body;
-        console.log('📤 Получена карта:', cardData?.cardId);
+        const { cardData, previewImage, cardId } = req.body;
         
-        // Генерируем URL превью
-        const previewUrl = `https://gwturbina.github.io/cardgift-api/preview.html?id=${cardData.cardId}`;
-        const mockImageUrl = `https://via.placeholder.com/1200x630/667eea/ffffff?text=CardGift+Preview`;
+        console.log('📨 Получены данные карты:', cardId);
+        
+        // TODO: Здесь сохранить previewImage в облачное хранилище
+        // Пока возвращаем base64 как URL
+        const previewUrl = `https://${req.headers.host}/preview.html?id=${cardId}&img=${encodeURIComponent(previewImage)}`;
         
         return res.status(200).json({
             success: true,
-            shareableUrl: previewUrl,
-            previewImageUrl: mockImageUrl,
-            cardId: cardData.cardId
+            imageUrl: previewImage, // Base64 изображение
+            shareUrl: previewUrl,
+            cardId: cardId
         });
         
     } catch (error) {
